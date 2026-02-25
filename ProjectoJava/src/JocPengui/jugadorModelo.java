@@ -1,6 +1,5 @@
 package JocPengui;
 
-import java.util.Scanner;
 public class JugadorModelo {
 	protected int posicion;
 	protected String nom;
