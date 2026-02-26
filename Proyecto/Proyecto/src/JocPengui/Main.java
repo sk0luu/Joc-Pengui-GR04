@@ -1,10 +1,17 @@
 package JocPengui;
 
+
 public class Main {
-
+	
+	public main() {
+    }
+	
 	public static void main(String[] args) {
-		// TODO Auto-generated method stub
-
+		System.out.println("Bienvenido al Juego: ");
+		
+		
+		PantallaMenu menu = new PantallaMenu();
+		menu.mostrarMenu();
 	}
 
 }
