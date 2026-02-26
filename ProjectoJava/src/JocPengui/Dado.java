@@ -19,6 +19,7 @@ public class Dado {
 	public void setMin(int min) {
 		this.min = min;
 	}
+	
 	public int tirar() {
 		Random r = new Random();
 		int numeroRandom = r.nextInt(min) + max;
