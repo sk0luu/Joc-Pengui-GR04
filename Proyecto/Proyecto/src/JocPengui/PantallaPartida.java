@@ -4,95 +4,70 @@ import java.util.Scanner;
 
 public class PantallaPartida {
     private Scanner scanner;
+    private GestorPartida gestor;
     
     public PantallaPartida() {
         this.scanner = new Scanner(System.in);
+        this.gestor = new GestorPartida();
     }
     
-    public void mostrarPartida(Partida partida) {
-        boolean juegoActivo = true;
+    public void botonTirarDado() {
+        int resultado = gestor.tirarDado();
+        System.out.println("Resultado del dado: " + resultado);
+        System.out.println("Te mueves " + resultado + " casillas ");
+    }
+    
+    public void botonUserObjeto() {
+        System.out.println("INVENTARIO DE OBJETOS: ");
+        System.out.println("1. Pez (Restaura 20 HP) ");
+        System.out.println("2. Hielo (Congela enemigo) ");
+        System.out.println("3. Escudo (Protege 1 turno) ");
+        System.out.print("\nSelecciona objeto (0 para cancelar): ");
         
-        while (juegoActivo) {
-            mostrarEstadoPartida(partida);
-            int opcion = obtenerOpcion();
-            
-            switch (opcion) {
-                case 1:
-                    // Llamar a GestorPartida para tirar dado
-                    GestorPartida gestor = new GestorPartida();
-                    int resultado = gestor.tirarDado();
-                    System.out.println("\n🎲 Resultado del dado: " + resultado);
-                    break;
-                    
-                case 2:
-                    System.out.print("\n¿Qué objeto deseas usar? (1-3): ");
-                    int objeto = scanner.nextInt();
-                    scanner.nextLine();
-                    GestorPartida gestor2 = new GestorPartida();
-                    gestor2.usarObjeto(objeto);
-                    break;
-                    
-                case 3:
-                    System.out.println("\n✅ Turno finalizado.\n");
-                    // Llamar a GestorPartida para siguiente turno
-                    GestorPartida gestor3 = new GestorPartida();
-                    gestor3.siguienteTurno();
-                    break;
-                    
-                case 4:
-                    System.out.println("\n💾 Guardando partida...");
-                    GestorPartida gestor4 = new GestorPartida();
-                    gestor4.guardarPartida(partida);
-                    break;
-                    
-                case 5:
-                    System.out.println("\n🔄 Refrescando...\n");
-                    break;
-                    
-                case 6:
-                    System.out.print("\n¿Guardar antes de salir? (s/n): ");
-                    String resp = scanner.nextLine();
-                    if (resp.equalsIgnoreCase("s")) {
-                        GestorPartida gestor5 = new GestorPartida();
-                        gestor5.guardarPartida(partida);
-                    }
-                    System.out.println("\n👋 Volviendo al menú principal...\n");
-                    juegoActivo = false;
-                    break;
-                    
-                default:
-                    System.out.println("\n❌ Opción inválida.\n");
-            }
-        }
-    }
-    
-    private void mostrarEstadoPartida(Partida partida) {
-        System.out.println("");
-        System.out.println("ESTADO ACTUAL DE LA PARTIDA ");
-        System.out.println("");
-        System.out.println("Turno: " + partida.getTurnoActual());            
-        System.out.println("Jugadores: " + partida.getNumJugadores());                     
-        System.out.println("Posición: " + partida.getPosicion());
-        System.out.println("Salud: 100/100 ");
-        System.out.println("");
-        System.out.println("1. Tirar Dado ");
-        System.out.println("2. Usar Objeto ");
-        System.out.println("3. Finalizar Turno ");
-        System.out.println("4. Guardar Partida ");
-        System.out.println("5. Refrescar Panel ");
-        System.out.println("6. Salir del Juego ");
-        System.out.println("");
-        System.out.print("Selecciona una acción (1-6): ");
-    }
-    
-    private int obtenerOpcion() {
         try {
-            int opcion = scanner.nextInt();
+            int objeto = scanner.nextInt();
             scanner.nextLine();
-            return opcion;
+            
+            if (objeto == 0) {
+                System.out.println("\n❌ Cancelado.\n");
+            } else if (objeto >= 1 && objeto <= 3) {
+                gestor.usarObjeto(objeto);
+            } else {
+                System.out.println("\n❌ Objeto no válido.\n");
+            }
         } catch (Exception e) {
             scanner.nextLine();
-            return -1;
+            System.out.println("\n❌ Error de entrada.\n");
         }
+    }
+    
+    public void botonFinalizarTurno() {
+        System.out.println("\n✅ Turno finalizado.\n");
+        gestor.siguienteTurno();
+    }
+    
+    public void iniciarPartida() {
+        System.out.println("\n╔════════════════════════════════════════╗");
+        System.out.println("║      ¡LA PARTIDA HA COMENZADO!         ║");
+        System.out.println("║    ¡QUE GANE EL MEJOR PINGUINO!        ║");
+        System.out.println("╚════════════════════════════════════════╝\n");
+    }
+    
+    public void cargarPartida() {
+        System.out.println("\n╔════════════════════════════════════════╗");
+        System.out.println("║      ¡PARTIDA CARGADA!                 ║");
+        System.out.println("║     CONTINUANDO EL JUEGO...            ║");
+        System.out.println("╚════════════════════════════════════════╝\n");
+    }
+    
+    public void guardarPartida() {
+        System.out.println("\n💾 Guardando partida...");
+        gestor.guardarPartida(null);
+        System.out.println("✅ Partida guardada exitosamente.\n");
+    }
+    
+    public void refrescaPanel() {
+        System.out.println("\n🔄 Refrescando panel...");
+        System.out.println("✅ Panel actualizado.\n");
     }
 }

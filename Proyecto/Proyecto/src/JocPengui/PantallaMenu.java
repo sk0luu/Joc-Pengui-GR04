@@ -39,7 +39,7 @@ public class PantallaMenu {
                     salir = true;
                     break;
                 default:
-                    System.out.println("\n❌ Opción inválida.\n");
+                    System.out.println("Opcion invalida ");
             }
         }
         scanner.close();
@@ -88,14 +88,14 @@ public class PantallaMenu {
             PantallaPartida pantallaPartida = new PantallaPartida();
             pantallaPartida.mostrarPartida(partida);
         } else {
-            System.out.println("\n❌ Partida no encontrada.\n");
+            System.out.println("Partida no encontrada ");
         }
     }
     
     public void botonSalir() {
         System.out.println("");
-        System.out.println("¡Gracias por jugar Pinguino!");
-        System.out.println("¡Hasta la próxima!");
+        System.out.println("Gracias por jugar Pinguino ");
+        System.out.println("Hasta la proxima ");
         System.out.println("");
     }
     
