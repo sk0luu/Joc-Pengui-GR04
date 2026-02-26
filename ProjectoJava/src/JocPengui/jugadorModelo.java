@@ -1,10 +1,10 @@
 package JocPengui;
 
-public class JugadorModelo {
+public class jugadorModelo {
 	protected int posicion;
 	protected String nom;
 	protected String color;
-	public JugadorModelo(int posicion, String nom, String color) {
+	public jugadorModelo(int posicion, String nom, String color) {
 		this.posicion = posicion;
 		this.nom = nom;
 		this.color = color;
