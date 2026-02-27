@@ -22,7 +22,7 @@ public class Dado {
 	
 	public int tirar() {
 		Random r = new Random();
-		int numeroRandom = r.nextInt(1) + 7;
-		return numeroRandom;
+		int random = r.nextInt(1) + 7;
+		return random;
 	}
 }
