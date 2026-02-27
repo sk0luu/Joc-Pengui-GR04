@@ -30,4 +30,19 @@ public class GestorPartida {
         if (dadoOpcional == null) return 0;
         return dadoOpcional.tirar(random);
     }
+
+    public void ejecutarTurnoCompleto() {
+        if (partida == null || partida.isFinalizada()) return;
+        Jugador j = partida.getJugadorActual();
+        procesarTurnoJugador(j);
+        siguienteTurno();
+    }
+
+    public void procesarTurnoJugador(Jugador j) {
+        if (j == null || partida == null) return;
+        int pasos = tirarDado(j, null);
+        gestorJugador.jugadorSeMueve(j, pasos, partida.getTablero());
+        actualizarEstadoTablero();
+        gestorTablero.comprobarFinTurno(partida);
+    }
 }
