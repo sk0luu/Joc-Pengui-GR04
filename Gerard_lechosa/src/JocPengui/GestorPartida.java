@@ -25,4 +25,9 @@ public class GestorPartida {
         partida.setGanador(null);
         actualizarEstadoTablero();
     }
+
+    public int tirarDado(Jugador j, Dado dadoOpcional) {
+        if (dadoOpcional == null) return 0;
+        return dadoOpcional.tirar(random);
+    }
 }
