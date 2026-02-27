@@ -1,0 +1,16 @@
+package Proyecto;
+
+import java.util.Scanner;
+import java.util.ArrayList;
+
+public class PantallaMenu {
+	private Scanner scanner;
+	private main controlador;
+	
+	public PantallaMenu() {
+		this.scanner = new Scanner(System.in);
+		
+	}
+	
+
+}
