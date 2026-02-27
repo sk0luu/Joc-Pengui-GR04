@@ -1,5 +1,5 @@
 package JocPengui;
 
-public class Pingui {
+public class Agujero {
 
 }

@@ -22,8 +22,7 @@ public class Dado {
 	
 	public int tirar() {
 		Random r = new Random();
-		int numeroRandom = r.nextInt(min) + max;
+		int numeroRandom = r.nextInt(1) + 7;
 		return numeroRandom;
-		
 	}
 }
