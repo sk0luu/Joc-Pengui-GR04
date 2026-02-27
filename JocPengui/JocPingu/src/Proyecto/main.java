@@ -5,9 +5,9 @@ public class main {
 	public static void main(String[] args) {
 		System.out.println("");
 		System.out.println("Bienvenido al Juego ");
-		System.out.println("");
 		
-		
+		PantallaMenu menu = new PantallaMenu();
+		menu.menu();
 
 	}
 
