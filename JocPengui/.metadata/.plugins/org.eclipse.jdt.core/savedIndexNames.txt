@@ -1,0 +1,4 @@
+INDEX VERSION 1.134+D:\Usuarios\oaranyeves\JocPengui\.metadata\.plugins\org.eclipse.jdt.core
+2427994765.index
+252432554.index
+1865797976.index
