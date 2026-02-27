@@ -1,12 +1,12 @@
 package JocPengui;
 
-public class jugadorModelo {
+public abstract class Jugador {
 	protected int posicion;
-	protected String nom;
+	protected String nombre;
 	protected String color;
-	public jugadorModelo(int posicion, String nom, String color) {
-		this.posicion = posicion;
-		this.nom = nom;
+	public Jugador(int posicion, String nom, String color) {
+		this.posicion = 0;
+		this.nombre = nom;
 		this.color = color;
 	}
 	public int getPosicion() {
@@ -16,10 +16,10 @@ public class jugadorModelo {
 		this.posicion = posicion;
 	}
 	public String getNom() {
-		return nom;
+		return nombre;
 	}
 	public void setNom(String nom) {
-		this.nom = nom;
+		this.nombre = nom;
 	}
 	public String getColor() {
 		return color;
@@ -29,5 +29,11 @@ public class jugadorModelo {
 	}
 	public void moverPosicion(int p) {
 		this.posicion += p;
+	}
+	@Override
+	public String toString() {
+		return "Jugador: " + nombre + 
+	               " | Color: " + color + 
+	               " | Posición: " + posicion;
 	}
 }
