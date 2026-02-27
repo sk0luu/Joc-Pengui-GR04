@@ -32,7 +32,13 @@ public class PantallaMenu {
 	
 	
 	public void botonNuevaPartida() {
-	
+		System.out.println("---------------------------");
+		System.out.println("Crear nueva Partida ");
+		System.out.println("---------------------------");
+		
+		System.out.println("Cuantos jugadores? (2-4): ");
+		int numJugadores = scanner.nextInt();
+		scanner.nextInt();
 	
 	}
 }
