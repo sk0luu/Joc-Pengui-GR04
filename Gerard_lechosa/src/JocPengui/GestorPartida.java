@@ -67,4 +67,16 @@ public class GestorPartida {
     public Partida getPartida() {
         return partida;
     }
+
+    public void guardarPartida() {
+        if (bbdd != null && partida != null) {
+            bbdd.guardarPartida(partida);
+        }
+    }
+
+    public void cargarPartida(int id) {
+        if (bbdd != null) {
+            this.partida = bbdd.cargarPartida(id);
+        }
+    }
 }
