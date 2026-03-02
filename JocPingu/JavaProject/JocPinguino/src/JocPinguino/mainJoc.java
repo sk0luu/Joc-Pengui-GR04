@@ -8,6 +8,7 @@ public class mainJoc {
 		
 		PantallaMenu menu = new PantallaMenu();
 		menu.menu();
+		
 
 	}
 
