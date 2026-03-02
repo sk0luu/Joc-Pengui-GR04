@@ -10,13 +10,13 @@ public class Partida {
 	protected boolean finalizado;
 	protected Jugador ganador;
 	
-	public Partida(Tablero tablero, ArrayList<Jugador> jugadores,int turnos, int jugadorActual, boolean finalizado, Jugador ganador) {
+	public Partida(Tablero tablero, ArrayList<Jugador> jugadores) {
 		this.tablero = tablero;
 		this.jugadores = jugadores;
-		this.turnos = turnos;
-		this.jugadorActual = jugadorActual;
-		this.finalizado = finalizado;
-		this.ganador = ganador;
+		this.turnos = 0;
+		this.jugadorActual = 0;
+		this.finalizado = false;
+		this.ganador = null;
 	}
 
 	public Tablero getTablero() {
