@@ -45,4 +45,26 @@ public class GestorPartida {
         actualizarEstadoTablero();
         gestorTablero.comprobarFinTurno(partida);
     }
+
+    public void actualizarEstadoTablero() {
+        if (partida == null) return;
+        Tablero t = partida.getTablero();
+        if (t != null) t.actualizarTablero();
+    }
+
+    public void siguienteTurno() {
+        if (partida == null) return;
+        ArrayList<Jugador> js = partida.getJugadores();
+        if (js == null || js.isEmpty()) return;
+        Jugador actual = partida.getJugadorActual();
+        int idx = js.indexOf(actual);
+        if (idx < 0) idx = 0;
+        int next = (idx + 1) % js.size();
+        partida.setJugadorActual(next);
+        partida.setTurnos(partida.getTurnos() + 1);
+    }
+
+    public Partida getPartida() {
+        return partida;
+    }
 }
