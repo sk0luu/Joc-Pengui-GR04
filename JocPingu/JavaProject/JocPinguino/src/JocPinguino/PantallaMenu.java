@@ -55,7 +55,26 @@ public class PantallaMenu {
 	// GestorPartida gestor = new GestorPartida(); //Falta con la otra clase
 	// Partida partida = gestor.crearPartida(nombres); // Falta con la otra clase
 	
-	// controlador.jugar();
+	controlador.jugar();
 	
 	}
+	public void botonCargarPartida(int id) {
+		System.out.println("----------------- ");
+		System.out.println("Cargar Partida Guardada ");
+		System.out.println("............... ");
+		
+		System.out.println("Ingresa el ID de la partida: ");
+		int idPartida = scanner.nextInt();
+		scanner.nextLine();
+		
+		System.out.println("Partida cargada ");
+		controlador.jugar();
+	}
+	
+	public void botonSalir() {
+		System.out.println("-------------------------------------");
+		System.out.println("Gracias por jugar el juego Pinguino ");
+		System.out.println("-------------------------------------");
+	}
+	
 }
