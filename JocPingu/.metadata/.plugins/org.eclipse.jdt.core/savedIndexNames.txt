@@ -1,4 +1,0 @@
-INDEX VERSION 1.134+D:\Usuarios\oaranyeves\Repositorio joc pengui\Joc-Pengui-GR04\JocPingu\.metadata\.plugins\org.eclipse.jdt.core
-1865797976.index
-2427994765.index
-2868695985.index
