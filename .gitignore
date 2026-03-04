@@ -1,1 +1,8 @@
 /.metadata/
+bin/
+.metadata/
+.settings/
+.project
+.classpath
+*.log
+*.lock
