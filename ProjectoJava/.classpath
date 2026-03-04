@@ -6,5 +6,6 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="lib" path="D:/Usuarios/cxasx2006/Repository Joc Pengui/Joc-Pengui-GR04/ProjectoJava/ojdbc8 (1).jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
