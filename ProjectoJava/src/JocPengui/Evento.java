@@ -1,6 +1,6 @@
 package JocPengui;
 import java.util.Random;
-public abstract class Evento extends Casilla{
+public class Evento extends Casilla{
 	private String[] eventos;
 	public Evento(int posicion, String[] eventos) {
 		super(posicion);

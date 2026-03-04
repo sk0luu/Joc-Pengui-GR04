@@ -12,8 +12,18 @@ public class Tablero {
 	public void setCasillas(ArrayList<Casilla> casillas) {
 		this.casillas = casillas;
 	}
-	public void actualizarTablero() {
-		
+	public void actualizarTablero(ArrayList<Jugador> jugadores) {
+
+	    for (int i = 0; i < casillas.size(); i++) {
+	        System.out.print("[" + i + "]");
+	        for (Jugador j : jugadores) {
+	            if (j.getPosicion() == i) {
+	                System.out.print(" " + j.getNom());
+	            }
+	        }
+
+	        System.out.println();
+	    }
 	}
 	public void inicializarTablero() {
 		casillas.add(new Oso(0));
