@@ -1,6 +1,6 @@
 package JocPinguino;
 
-public class mainJoc {
+public class Main {
 
 	public static void main(String[] args) {
 		System.out.println("");
@@ -15,6 +15,7 @@ public class mainJoc {
 			System.out.println("---------------------");
 			
 			PantallaPartida pantallaPartida = new PantallaPartida();
+			
 			
 	}
 }
