@@ -66,6 +66,4 @@ public class Partida {
 	public void setGanador(Jugador ganador) {
 		this.ganador = ganador;
 	}
-	
-	
 }
