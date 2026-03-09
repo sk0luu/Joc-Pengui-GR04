@@ -49,10 +49,32 @@ public class PantallaPartida {
 		System.out.println("Siguiente jugador... ");
 		System.out.println("");
 	}
-	public void IniciarPartida() {
-		
+	public void IniciarPartida() { 
+		System.out.println("------------------");
+		System.out.println("Iniciando Partida");
+		System.out.println("------------------");
+		System.out.println("Partida iniciada");
+		System.out.println("");
 	}
-	
-	
+	public void cargarPartida() {
+		System.out.println("-----------------");
+		System.out.println("Cargando Partida");
+		System.out.println("------------------");
+		System.out.println("Partida cargada exitosamente");
+		System.out.println("");
+	}
+	public void guardarPartida() {
+		System.out.println("-----------------------");
+		System.out.println("Guardando Partida...");
+		System.out.println("----------------------");
+		System.out.println("Partida guardada exitosamente");
+		System.out.println("");
+	}
+	public void refrescarPanel() {
+		System.out.println("----------------------");
+		System.out.println("Refrecando Panel...");
+		System.out.println("Partida guardada exitosamente ");
+		System.out.println("");
+	}
 
 }

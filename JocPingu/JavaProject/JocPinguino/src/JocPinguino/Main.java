@@ -15,5 +15,6 @@ public class Main {
 			System.out.println("---------------------");
 			
 			PantallaPartida pantallaPartida = new PantallaPartida();
+			pantallaPartida.IniciarPartida();
 	}
 }
