@@ -10,9 +10,6 @@ public class Main {
 		menu.menu();
 	}
 		public void jugar() {
-			System.out.println("--------------------");
-			System.out.println("Iniciando Partida ");
-			System.out.println("---------------------");
 			
 			PantallaPartida pantallaPartida = new PantallaPartida();
 			pantallaPartida.IniciarPartida();
