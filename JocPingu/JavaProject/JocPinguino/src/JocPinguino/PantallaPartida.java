@@ -4,11 +4,11 @@ import java.util.Scanner;
 
 public class PantallaPartida {
 	private Scanner scanner; // Sirve para leer del teclado
-	//private GestorPartida gestorPartida
+	private GestorPartida gestorPartida;
 
 	public PantallaPartida() {
 		this.scanner = new Scanner (System.in); // Sirve para leer del teclado
-		// this.gestorPartida = new GestorPartida();
+		this.gestorPartida = new GestorPartida();
 	}
 	
 	
