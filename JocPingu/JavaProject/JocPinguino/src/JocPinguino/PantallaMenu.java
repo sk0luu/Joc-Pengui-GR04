@@ -58,8 +58,8 @@ public class PantallaMenu {  //Define la clase PantallaMenu
 	}
 	System.out.println("Partida creada con " + numJugadores + " jugadores ");
 	
-	// GestorPartida gestor = new GestorPartida(); //Falta con la otra clase
-	// Partida partida = gestor.crearPartida(nombres); // Falta con la otra clase
+	GestorPartida gestor = new GestorPartida(); //Falta con la otra clase
+	Partida partida = gestor.crearPartida(nombres); // Falta con la otra clase
 	
 	controlador.jugar(); //Iniciar juego en la classe Main
 	
