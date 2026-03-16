@@ -78,7 +78,7 @@ public class PantallaJuego {
 
 	private static final String TAG_CASILLA_TEXT = "CASILLA_TEXT";
 	private final Random rand = new Random();
-
+	
 	@FXML
 	private void initialize() {
 	    eventos.setText("¡El juego ha comenzado!");
