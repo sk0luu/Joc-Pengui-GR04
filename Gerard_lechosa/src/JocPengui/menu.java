@@ -1,4 +1,4 @@
-package JocPengui;
+package jocpinguiFinal.Vista;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -6,6 +6,8 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.Scanner;
+
+import jocpinguiFinal.Model.BBDD;
 
 public class menu {
     public static Connection con;

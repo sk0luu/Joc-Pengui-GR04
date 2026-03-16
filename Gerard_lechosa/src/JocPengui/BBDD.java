@@ -1,4 +1,4 @@
-package JocPengui;
+package jocpinguiFinal.Model;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -28,7 +28,7 @@ public class BBDD {
 		boolean valido = false;
 		while (!valido) {
 			// PODEIS HARDCODEAR ESTAS VARIABLES SI VAIS A USAR SIEMPRE LAS MISMAS
-			//VVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV
+			// VVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV
 			System.out.println("Selecciona centro o fuera de centro (CENTRO/FUERA):");
 			entorno = scan.nextLine().trim().toLowerCase();
 
@@ -44,7 +44,7 @@ public class BBDD {
 
 		// 2) Pedir credenciales (con trim para evitar espacios raros)
 		// PODEIS HARDCODEAR ESTAS CREDENCIALES SI VAIS A USAR SIEMPRE LAS MISMAS
-		//VVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV
+		// VVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV
 		System.out.println("¿Usuario?");
 		String user = scan.nextLine().trim();
 
@@ -158,7 +158,7 @@ public class BBDD {
 		} catch (SQLException e) {
 			System.out.println("Error en SELECT: " + e.getMessage());
 		}
-		
+
 		return resultados;
 	}
 
@@ -177,7 +177,7 @@ public class BBDD {
 			System.out.println("No hay conexión. Llama antes a conectarBaseDatos().");
 			return;
 		}
-		
+
 		try (Statement st = con.createStatement(); ResultSet rs = st.executeQuery(sql)) {
 
 			int fila = 0;
@@ -226,3 +226,4 @@ public class BBDD {
 		}
 	}
 }
+//

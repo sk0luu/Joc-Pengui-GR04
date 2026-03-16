@@ -1,19 +1,39 @@
-package JocPengui;
+package jocpinguiFinal.Controlador;
 
-// clase encargada de que el jugador elija que hace en su pantalla de menues
+import jocpinguiFinal.*;
+import jocpinguiFinal.Model.Foca;
+import jocpinguiFinal.Model.Jugador;
+import jocpinguiFinal.Model.Pinguino;
+import jocpinguiFinal.Model.Tablero;
+
 public class GestorJugador {
 
-    // crear el objeto vacio porque no necesita guardar variables aqui adentro
-    public GestorJugador() {
+    public void jugadorVuelve(String nombreItem) {
+        System.out.println("El jugador vuelve con " + nombreItem);
     }
 
-    // funcion para dar paso al que le toque jugar
-    public void jugadorActua(String nombreUser) {
-        // empieza el turno del jugador y se lo mostramos a el
-        System.out.println("empieza " + nombreUser);
+    public void jugadorSeMueve(Jugador j, int pasos, Tablero t) {
+        j.moverPosicion(pasos);
+        if (j.getPosicion() < 0) {
+            j.setPosicion(0);
+        }
+    }
 
-        // tras esto aqui iria el menu de:
-        // pulsa 1 para moverse
-        // pulsa 2 para comer pez
+    public void jugadorFinalizaTurno(Jugador j) {
+        System.out.println("El jugador " + j.getNom() + " ha finalizado su turno");
+    }
+
+    public void pinguinoVuelve(Pinguino p) {
+        System.out.println("El pinguino " + p.getNom() + " vuelve");
+    }
+
+    public void pinguinoContra(Pinguino p1, Pinguino p2) {
+        System.out.println("¡Duelo entre " + p1.getNom() + " y " + p2.getNom() + "!");
+    }
+
+    public void focaInteractua(Pinguino p, Foca f) {
+        if (p.getPosicion() == f.getPosicion()) {
+            f.aplastarJugador(p);
+        }
     }
 }
