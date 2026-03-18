@@ -1,6 +1,7 @@
 package jocpinguiFinal.Controlador;
 
 import java.io.*;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -25,6 +26,7 @@ public class GestorPartida implements Serializable {
     private GestorTablero gestorTablero;
     private GestorJugador gestorJugador;
     private Random random;
+    private Connection conexionBD;
 
     public GestorPartida() {
         this.gestorTablero = new GestorTablero();
@@ -172,20 +174,111 @@ public class GestorPartida implements Serializable {
         return partida;
     }
 
-    public void guardarPartida() {
-        if (partida != null) {
-            System.out.println("Guardando partida usando BBDD...");
-            // Aquí llamarías a los métodos estáticos de BBDD.java para guardar los datos
-            System.out.println("Partida guardada exitosamente.");
-        } else {
-            System.out.println("No hay partida activa para guardar.");
+    public void setConexionBD(Connection conexion) {
+        this.conexionBD = conexion;
+    }
+
+    public boolean guardarPartidaBD(String nombrePartida, String usuario) {
+        if (partida == null || conexionBD == null) {
+            System.out.println("Error: Partida o conexión nula");
+            return false;
+        }
+
+        try {
+            // Serializar la partida a bytes
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            ObjectOutputStream oos = new ObjectOutputStream(baos);
+            oos.writeObject(partida);
+            oos.close();
+            byte[] datosPartida = baos.toByteArray();
+
+            // Insertar en la BB.DD
+            String sql = "INSERT INTO PARTIDAS (nombre, usuario, datos, fecha_creacion) VALUES (?, ?, ?, SYSDATE)";
+            PreparedStatement ps = conexionBD.prepareStatement(sql);
+            ps.setString(1, nombrePartida);
+            ps.setString(2, usuario);
+            ps.setBytes(3, datosPartida);
+            ps.executeUpdate();
+            ps.close();
+
+            System.out.println("Partida guardada en BB.DD: " + nombrePartida);
+            return true;
+        } catch (SQLException e) {
+            System.out.println("Error SQL al guardar partida: " + e.getMessage());
+            return false;
+        } catch (IOException e) {
+            System.out.println("Error al serializar partida: " + e.getMessage());
+            return false;
         }
     }
 
-    public void cargarPartida(int id) {
-        System.out.println("Cargando partida con id " + id + " usando BBDD...");
-        // Aquí llamarías a las consultas SELECT de BBDD.java y reconstruirías la
-        // partida
+    public boolean cargarPartidaBD(int idPartida) {
+        if (conexionBD == null) {
+            System.out.println("Error: Conexión a BB.DD nula");
+            return false;
+        }
+
+        try {
+            String sql = "SELECT datos FROM PARTIDAS WHERE id = ?";
+            PreparedStatement ps = conexionBD.prepareStatement(sql);
+            ps.setInt(1, idPartida);
+            ResultSet rs = ps.executeQuery();
+
+            if (rs.next()) {
+                byte[] datosPartida = rs.getBytes("datos");
+                ByteArrayInputStream bais = new ByteArrayInputStream(datosPartida);
+                ObjectInputStream ois = new ObjectInputStream(bais);
+                this.partida = (Partida) ois.readObject();
+                ois.close();
+
+                rs.close();
+                ps.close();
+
+                System.out.println("Partida cargada desde BB.DD");
+                return true;
+            } else {
+                System.out.println("Partida no encontrada con ID: " + idPartida);
+                rs.close();
+                ps.close();
+                return false;
+            }
+        } catch (SQLException e) {
+            System.out.println("Error SQL al cargar partida: " + e.getMessage());
+            return false;
+        } catch (IOException | ClassNotFoundException e) {
+            System.out.println("Error al deserializar partida: " + e.getMessage());
+            return false;
+        }
+    }
+
+    public ArrayList<String[]> listarPartidasBD(String usuario) {
+        ArrayList<String[]> partidas = new ArrayList<>();
+        if (conexionBD == null) {
+            return partidas;
+        }
+
+        try {
+            String sql = "SELECT id, nombre, fecha_creacion FROM PARTIDAS WHERE usuario = ? ORDER BY fecha_creacion DESC";
+            PreparedStatement ps = conexionBD.prepareStatement(sql);
+            ps.setString(1, usuario);
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+                String[] partida = {
+                    String.valueOf(rs.getInt("id")),
+                    rs.getString("nombre"),
+                    rs.getString("fecha_creacion")
+                };
+                partidas.add(partida);
+            }
+
+            rs.close();
+            ps.close();
+        } catch (SQLException e) {
+            System.out.println("Error al listar partidas: " + e.getMessage());
+        }
+
+        return partidas;
     }
 
     public boolean guardarPartida(File archivo) {

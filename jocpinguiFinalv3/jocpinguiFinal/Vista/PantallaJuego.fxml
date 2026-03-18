@@ -93,6 +93,12 @@
                 <Insets bottom="16" left="16" right="16" top="16" />
             </padding>
 
+            <!-- Tarjeta Información de Jugador -->
+            <VBox prefWidth="200" spacing="8" styleClass="card">
+                <Label styleClass="card-title" text="Jugador Actual" />
+                <Label fx:id="jugadorActualLabel" styleClass="stat" text="Turno: Cargando..." wrapText="true" />
+            </VBox>
+
             <!-- Tarjeta Dado -->
             <VBox prefWidth="280" spacing="10" styleClass="card">
                 <Label styleClass="card-title" text="Dado" />
@@ -144,6 +150,14 @@
             <VBox prefWidth="320" spacing="10" styleClass="card">
                 <Label styleClass="card-title" text="Eventos" />
                 <Text fx:id="eventos" styleClass="events" text="Evento ocurrido" wrappingWidth="280" />
+            </VBox>
+
+            <!-- Tarjeta Control de Partida -->
+            <VBox prefWidth="200" spacing="10" styleClass="card">
+                <Label styleClass="card-title" text="Partida" />
+                <Button fx:id="saveGameButton" maxWidth="Infinity" onAction="#handleSaveGame" text="Guardar" />
+                <Button fx:id="loadGameButton" maxWidth="Infinity" onAction="#handleLoadGame" text="Cargar" />
+                <Button fx:id="backMenuButton" maxWidth="Infinity" onAction="#handleBackMenu" text="Volver al Menú" />
             </VBox>
 
         </HBox>

@@ -69,7 +69,7 @@
                     <Button fx:id="registerButton" maxWidth="Infinity" onAction="#handleRegister" text="Registro" />
                 </HBox>
 
-                <Label styleClass="hint" text="Tip: para la demo, puedes entrar con cualquier usuario si aún no hay validación." wrapText="true" />
+                <Label styleClass="hint" text="Usa tus credenciales Oracle para iniciar sesión (Usuario: DW2526_GR04_PINGU)" wrapText="true" />
             </VBox>
         </StackPane>
     </center>
