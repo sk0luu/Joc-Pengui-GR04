@@ -155,9 +155,9 @@
             <!-- Tarjeta Control de Partida -->
             <VBox prefWidth="200" spacing="10" styleClass="card">
                 <Label styleClass="card-title" text="Partida" />
-                <Button fx:id="saveGameButton" maxWidth="Infinity" onAction="#handleSaveGame" text="Guardar" />
-                <Button fx:id="loadGameButton" maxWidth="Infinity" onAction="#handleLoadGame" text="Cargar" />
-                <Button fx:id="backMenuButton" maxWidth="Infinity" onAction="#handleBackMenu" text="Volver al Menú" />
+                <Button fx:id="saveGameButton" maxWidth="Infinity" onAction="#handleSaveGame" style="-fx-background-color: grey;" text="Guardar" />
+                <Button fx:id="loadGameButton" maxWidth="Infinity" onAction="#handleLoadGame" style="-fx-background-color: grey;" text="Cargar" />
+                <Button fx:id="backMenuButton" maxWidth="Infinity" onAction="#handleBackMenu" style="-fx-background-color: grey;" text="Volver al Menú" />
             </VBox>
 
         </HBox>
