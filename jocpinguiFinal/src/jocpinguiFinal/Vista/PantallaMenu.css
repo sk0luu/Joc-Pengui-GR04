@@ -1,0 +1,93 @@
+.root {
+    -fx-font-family: "System";
+    -fx-background-color: linear-gradient(to bottom, #e0f7fa, #b2ebf2, #e0f7fa);
+}
+
+/* MENU */
+.menu-bar {
+    -fx-background-color: rgba(255, 255, 255, 0.6);
+    -fx-border-color: #b2ebf2;
+    -fx-border-width: 0 0 1 0;
+}
+
+/* CARD */
+.card {
+    -fx-background-color: rgba(255, 255, 255, 0.85);
+    -fx-background-radius: 16;
+    -fx-border-color: #80deea;
+    -fx-border-radius: 16;
+    -fx-border-width: 2;
+
+    -fx-effect: dropshadow(gaussian, rgba(0, 150, 200, 0.2), 20, 0.3, 0, 4);
+}
+
+/* TITLES */
+.title {
+    -fx-font-size: 28px;
+    -fx-font-weight: 800;
+    -fx-text-fill: #006064;
+    -fx-alignment: center;
+}
+
+.subtitle {
+    -fx-font-size: 14px;
+    -fx-text-fill: #00838f;
+    -fx-opacity: 0.85;
+}
+
+/* FIELDS */
+.field-label {
+    -fx-font-size: 13px;
+    -fx-text-fill: #004d40;
+    -fx-font-weight: bold;
+}
+
+.field {
+    -fx-background-radius: 12;
+    -fx-border-radius: 12;
+    -fx-border-color: #80deea;
+    -fx-background-color: rgba(255, 255, 255, 0.9);
+    -fx-padding: 10 12;
+    -fx-effect: innershadow(gaussian, rgba(0, 0, 0, 0.05), 5, 0, 0, 1);
+}
+
+/* BUTTONS */
+.button {
+    -fx-background-radius: 12;
+    -fx-padding: 12 18;
+    -fx-background-color: linear-gradient(to bottom, #ffffff, #e0f7fa);
+    -fx-text-fill: #006064;
+    -fx-font-weight: bold;
+    -fx-font-size: 15px;
+    -fx-border-color: #80deea;
+    -fx-border-radius: 12;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.05), 5, 0, 0, 1);
+}
+
+.button:hover {
+    -fx-background-color: linear-gradient(to bottom, #e0f7fa, #b2ebf2);
+    -fx-effect: dropshadow(gaussian, rgba(0, 180, 255, 0.4), 8, 0, 0, 2);
+}
+
+.button:pressed {
+    -fx-background-color: #80deea;
+}
+
+.button.primary {
+    -fx-background-color: linear-gradient(to bottom, #4dd0e1, #00acc1);
+    -fx-text-fill: white;
+    -fx-border-color: #00838f;
+}
+
+.button.primary:hover {
+    -fx-background-color: linear-gradient(to bottom, #00acc1, #00838f);
+    -fx-effect: dropshadow(gaussian, rgba(0, 150, 200, 0.6), 10, 0, 0, 3);
+}
+
+/* Hint */
+.hint {
+    -fx-font-size: 12px;
+    -fx-text-fill: #00838f;
+    -fx-opacity: 0.75;
+}
