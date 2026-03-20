@@ -1,0 +1,145 @@
+.root {
+    -fx-font-family: "System";
+    -fx-background-color: linear-gradient(to bottom, #e0f7fa, #b2ebf2, #e0f7fa);
+}
+
+/* MENU */
+.menu-bar {
+    -fx-background-color: rgba(255, 255, 255, 0.6);
+    -fx-border-color: #b2ebf2;
+    -fx-border-width: 0 0 1 0;
+}
+
+/* TABLERO */
+.board {
+    -fx-background-image: url('/jocpinguiFinal/Vista/images/mar_congelado.jpg');
+    -fx-background-size: cover;
+    -fx-background-position: center center;
+    -fx-background-repeat: no-repeat;
+    -fx-background-radius: 16;
+    -fx-padding: 14;
+    -fx-border-color: #80deea;
+    -fx-border-radius: 16;
+    -fx-border-width: 2;
+    -fx-effect: dropshadow(gaussian, rgba(0, 150, 200, 0.2), 20, 0.3, 0, 4);
+}
+
+/* TEXTOS DEL TABLERO */
+.cell-title {
+    -fx-font-size: 24px;
+    -fx-font-weight: bold;
+    -fx-fill: #006064;
+    -fx-opacity: 0.8;
+}
+
+.cell-type {
+    -fx-font-size: 13px;
+    -fx-font-weight: bold;
+    -fx-fill: #00838f;
+    -fx-opacity: 0.9;
+}
+
+/* BARRA INFERIOR */
+.bottom-bar {
+    -fx-background-color: transparent;
+}
+
+/* TARJETAS */
+.card {
+    -fx-background-color: rgba(255, 255, 255, 0.85);
+    -fx-background-radius: 16;
+    -fx-padding: 16;
+    -fx-border-color: #b2ebf2;
+    -fx-border-radius: 16;
+    -fx-border-width: 1;
+
+    -fx-effect: dropshadow(gaussian, rgba(0, 100, 150, 0.15), 15, 0.2, 0, 3);
+}
+
+.card-title {
+    -fx-font-size: 18px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #006064;
+}
+
+.big-text {
+    -fx-font-size: 24px;
+    -fx-font-weight: bold;
+    -fx-fill: #00838f;
+}
+
+.stat {
+    -fx-font-size: 16px;
+    -fx-fill: #004d40;
+    -fx-font-weight: bold;
+}
+
+.events {
+    -fx-font-size: 15px;
+    -fx-fill: #b71c1c;
+    -fx-font-weight: bold;
+    -fx-opacity: 0.9;
+}
+
+/* BOTONES */
+.button {
+    -fx-background-radius: 12;
+    -fx-padding: 10 16;
+    -fx-background-color: linear-gradient(to bottom, #ffffff, #e0f7fa);
+    -fx-text-fill: #006064;
+    -fx-font-weight: bold;
+    -fx-font-size: 14px;
+    -fx-border-color: #80deea;
+    -fx-border-radius: 12;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.05), 5, 0, 0, 1);
+}
+
+.button:hover {
+    -fx-background-color: linear-gradient(to bottom, #e0f7fa, #b2ebf2);
+    -fx-effect: dropshadow(gaussian, rgba(0, 180, 255, 0.4), 8, 0, 0, 2);
+}
+
+.button:pressed {
+    -fx-background-color: #80deea;
+}
+
+.button.primary {
+    -fx-background-color: linear-gradient(to bottom, #4dd0e1, #00acc1);
+    -fx-text-fill: white;
+    -fx-border-color: #00838f;
+}
+
+.button.primary:hover {
+    -fx-background-color: linear-gradient(to bottom, #00acc1, #00838f);
+    -fx-effect: dropshadow(gaussian, rgba(0, 150, 200, 0.6), 10, 0, 0, 3);
+}
+
+/* SCROLL */
+.objects-scroll {
+    -fx-background-color: transparent;
+}
+
+.objects-scroll>.viewport {
+    -fx-background-color: transparent;
+}
+
+/* ========================= */
+/*        JUGADORES          */
+/* ========================= */
+
+.player {
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.5), 10, 0.4, 0, 3);
+    -fx-scale-x: 1.1;
+    -fx-scale-y: 1.1;
+}
+
+/* Colores por ID (robusto en JavaFX 21) */
+/* Colores gestionados desde Java ahora para permitir texturas */
+
+/* Si quieres marcar el jugador activo, añade/quita esta clase desde Java */
+.current-player {
+    -fx-effect: dropshadow(gaussian, #ffea00, 20, 0.7, 0, 0);
+    -fx-scale-x: 1.25;
+    -fx-scale-y: 1.25;
+}
