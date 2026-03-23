@@ -79,82 +79,20 @@ public class PantallaPartida {
 		// Inicializar ComboBox de colores
 		if (color1Combo != null) {
 			color1Combo.getItems().addAll(COLORES);
-			aplicarCeldaConImagen(color1Combo);
 			color1Combo.setValue("Azul");
 		}
 		if (color2Combo != null) {
 			color2Combo.getItems().addAll(COLORES);
-			aplicarCeldaConImagen(color2Combo);
 			color2Combo.setValue("Rojo");
 		}
 		if (color3Combo != null) {
 			color3Combo.getItems().addAll(COLORES);
-			aplicarCeldaConImagen(color3Combo);
 			color3Combo.setValue("Verde");
 		}
 		if (color4Combo != null) {
 			color4Combo.getItems().addAll(COLORES);
-			aplicarCeldaConImagen(color4Combo);
 			color4Combo.setValue("Amarillo");
 		}
-	}
-	
-	private void aplicarCeldaConImagen(ComboBox<String> combo) {
-		combo.setCellFactory(listView -> new javafx.scene.control.ListCell<String>() {
-			@Override
-			protected void updateItem(String item, boolean empty) {
-				super.updateItem(item, empty);
-				if (empty || item == null) {
-					setText(null);
-					setGraphic(null);
-				} else {
-					setText(item);
-					try {
-						String colorBuscado = item.toLowerCase().replace("ú", "u").replace("ó", "o");
-						String base = "/jocpinguiFinal/Vista/images/pinguino_" + colorBuscado;
-						String imagePath = base + ".png";
-						java.io.InputStream is = getClass().getResourceAsStream(imagePath);
-						if (is == null) { is = getClass().getResourceAsStream(base + ".jpg"); }
-						if (is != null) {
-							javafx.scene.image.Image img = new javafx.scene.image.Image(is, 30, 30, true, true);
-							setGraphic(new javafx.scene.image.ImageView(img));
-						} else {
-							setGraphic(null);
-						}
-					} catch (Exception e) {
-						setGraphic(null);
-					}
-				}
-			}
-		});
-		
-		combo.setButtonCell(new javafx.scene.control.ListCell<String>() {
-			@Override
-			protected void updateItem(String item, boolean empty) {
-				super.updateItem(item, empty);
-				if (empty || item == null) {
-					setText(null);
-					setGraphic(null);
-				} else {
-					setText(item);
-					try {
-						String colorBuscado = item.toLowerCase().replace("ú", "u").replace("ó", "o");
-						String base = "/jocpinguiFinal/Vista/images/pinguino_" + colorBuscado;
-						String imagePath = base + ".png";
-						java.io.InputStream is = getClass().getResourceAsStream(imagePath);
-						if (is == null) { is = getClass().getResourceAsStream(base + ".jpg"); }
-						if (is != null) {
-							javafx.scene.image.Image img = new javafx.scene.image.Image(is, 30, 30, true, true);
-							setGraphic(new javafx.scene.image.ImageView(img));
-						} else {
-							setGraphic(null);
-						}
-					} catch (Exception e) {
-						setGraphic(null);
-					}
-				}
-			}
-		});
 	}
 	
 	@FXML

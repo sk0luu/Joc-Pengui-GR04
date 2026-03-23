@@ -18,9 +18,6 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.shape.Circle;
 import javafx.scene.text.Text;
-import javafx.scene.image.Image;
-import javafx.scene.paint.ImagePattern;
-import javafx.scene.paint.Color;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.util.Duration;
@@ -35,8 +32,6 @@ import jocpinguiFinal.Model.Normal;
 import jocpinguiFinal.Model.Oso;
 import jocpinguiFinal.Model.Pinguino;
 import jocpinguiFinal.Model.SueloQuebradizo;
-import jocpinguiFinal.Model.Foca;
-import jocpinguiFinal.Model.Evento;
 import jocpinguiFinal.Model.Tablero;
 import jocpinguiFinal.Model.Trineo;
 
@@ -106,8 +101,6 @@ public class PantallaJuego {
 	private Circle P3;
 	@FXML
 	private Circle P4;
-	@FXML
-	private Circle P5;
 
 	private GestorPartida gestorPartida;
 	private Map<Integer, Circle> playerCircles; // Mapeo de índice de jugador a círculo
@@ -130,7 +123,6 @@ public class PantallaJuego {
 		P2.setVisible(false);
 		P3.setVisible(false);
 		P4.setVisible(false);
-		if (P5 != null) P5.setVisible(false);
 	}
 
 	public void setGestorPartida(GestorPartida gestor) {
@@ -160,42 +152,10 @@ public class PantallaJuego {
 
 		// Mapear círculos de jugadores
 		ArrayList<Jugador> jugadores = gestorPartida.getPartida().getJugador();
-		Circle[] circles = { P1, P2, P3, P4, P5 };
+		Circle[] circles = { P1, P2, P3, P4 };
 
-		for (int i = 0; i < jugadores.size() && i < 5; i++) {
+		for (int i = 0; i < jugadores.size() && i < 4; i++) {
 			playerCircles.put(i, circles[i]);
-			
-			// Cargar imagen de pingüino
-			Jugador j = jugadores.get(i);
-			String colorBuscado = j.getColor() != null ? j.getColor().toLowerCase().replace("ú", "u").replace("ó", "o") : "azul";
-			
-			String colorPath;
-			if (j instanceof Foca) {
-				colorPath = "/jocpinguiFinal/Vista/images/foca.png";
-			} else {
-				if ("negro".equalsIgnoreCase(j.getNom())) {
-					colorBuscado = "negro"; // Easter egg
-				}
-				// Intentar .png primero; si no existe, probar .jpg (ej: pinguino_verde.jpg)
-				String basePath = "/jocpinguiFinal/Vista/images/pinguino_" + colorBuscado;
-				colorPath = basePath + ".png";
-				if (getClass().getResourceAsStream(colorPath) == null) {
-					colorPath = basePath + ".jpg";
-				}
-			}
-			try {
-				java.io.InputStream is = getClass().getResourceAsStream(colorPath);
-				if (is != null) {
-					Image img = new Image(is, 80, 80, true, true);
-					circles[i].setFill(new ImagePattern(img));
-				} else {
-					System.out.println("Falta la imagen (añádela para verla en el juego): " + colorPath);
-					circles[i].setFill(Color.web(obtenerColorHex(colorBuscado)));
-				}
-			} catch (Exception e) {
-				System.out.println("Error al cargar imagen: " + colorPath);
-				circles[i].setFill(Color.web(obtenerColorHex(colorBuscado)));
-			}
 
 			// Leer la posición real guardada del jugador (en caso de que se haya cargado de
 			// la BB.DD)
@@ -218,23 +178,6 @@ public class PantallaJuego {
 
 		// Actualizar información del jugador actual
 		actualizarInfoJugadores();
-
-		// Aseguramos que los jugadores queden por encima de los textos del tablero
-		for (int i = 0; i < jugadores.size() && i < 4; i++) {
-			circles[i].toFront();
-		}
-	}
-	
-	private String obtenerColorHex(String color) {
-		switch (color) {
-			case "rojo": return "#ef4444";
-			case "verde": return "#22c55e";
-			case "amarillo": return "#facc15";
-			case "naranja": return "#f97316";
-			case "purpura": return "#a855f7";
-			case "gris": return "#64748b"; // Foca NPC
-			default: return "#2f6fed"; // azul
-		}
 	}
 
 	private void mostrarTiposDeCasillasEnTablero(Tablero t) {
@@ -246,50 +189,17 @@ public class PantallaJuego {
 			if (i > 0 && i < TOTAL_CELLS - 1) {
 				String tipo = casilla.getClass().getSimpleName();
 
+				Text texto = new Text(tipo);
+				texto.setUserData(TAG_CASILLA_TEXT);
+				texto.getStyleClass().add("cell-type");
+
 				int row = i / COLUMNS;
 				int col = i % COLUMNS;
 
-				javafx.scene.Node nodoCelda;
+				GridPane.setRowIndex(texto, row);
+				GridPane.setColumnIndex(texto, col);
 
-				if (casilla instanceof Oso) {
-					try {
-						Image img = new Image(getClass().getResourceAsStream("/jocpinguiFinal/Vista/images/oso.png"));
-						javafx.scene.image.ImageView iv = new javafx.scene.image.ImageView(img);
-						iv.setFitWidth(60);
-						iv.setFitHeight(60);
-						iv.setPreserveRatio(true);
-						nodoCelda = iv;
-					} catch (Exception e) {
-						Text texto = new Text("Oso");
-						texto.getStyleClass().add("cell-type");
-						nodoCelda = texto;
-					}
-				} else if (casilla instanceof Agujero) {
-					try {
-						Image img = new Image(getClass().getResourceAsStream("/jocpinguiFinal/Vista/images/agujero.png"));
-						javafx.scene.image.ImageView iv = new javafx.scene.image.ImageView(img);
-						iv.setFitWidth(60);
-						iv.setFitHeight(60);
-						iv.setPreserveRatio(true);
-						nodoCelda = iv;
-					} catch (Exception e) {
-						Text texto = new Text("Agujero");
-						texto.getStyleClass().add("cell-type");
-						nodoCelda = texto;
-					}
-				} else {
-					Text texto = new Text(tipo);
-					texto.getStyleClass().add("cell-type");
-					nodoCelda = texto;
-				}
-
-				nodoCelda.setUserData(TAG_CASILLA_TEXT);
-				GridPane.setRowIndex(nodoCelda, row);
-				GridPane.setColumnIndex(nodoCelda, col);
-				GridPane.setHalignment(nodoCelda, javafx.geometry.HPos.CENTER);
-				GridPane.setValignment(nodoCelda, javafx.geometry.VPos.CENTER);
-
-				tablero.getChildren().add(nodoCelda);
+				tablero.getChildren().add(texto);
 			}
 		}
 	}
@@ -521,7 +431,6 @@ public class PantallaJuego {
 		animarMovimiento(indiceActual, posAnterior, posNueva, () -> {
 			// Después de la animación, aplicar efecto de la casilla
 			aplicarCasilla(jugadorActual, posNueva);
-			comprobarSiChocaConFoca(jugadorActual, posNueva, indiceActual);
 
 			// Pausa para que el jugador vea el efecto
 			PauseTransition pause = new PauseTransition(Duration.millis(1500));
@@ -574,12 +483,6 @@ public class PantallaJuego {
 
 		if (posicion < 0 || posicion >= casillas.size()) {
 			return;
-		}
-
-		// Mandar a este pingüino al frente para que no quede detrás del texto
-		int idx = gestorPartida.getPartida().getJugador().indexOf(jugador);
-		if (idx >= 0 && playerCircles.containsKey(idx)) {
-			playerCircles.get(idx).toFront();
 		}
 
 		Casilla casilla = casillas.get(posicion);
@@ -689,60 +592,11 @@ public class PantallaJuego {
 			} else {
 				mensaje = "¡" + jugador.getNom() + " pisó suelo quebradizo pero logró mantenerse en pie!";
 			}
-		} else if (casilla instanceof Evento) {
-			Evento e = (Evento) casilla;
-			java.util.Random r = new java.util.Random();
-			String eventoTexto = e.getEventos()[r.nextInt(e.getEventos().length)];
-			
-			int movimientoExtra = 0;
-			if (eventoTexto.contains("+2")) movimientoExtra = 2;
-			else if (eventoTexto.contains("-2")) movimientoExtra = -2;
-			else if (eventoTexto.contains("turno")) jugador.setTurnosCongelado(1);
-
-			if (movimientoExtra != 0) {
-				int pNueva = posicionAntes + movimientoExtra;
-				if (pNueva >= TOTAL_CELLS) pNueva = TOTAL_CELLS - 1;
-				if (pNueva < 0) pNueva = 0;
-				
-				final int posicionFinal = pNueva;
-				jugador.setPosicion(posicionFinal);
-				posicionDespues = posicionFinal;
-				
-				int jugadorIndex = gestorPartida.getPartida().getJugador().indexOf(jugador);
-				if (jugadorIndex >= 0) {
-					playerPositions.put(jugadorIndex, posicionFinal);
-					// Animar el salto extra del evento
-					animarMovimiento(jugadorIndex, posicionAntes, posicionFinal, () -> {
-						comprobarSiChocaConFoca(jugador, posicionFinal, jugadorIndex);
-					});
-				}
-			}
-			mensaje = "¡Misterio! " + eventoTexto;
 		} else if (casilla instanceof Normal) {
 			mensaje = "Casilla normal, nada especial pasa.";
 		}
 
 		eventos.setText(mensaje);
-	}
-	
-	private void comprobarSiChocaConFoca(Jugador pinguino, int posicion, int indiceActual) {
-		if (!(pinguino instanceof Pinguino)) return;
-		for (Jugador jug : gestorPartida.getPartida().getJugador()) {
-			if (jug instanceof Foca && jug.getPosicion() == posicion) {
-				Foca foca = (Foca) jug;
-				foca.aplastarJugador((Pinguino) pinguino);
-				if (!foca.isSoborno()) {
-					eventos.setText("¡" + pinguino.getNom() + " cayó en la casilla de la Morsa y fue aplastado!");
-					Circle c = playerCircles.get(indiceActual);
-					GridPane.setRowIndex(c, 0);
-					GridPane.setColumnIndex(c, 0);
-					c.setTranslateX(0); c.setTranslateY(0);
-					c.toFront();
-				} else {
-					eventos.setText("Cayó en la Morsa, pero estaba sobornada.");
-				}
-			}
-		}
 	}
 
 	@FXML
@@ -804,19 +658,8 @@ public class PantallaJuego {
 		String mensaje = "";
 
 		if (tipoItem.toLowerCase().contains("pez")) {
-			// Find foca
-			Foca focaNPC = null;
-			for (Jugador jf : gestorPartida.getPartida().getJugador()) {
-				if (jf instanceof Foca) focaNPC = (Foca) jf;
-			}
-            
-			if (focaNPC != null && !focaNPC.isSoborno()) {
-				focaNPC.esSobornado();
-				mensaje = "¡" + p.getNom() + " ha sobornado a la Morsa con un Pez!";
-			} else {
-				p.setVida(Math.min(p.getVida() + 20, 100));
-				mensaje = "¡" + p.getNom() + " comió un pez! Vida: " + p.getVida();
-			}
+			p.setVida(Math.min(p.getVida() + 20, 100));
+			mensaje = "¡" + p.getNom() + " comió un pez! Vida: " + p.getVida();
 			eventos.setText(mensaje);
 			actualizarInfoJugadores();
 		} else if (tipoItem.toLowerCase().contains("nieve")) {
@@ -854,7 +697,6 @@ public class PantallaJuego {
 			// Animar movimiento
 			animarMovimiento(indiceActual, posAnterior, posNueva, () -> {
 				aplicarCasilla(p, posNueva);
-				comprobarSiChocaConFoca(p, posNueva, indiceActual);
 
 				// Pausa y siguiente turno
 				PauseTransition pause = new PauseTransition(Duration.millis(1500));
@@ -887,7 +729,6 @@ public class PantallaJuego {
 			// Animar movimiento
 			animarMovimiento(indiceActual, posAnterior, posNueva, () -> {
 				aplicarCasilla(p, posNueva);
-				comprobarSiChocaConFoca(p, posNueva, indiceActual);
 
 				// Pausa y siguiente turno
 				PauseTransition pause = new PauseTransition(Duration.millis(1500));
@@ -927,65 +768,9 @@ public class PantallaJuego {
 				PauseTransition pause = new PauseTransition(Duration.millis(2000));
 				pause.setOnFinished(e -> verificarFinDeJuego(nuevoActual));
 				pause.play();
-			} else if (nuevoActual instanceof Foca) {
-				dado.setDisable(true);
-				eventos.setText("¡Turno de la Morsa (Foca)!");
-				
-				PauseTransition pause = new PauseTransition(Duration.millis(1500));
-				pause.setOnFinished(e -> ejecutarTurnoFoca((Foca) nuevoActual, indiceActual));
-				pause.play();
 			} else {
 				dado.setDisable(false);
 			}
-		}
-	}
-	
-	private void ejecutarTurnoFoca(Foca foca, int indiceActual) {
-		Dado d = new Dado();
-		int resultado = d.tirar();
-		dadoResultText.setText("Saca: " + resultado);
-
-		int posAnterior = foca.getPosicion();
-		foca.setPosicion(posAnterior + resultado);
-		if (foca.getPosicion() >= TOTAL_CELLS) foca.setPosicion(TOTAL_CELLS - 1);
-		
-		int posNueva = foca.getPosicion();
-		playerPositions.put(indiceActual, posNueva);
-
-		animarMovimiento(indiceActual, posAnterior, posNueva, () -> {
-			verificarColisionFoca(foca);
-			
-			PauseTransition pause = new PauseTransition(Duration.millis(1500));
-			pause.setOnFinished(e -> verificarFinDeJuego(foca));
-			pause.play();
-		});
-	}
-
-	private void verificarColisionFoca(Foca foca) {
-		boolean colision = false;
-		for (Jugador jug : gestorPartida.getPartida().getJugador()) {
-			if (jug instanceof Pinguino && jug.getPosicion() == foca.getPosicion()) {
-				Pinguino p = (Pinguino) jug;
-				foca.aplastarJugador(p);
-				
-				if (!foca.isSoborno()) {
-					eventos.setText("¡La Morsa ha aplastado a " + p.getNom() + "!");
-					int idx = gestorPartida.getPartida().getJugador().indexOf(p);
-					if (idx >= 0) {
-						Circle c = playerCircles.get(idx);
-						GridPane.setRowIndex(c, 0);
-						GridPane.setColumnIndex(c, 0);
-						c.setTranslateX(0); c.setTranslateY(0);
-						c.toFront();
-					}
-				} else {
-					eventos.setText("La Morsa iba a aplastar a " + p.getNom() + " pero recordó su soborno.");
-				}
-				colision = true;
-			}
-		}
-		if (!colision) {
-			eventos.setText("La Morsa avanza...");
 		}
 	}
 
