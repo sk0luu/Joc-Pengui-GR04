@@ -12,7 +12,10 @@
 
 /* TABLERO */
 .board {
-    -fx-background-color: rgba(255, 255, 255, 0.7);
+    -fx-background-image: url('/jocpinguiFinal/Vista/images/mar_congelado.jpg');
+    -fx-background-size: cover;
+    -fx-background-position: center center;
+    -fx-background-repeat: no-repeat;
     -fx-background-radius: 16;
     -fx-padding: 14;
     -fx-border-color: #80deea;
@@ -126,34 +129,13 @@
 /* ========================= */
 
 .player {
-    -fx-stroke: white;
-    -fx-stroke-width: 4;
     -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.5), 10, 0.4, 0, 3);
     -fx-scale-x: 1.1;
     -fx-scale-y: 1.1;
 }
 
 /* Colores por ID (robusto en JavaFX 21) */
-#P1 {
-    -fx-fill: #2f6fed;
-}
-
-/* azul */
-#P2 {
-    -fx-fill: #ef4444;
-}
-
-/* rojo */
-#P3 {
-    -fx-fill: #22c55e;
-}
-
-/* verde */
-#P4 {
-    -fx-fill: #facc15;
-}
-
-/* amarillo */
+/* Colores gestionados desde Java ahora para permitir texturas */
 
 /* Si quieres marcar el jugador activo, añade/quita esta clase desde Java */
 .current-player {

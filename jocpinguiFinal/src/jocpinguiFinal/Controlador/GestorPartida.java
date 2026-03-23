@@ -12,6 +12,7 @@ import jocpinguiFinal.Model.Inventario;
 import jocpinguiFinal.Model.Item;
 import jocpinguiFinal.Model.ItemConcreto;
 import jocpinguiFinal.Model.Jugador;
+import jocpinguiFinal.Model.Foca;
 import jocpinguiFinal.Model.Oso;
 import jocpinguiFinal.Model.Partida;
 import jocpinguiFinal.Model.Pinguino;
@@ -45,6 +46,10 @@ public class GestorPartida implements Serializable {
             jugador.getInv().añadirItem(new ItemConcreto("Escudo", 1));
             listaJugadores.add(jugador);
         }
+
+        // Añadir la Foca automática como NPC
+        Foca focaNPC = new Foca(0, "Foca Morsa", "gris");
+        listaJugadores.add(focaNPC);
 
         this.partida = new Partida(new Tablero(), listaJugadores);
     }

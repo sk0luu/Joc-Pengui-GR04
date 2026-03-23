@@ -36,11 +36,13 @@ public class Tablero implements java.io.Serializable {
 		int ultima = total - 1; // casilla final épica
 
 		ArrayList<Casilla> especiales = new ArrayList<>();
-		// 5 Osos, 4 Trineos, 4 Agujeros, 4 Suelos quebradizos (total 17 especiales)
+		// 5 Osos, 4 Trineos, 4 Agujeros, 4 Suelos quebradizos, 4 Eventos (total 21 especiales)
 		for (int i = 0; i < 5; i++) especiales.add(new Oso(0));
 		for (int i = 0; i < 4; i++) especiales.add(new Trineo(0));
 		for (int i = 0; i < 4; i++) especiales.add(new Agujero(0));
 		for (int i = 0; i < 4; i++) especiales.add(new SueloQuebradizo(0));
+		String[] listaEventos = {"Viento a favor: +2", "Trampa de hielo: -2", "Tormenta de nieve: Pierdes turno"};
+		for (int i = 0; i < 4; i++) especiales.add(new Evento(0, listaEventos));
 
 		int normales = ultima - especiales.size();
 		for (int i = 0; i < normales; i++) especiales.add(new Normal(0));
