@@ -5,99 +5,85 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Menu?>
 <?import javafx.scene.control.MenuBar?>
-<?import javafx.scene.control.MenuItem?>
-<?import javafx.scene.control.SeparatorMenuItem?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="jocpinguiFinal.Vista.PantallaPartida">
+<BorderPane xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="jocpinguiFinal.Vista.PantallaPartida" stylesheets="@PantallaPartida.css">
 
     <top>
-        <MenuBar style="-fx-background-color: #81D4FA;">
+        <MenuBar styleClass="menu-bar">
             <menus>
-                <Menu mnemonicParsing="false" text="File">
-                    <items>
-                        <MenuItem fx:id="newGame" mnemonicParsing="false" onAction="#handleNewGame" text="New" />
-                        <SeparatorMenuItem mnemonicParsing="false" />
-                        <MenuItem fx:id="saveGame" mnemonicParsing="false" onAction="#handleSaveGame" text="Save" />
-                        <MenuItem fx:id="loadGame" mnemonicParsing="false" onAction="#handleLoadGame" text="Load" />
-                        <SeparatorMenuItem mnemonicParsing="false" />
-                        <MenuItem fx:id="quitGame" mnemonicParsing="false" onAction="#handleQuitGame" text="Quit" />
-                    </items>
-                </Menu>
+                <Menu mnemonicParsing="false" text="JOC DEL PENGUI" />
             </menus>
         </MenuBar>
     </top>
 
     <center>
-        <VBox spacing="15" style="-fx-padding: 20; -fx-background-color: cyan;">
-            <Label fx:id="titleLabel" style="-fx-font-size: 18; -fx-font-weight: bold; -fx-font-family: Comic Sans MS;" text="CONFIGURACIÓN DE PARTIDA">
-            <font>
-               <Font name="System Bold Italic" size="12.0" />
-            </font></Label>
+        <VBox fx:id="contentPane" spacing="18" styleClass="content-pane">
+            <Label fx:id="titleLabel" text="CONFIGURACIÓN DE PARTIDA" />
             <Label fx:id="infoText" text="Ingresa los nombres y colores de los jugadores (mínimo 1, máximo 4)" />
 
             <!-- Jugador 1 -->
-            <HBox spacing="10">
+            <HBox spacing="10" styleClass="player-row">
                 <VBox spacing="5" style="-fx-min-width: 250;">
                     <Label style="-fx-font-weight: bold;" text="Jugador 1" />
-                    <TextField fx:id="player1Field" promptText="Nombre..." style="-fx-background-color: #81D4FA;" />
+                    <TextField fx:id="player1Field" promptText="Nombre..." />
                 </VBox>
                 <VBox spacing="5" style="-fx-min-width: 150;">
                     <Label style="-fx-font-weight: bold;" text="Color" />
-                    <ComboBox fx:id="color1Combo" prefWidth="140" style="-fx-background-color: #29B6F6;" />
+                    <ComboBox fx:id="color1Combo" prefWidth="140" />
                 </VBox>
             </HBox>
 
             <!-- Jugador 2 -->
-            <HBox spacing="10">
+            <HBox spacing="10" styleClass="player-row">
                 <VBox spacing="5" style="-fx-min-width: 250;">
                     <Label style="-fx-font-weight: bold;" text="Jugador 2 (Opcional)" />
-                    <TextField fx:id="player2Field" promptText="Nombre..." style="-fx-background-color: #81D4FA;" />
+                    <TextField fx:id="player2Field" promptText="Nombre..." />
                 </VBox>
                 <VBox spacing="5" style="-fx-min-width: 150;">
                     <Label style="-fx-font-weight: bold;" text="Color" />
-                    <ComboBox fx:id="color2Combo" prefWidth="140" style="-fx-background-color: #29B6F6;" />
+                    <ComboBox fx:id="color2Combo" prefWidth="140" />
                 </VBox>
             </HBox>
 
             <!-- Jugador 3 -->
-            <HBox spacing="10">
+            <HBox spacing="10" styleClass="player-row">
                 <VBox spacing="5" style="-fx-min-width: 250;">
                     <Label style="-fx-font-weight: bold;" text="Jugador 3 (Opcional)" />
-                    <TextField fx:id="player3Field" promptText="Nombre..." style="-fx-background-color: #81D4FA;" />
+                    <TextField fx:id="player3Field" promptText="Nombre..." />
                 </VBox>
                 <VBox spacing="5" style="-fx-min-width: 150;">
                     <Label style="-fx-font-weight: bold;" text="Color" />
-                    <ComboBox fx:id="color3Combo" prefWidth="140" style="-fx-background-color: #29B6F6;" />
+                    <ComboBox fx:id="color3Combo" prefWidth="140" />
                 </VBox>
             </HBox>
 
             <!-- Jugador 4 -->
-            <HBox spacing="10">
+            <HBox spacing="10" styleClass="player-row">
                 <VBox spacing="5" style="-fx-min-width: 250;">
                     <Label style="-fx-font-weight: bold;" text="Jugador 4 (Opcional)" />
-                    <TextField fx:id="player4Field" promptText="Nombre..." style="-fx-background-color: #81D4FA;" />
+                    <TextField fx:id="player4Field" promptText="Nombre..." />
                 </VBox>
                 <VBox spacing="5" style="-fx-min-width: 150;">
                     <Label style="-fx-font-weight: bold;" text="Color" />
-                    <ComboBox fx:id="color4Combo" prefWidth="140" style="-fx-background-color: #29B6F6;" />
+                    <ComboBox fx:id="color4Combo" prefWidth="140" />
                 </VBox>
             </HBox>
 
             <!-- Botones Save/Load -->
-            <HBox spacing="10" style="-fx-padding: 15 0 0 0;">
-                <Button fx:id="loadGameButton" onAction="#handleLoadGame" style="-fx-padding: 10; -fx-font-size: 12; -fx-background-color: #81D4FA;" text="Cargar Partida" />
-                <Button fx:id="saveGameButton" onAction="#handleSaveGame" style="-fx-padding: 10; -fx-font-size: 12; -fx-background-color: #81D4FA;" text="Guardar Config" />
+            <HBox spacing="12" styleClass="button-row">
+                <Button fx:id="loadGameButton" onAction="#handleLoadGame" styleClass="secondary-button" text="Cargar Partida" />
+                <Button fx:id="saveGameButton" onAction="#handleSaveGame" styleClass="secondary-button" text="Guardar Config" />
             </HBox>
 
             <!-- Botones Principal -->
-            <HBox spacing="10" style="-fx-padding: 15 0 0 0;">
-                <Button fx:id="startGameButton" onAction="#handleStartGame" style="-fx-padding: 10; -fx-font-size: 12; -fx-min-width: 180; -fx-background-color: #81D4FA;" text="Iniciar Partida" />
-                <Button fx:id="backButton" onAction="#handleBack" style="-fx-padding: 10; -fx-font-size: 12; -fx-min-width: 180; -fx-background-color: #81D4FA;" text="Atrás" />
+            <HBox spacing="12" styleClass="button-row">
+                <Button fx:id="startGameButton" onAction="#handleStartGame" styleClass="action-button" text="Iniciar Partida" />
+                <Button fx:id="backButton" onAction="#handleBack" styleClass="secondary-button" text="Atrás" />
             </HBox>
 
         </VBox>

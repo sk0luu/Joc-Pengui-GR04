@@ -201,13 +201,10 @@ public class PantallaPartida {
 			controllerJuego.setGestorPartida(gestorPartida);
 			
 			Scene scene = new Scene(root);
-			Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+			Stage stage = AppState.getInstance().getVentanaPrincipal();
 			stage.setScene(scene);
 			stage.setTitle("Pinguino Game - En Partida");
-			stage.show();
-			
 		} catch (Exception e) {
-			System.out.println("Error al cargar PantallaJuego.fxml: " + e.getMessage());
 			e.printStackTrace();
 			infoText.setText("Error: No se pudo iniciar la partida");
 		}
@@ -253,9 +250,10 @@ public class PantallaPartida {
 					controllerJuego.setGestorPartida(gestorPartida);
 					
 					Scene scene = new Scene(root);
-					Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-					stage.setScene(scene);
-					stage.setTitle("Pinguino Game - En Partida");
+				Stage stage = AppState.getInstance().getVentanaPrincipal();
+				stage.setScene(scene);
+				stage.setTitle("Pinguino Game - En Partida");
+				stage.setFullScreen(true);
 					stage.show();
 				} catch (Exception e) {
 					System.out.println("Error al cargar PantallaJuego: " + e.getMessage());
@@ -301,11 +299,11 @@ public class PantallaPartida {
 			Parent root = loader.load();
 			
 			Scene scene = new Scene(root);
-			Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+			Stage stage = AppState.getInstance().getVentanaPrincipal();
 			stage.setScene(scene);
 			stage.setTitle("Pinguino Game - Menu");
+			stage.setFullScreen(true);
 			stage.show();
-			
 		} catch (Exception e) {
 			System.out.println("Error al volver al menú: " + e.getMessage());
 			e.printStackTrace();

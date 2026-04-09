@@ -1,6 +1,7 @@
 package jocpinguiFinal.Vista;
 
 import java.sql.Connection;
+import javafx.stage.Stage;
 
 /**
  * Clase singleton para mantener el estado global de la aplicación
@@ -9,6 +10,7 @@ public class AppState {
     private static AppState instancia;
     private Connection conexionBD;
     private String usuarioActual;
+    private Stage ventanaPrincipal;
 
     private AppState() {
     }
@@ -34,6 +36,14 @@ public class AppState {
 
     public void setUsuarioActual(String usuario) {
         this.usuarioActual = usuario;
+    }
+
+    public Stage getVentanaPrincipal() {
+        return ventanaPrincipal;
+    }
+
+    public void setVentanaPrincipal(Stage stage) {
+        this.ventanaPrincipal = stage;
     }
 
     public void cerrarConexion() {

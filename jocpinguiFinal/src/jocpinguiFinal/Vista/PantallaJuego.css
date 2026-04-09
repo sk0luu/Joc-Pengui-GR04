@@ -12,7 +12,7 @@
 
 /* TABLERO */
 .board {
-    -fx-background-image: url('/jocpinguiFinal/Vista/images/mar_congelado.jpg');
+    -fx-background-image: url('/jocpinguiFinal/Vista/images/fondo_hielo2.jpg');
     -fx-background-size: cover;
     -fx-background-position: center center;
     -fx-background-repeat: no-repeat;

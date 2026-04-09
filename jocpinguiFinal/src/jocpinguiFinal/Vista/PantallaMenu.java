@@ -62,7 +62,7 @@ public class PantallaMenu {
                 controllerPartida.setConexion(conexion, username);
 
                 Scene scene = new Scene(root);
-                Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+                Stage stage = AppState.getInstance().getVentanaPrincipal();
                 stage.setScene(scene);
                 stage.setTitle("Pinguino Game - Configuración");
                 stage.show();

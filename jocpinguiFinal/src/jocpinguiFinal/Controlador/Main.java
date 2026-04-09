@@ -5,6 +5,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import jocpinguiFinal.Vista.AppState;
 
 // "extends Application" es como decirle a Java: "¡Oye, quiero abrir una ventana!"
 public class Main extends Application {
@@ -12,6 +13,9 @@ public class Main extends Application {
     @Override
     public void start(Stage ventanaPrincipal) {
         try {
+            // Guardar la ventana principal en AppState para acceso global
+            AppState.getInstance().setVentanaPrincipal(ventanaPrincipal);
+            
             // 1. Buscamos el archivo de diseño de tu menú
             Parent raiz = FXMLLoader.load(getClass().getResource("/jocpinguiFinal/Vista/PantallaMenu.fxml"));
             
@@ -21,6 +25,7 @@ public class Main extends Application {
             // 3. Le ponemos título y la mostramos
             ventanaPrincipal.setTitle("Juego del Pingüino");
             ventanaPrincipal.setScene(escena);
+            ventanaPrincipal.setResizable(true);
             ventanaPrincipal.show();
             
         } catch (Exception e) {

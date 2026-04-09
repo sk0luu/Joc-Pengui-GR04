@@ -1,6 +1,7 @@
 .root {
     -fx-font-family: "System";
-    -fx-background-color: linear-gradient(to bottom, #e0f7fa, #b2ebf2, #e0f7fa);
+    -fx-background-image: url("images/fondo_pixelart_1080p.png");
+    -fx-background-size: cover;
 }
 
 /* MENU */

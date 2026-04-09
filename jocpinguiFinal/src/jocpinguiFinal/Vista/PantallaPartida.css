@@ -1,0 +1,100 @@
+/* PantallaPartida.css */
+.root {
+    -fx-font-family: "Segoe UI", Helvetica, Arial, sans-serif;
+    -fx-background-color: linear-gradient(to bottom right, #1a202c, #2d3748);
+}
+
+.menu-bar {
+    -fx-background-color: #0f172a;
+}
+
+.menu-bar .label {
+    -fx-text-fill: #f8fafc;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+}
+
+.content-pane {
+    -fx-background-color: rgba(255, 255, 255, 0.08);
+    -fx-padding: 28;
+    -fx-spacing: 18;
+    -fx-border-radius: 22;
+    -fx-background-radius: 22;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.35), 15, 0.3, 0, 8);
+}
+
+#titleLabel {
+    -fx-text-fill: #e2e8f0;
+    -fx-font-size: 26px;
+    -fx-font-weight: bold;
+}
+
+#infoText {
+    -fx-text-fill: #cbd5e1;
+    -fx-font-size: 13px;
+}
+
+.player-row {
+    -fx-background-color: rgba(255,255,255,0.06);
+    -fx-padding: 16;
+    -fx-spacing: 12;
+    -fx-border-radius: 16;
+    -fx-background-radius: 16;
+    -fx-border-color: rgba(255,255,255,0.14);
+    -fx-border-width: 1;
+}
+
+.player-row Label {
+    -fx-text-fill: #f8fafc;
+    -fx-font-size: 13px;
+    -fx-font-weight: bold;
+}
+
+.player-row TextField,
+.player-row ComboBox {
+    -fx-background-color: rgba(255,255,255,0.95);
+    -fx-background-insets: 0;
+    -fx-background-radius: 12;
+    -fx-border-radius: 12;
+    -fx-border-color: rgba(148,163,184,0.4);
+    -fx-border-width: 1;
+    -fx-prompt-text-fill: derive(-fx-control-inner-background, -35%);
+}
+
+.player-row TextField {
+    -fx-padding: 10 14;
+}
+
+.player-row ComboBox {
+    -fx-padding: 0 0 0 8;
+}
+
+.button-row {
+    -fx-spacing: 14;
+    -fx-alignment: center;
+}
+
+.button-row Button,
+.action-button {
+    -fx-background-color: #38bdf8;
+    -fx-text-fill: #0f172a;
+    -fx-font-weight: bold;
+    -fx-padding: 12 20;
+    -fx-background-radius: 14;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(gaussian, rgba(56, 189, 248, 0.25), 8, 0.3, 0, 4);
+}
+
+.button-row Button:hover,
+.action-button:hover {
+    -fx-background-color: #0ea5e9;
+}
+
+.secondary-button {
+    -fx-background-color: rgba(255,255,255,0.12);
+    -fx-text-fill: #e2e8f0;
+}
+
+.secondary-button:hover {
+    -fx-background-color: rgba(255,255,255,0.18);
+}
