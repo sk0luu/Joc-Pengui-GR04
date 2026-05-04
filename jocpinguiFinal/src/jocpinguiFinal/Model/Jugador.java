@@ -6,41 +6,42 @@ public abstract class Jugador implements java.io.Serializable {
 	protected String nombre;
 	protected String color;
 	private int turnosCongelado;
-	//Este constructor crea la posicion, nombre y color del juegador
-	public Jugador(int posicion, String nom, String color) {
-		this.posicion = 0;
-		this.nombre = nom;
-		this.color = color;
-		this.turnosCongelado = 0;
-	}
-	//Este metodo muestra la posicion
-	public int getPosicion() {
-		return posicion;
-	}
-	//Este metodo actualiza la posicion del jugador
-	public void setPosicion(int posicion) {
-		this.posicion = posicion;
-	}
-	//Este metodo muestra el nombre del jugador
-	public String getNom() {
-		return nombre;
-	}
-	//Este metodo actualiza el nombre del jugador
-	public void setNom(String nom) {
-		this.nombre = nom;
-	}
-	//Este metodo muestra el color del jugador
-	public String getColor() {
-		return color;
-	}
-	//Este metodo actualiza el color del jugador
-	public void setColor(String color) {
-		this.color = color;
-	}
-	//Este metodo mueve la posicion del jugador
-	public void moverPosicion(int p) {
-		this.posicion += p;
-	}
+    // constructor base para cualquier tipo de jugador (pinguino o foca)
+    public Jugador(int posicion, String nom, String color) {
+        this.posicion = 0;
+        this.nombre = nom;
+        this.color = color;
+        this.turnosCongelado = 0;
+    }
+    // devuelve la posicion actual
+    public int getPosicion() {
+        return posicion;
+    }
+    // actualiza la posicion del jugador
+    public void setPosicion(int posicion) {
+        this.posicion = posicion;
+    }
+    // devuelve el nombre del jugador
+    public String getNom() {
+        return nombre;
+    }
+    // actualiza el nombre del jugador
+    public void setNom(String nom) {
+        this.nombre = nom;
+    }
+    // devuelve el color del jugador
+    public String getColor() {
+        return color;
+    }
+    // actualiza el color del jugador
+    public void setColor(String color) {
+        this.color = color;
+    }
+
+    // suma pasos a la posicion actual del jugador
+    public void moverPosicion(int p) {
+        this.posicion += p;
+    }
 
 	public int getTurnosCongelado() {
 		return turnosCongelado;
@@ -48,6 +49,10 @@ public abstract class Jugador implements java.io.Serializable {
 
 	public void setTurnosCongelado(int turnosCongelado) {
 		this.turnosCongelado = turnosCongelado;
+	}
+
+	public void congelar(int turnos) {
+		this.turnosCongelado = turnos;
 	}
 
 	public boolean estaCongelado() {

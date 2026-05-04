@@ -3,64 +3,64 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.control.Menu?>
-<?import javafx.scene.control.MenuBar?>
 <?import javafx.scene.control.PasswordField?>
 <?import javafx.scene.control.TextField?>
-<?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.Region?>
 
-<BorderPane prefHeight="718.0" prefWidth="966.0" styleClass="root" stylesheets="@PantallaMenu.css" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="jocpinguiFinal.Vista.PantallaMenu">
+<StackPane
+    prefHeight="720.0" prefWidth="1280.0"
+    styleClass="root"
+    stylesheets="@PantallaMenu.css"
+    xmlns="http://javafx.com/javafx/21"
+    xmlns:fx="http://javafx.com/fxml/1"
+    fx:controller="jocpinguiFinal.Vista.PantallaMenu">
 
-    <top>
-        <MenuBar>
-            <menus>
-                <Menu mnemonicParsing="false" text="JOC DEL PENGUI" />
-            </menus>
-        </MenuBar>
-    </top>
+    <!-- Tarjeta centrada que solo ocupa lo que necesita -->
+    <VBox spacing="18" styleClass="card" maxWidth="420" maxHeight="-Infinity" alignment="CENTER">
+        <padding>
+            <Insets top="40" bottom="40" left="36" right="36"/>
+        </padding>
 
-    <center>
-        <StackPane>
-            <padding>
-                <Insets bottom="28" left="28" right="28" top="28" />
-            </padding>
+        <!-- Título -->
+        <Label styleClass="title" text="JOC DE'N PINGU" maxWidth="Infinity"/>
+        <Label styleClass="subtitle" text="Inicia sesion para continuar" maxWidth="Infinity"/>
 
-            <VBox maxWidth="420" prefHeight="390.0" prefWidth="420.0" spacing="16" styleClass="card">
-                <padding>
-                    <Insets bottom="18" left="18" right="18" top="18" />
-                </padding>
+        <Region prefHeight="8"/>
 
-                <!-- Cabecera -->
-                <VBox alignment="CENTER" spacing="6">
-                    <Label styleClass="title" text="EL JUEGO DEL PINGÜINO" wrapText="true" />
-                </VBox>
+        <!-- Formulario -->
+        <VBox spacing="10">
+            <Label styleClass="field-label" text="Usuario"/>
+            <TextField fx:id="userField" promptText="Usuario..." styleClass="field"/>
 
-                <Region prefHeight="8" />
+            <Label styleClass="field-label" text="Contrasena"/>
+            <PasswordField fx:id="passField" promptText="Contrasena..." styleClass="field"/>
+        </VBox>
 
-                <!-- Formulario -->
-                <VBox spacing="10">
-                    <Label styleClass="field-label" text="Usuario" />
-                    <TextField fx:id="userField" promptText="Usuario..." styleClass="field" />
+        <Region prefHeight="4"/>
 
-                    <Label styleClass="field-label" text="Contraseña" />
-                    <PasswordField fx:id="passField" promptText="Contraseña..." styleClass="field" />
-                </VBox>
+        <!-- Botones login/registro -->
+        <HBox spacing="12">
+            <Button fx:id="loginButton" maxWidth="Infinity" onAction="#handleLogin"
+                    styleClass="primary-btn" text="Login" HBox.hgrow="ALWAYS"/>
+            <Button fx:id="registerButton" maxWidth="Infinity" onAction="#handleRegister"
+                    styleClass="secondary-btn" text="Registro" HBox.hgrow="ALWAYS"/>
+        </HBox>
 
-                <Region prefHeight="6" />
+        <!-- Autocompletar -->
+        <Button fx:id="autoFillButton" maxWidth="Infinity" onAction="#handleAutoFill"
+                styleClass="autofill-btn" text="Autocompletar credenciales"/>
 
-                <!-- Botonera -->
-                <HBox spacing="10">
-                    <Button fx:id="loginButton" maxWidth="Infinity" onAction="#handleLogin" styleClass="primary" text="Login" />
-                    <Button fx:id="registerButton" maxWidth="Infinity" onAction="#handleRegister" text="Registro" />
-                </HBox>
+        <Label styleClass="hint"
+               text="Usa tus credenciales Oracle (Usuario: DW2526_GR04_PINGU)"
+               wrapText="true" maxWidth="Infinity"/>
+    </VBox>
 
-                <Label styleClass="hint" text="Usa tus credenciales Oracle para iniciar sesión (Usuario: DW2526_GR04_PINGU)" wrapText="true" />
-            </VBox>
-        </StackPane>
-    </center>
-
-</BorderPane>
+    <Button onAction="#handleQuitGame" styleClass="quit-btn" text="X" StackPane.alignment="TOP_RIGHT">
+        <StackPane.margin>
+            <Insets top="30" right="30" />
+        </StackPane.margin>
+    </Button>
+</StackPane>

@@ -1,100 +1,164 @@
-/* PantallaPartida.css */
+/* =============================================
+   PANTALLA PARTIDA — Modo Oscuro
+   Mismo estilo que PantallaMenu
+   ============================================= */
+
 .root {
-    -fx-font-family: "Segoe UI", Helvetica, Arial, sans-serif;
-    -fx-background-color: linear-gradient(to bottom right, #1a202c, #2d3748);
+    -fx-background-image: url("images/fondo_inicio.png");
+    -fx-background-size: cover;
+    -fx-background-position: center;
+    -fx-font-family: "Segoe UI", Arial, sans-serif;
+    -fx-background-color: #0d1117;
 }
 
-.menu-bar {
-    -fx-background-color: #0f172a;
-}
-
-.menu-bar .label {
-    -fx-text-fill: #f8fafc;
-    -fx-font-size: 14px;
-    -fx-font-weight: bold;
-}
-
-.content-pane {
-    -fx-background-color: rgba(255, 255, 255, 0.08);
-    -fx-padding: 28;
-    -fx-spacing: 18;
-    -fx-border-radius: 22;
+/* Tarjeta principal */
+.card {
+    -fx-background-color: rgba(15, 22, 40, 0.92);
     -fx-background-radius: 22;
-    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.35), 15, 0.3, 0, 8);
+    -fx-border-color: rgba(56, 189, 248, 0.30);
+    -fx-border-radius: 22;
+    -fx-border-width: 1.5;
+    -fx-effect: dropshadow(gaussian, rgba(0, 100, 200, 0.45), 35, 0.2, 0, 6),
+                dropshadow(gaussian, rgba(0, 0, 0, 0.7), 20, 0, 0, 0);
 }
 
-#titleLabel {
+/* Título */
+.title {
+    -fx-font-size: 22px;
+    -fx-font-weight: 900;
     -fx-text-fill: #e2e8f0;
-    -fx-font-size: 26px;
-    -fx-font-weight: bold;
+    -fx-alignment: center;
+    -fx-font-family: "Segoe UI Black", "Arial Black", sans-serif;
+    -fx-effect: dropshadow(gaussian, rgba(56, 189, 248, 0.5), 12, 0.3, 0, 0);
 }
 
-#infoText {
-    -fx-text-fill: #cbd5e1;
+/* Subtítulo */
+.subtitle {
     -fx-font-size: 13px;
-}
-
-.player-row {
-    -fx-background-color: rgba(255,255,255,0.06);
-    -fx-padding: 16;
-    -fx-spacing: 12;
-    -fx-border-radius: 16;
-    -fx-background-radius: 16;
-    -fx-border-color: rgba(255,255,255,0.14);
-    -fx-border-width: 1;
-}
-
-.player-row Label {
-    -fx-text-fill: #f8fafc;
-    -fx-font-size: 13px;
-    -fx-font-weight: bold;
-}
-
-.player-row TextField,
-.player-row ComboBox {
-    -fx-background-color: rgba(255,255,255,0.95);
-    -fx-background-insets: 0;
-    -fx-background-radius: 12;
-    -fx-border-radius: 12;
-    -fx-border-color: rgba(148,163,184,0.4);
-    -fx-border-width: 1;
-    -fx-prompt-text-fill: derive(-fx-control-inner-background, -35%);
-}
-
-.player-row TextField {
-    -fx-padding: 10 14;
-}
-
-.player-row ComboBox {
-    -fx-padding: 0 0 0 8;
-}
-
-.button-row {
-    -fx-spacing: 14;
+    -fx-text-fill: rgba(203, 213, 225, 0.92);
     -fx-alignment: center;
 }
 
-.button-row Button,
-.action-button {
-    -fx-background-color: #38bdf8;
-    -fx-text-fill: #0f172a;
+/* Fila de jugador */
+.player-row {
+    -fx-background-color: rgba(30, 41, 59, 0.55);
+    -fx-background-radius: 12;
+    -fx-border-color: rgba(56, 189, 248, 0.12);
+    -fx-border-radius: 12;
+    -fx-border-width: 1;
+    -fx-padding: 10 12 10 12;
+}
+
+/* Labels */
+.field-label {
+    -fx-font-size: 12px;
+    -fx-text-fill: #cbd5e1;
     -fx-font-weight: bold;
-    -fx-padding: 12 20;
-    -fx-background-radius: 14;
-    -fx-cursor: hand;
-    -fx-effect: dropshadow(gaussian, rgba(56, 189, 248, 0.25), 8, 0.3, 0, 4);
 }
 
-.button-row Button:hover,
-.action-button:hover {
-    -fx-background-color: #0ea5e9;
+/* Inputs y ComboBox */
+.field,
+.field .text-input {
+    -fx-background-radius: 10;
+    -fx-border-radius: 10;
+    -fx-border-color: rgba(56, 189, 248, 0.22);
+    -fx-border-width: 1;
+    -fx-background-color: rgba(30, 41, 59, 0.95);
+    -fx-text-fill: #f1f5f9;
+    -fx-padding: 8 12;
+    -fx-font-size: 13px;
+    -fx-prompt-text-fill: rgba(148, 163, 184, 0.65);
 }
 
-.secondary-button {
-    -fx-background-color: rgba(255,255,255,0.12);
+.field:focused {
+    -fx-border-color: #38bdf8;
+    -fx-effect: dropshadow(gaussian, rgba(56, 189, 248, 0.3), 8, 0, 0, 0);
+}
+
+/* ComboBox oscuro */
+.field .list-cell {
+    -fx-background-color: #1e293b;
     -fx-text-fill: #e2e8f0;
 }
 
-.secondary-button:hover {
-    -fx-background-color: rgba(255,255,255,0.18);
+.field .combo-box-popup .list-view {
+    -fx-background-color: #1e293b;
+    -fx-border-color: rgba(56,189,248,0.3);
+}
+
+/* Checkbox de foca */
+.foca-check {
+    -fx-text-fill: #e2e8f0;
+    -fx-font-size: 13px;
+    -fx-font-weight: bold;
+}
+
+.foca-check .box {
+    -fx-background-color: rgba(30, 41, 59, 0.9);
+    -fx-border-color: rgba(56, 189, 248, 0.4);
+    -fx-border-radius: 5;
+    -fx-background-radius: 5;
+}
+
+.foca-check:selected .mark {
+    -fx-background-color: #38bdf8;
+}
+
+/* Botón base */
+.button {
+    -fx-background-radius: 10;
+    -fx-border-radius: 10;
+    -fx-padding: 11 16;
+    -fx-font-size: 13px;
+    -fx-font-weight: bold;
+    -fx-cursor: hand;
+    -fx-background-color: rgba(30, 41, 59, 0.9);
+    -fx-text-fill: #e2e8f0;
+    -fx-border-color: rgba(56,189,248,0.2);
+    -fx-border-width: 1;
+}
+
+.button:hover {
+    -fx-background-color: rgba(51, 65, 85, 0.95);
+    -fx-border-color: rgba(56,189,248,0.5);
+}
+
+/* Botón Iniciar (primario) */
+.primary-btn {
+    -fx-background-color: linear-gradient(to bottom, #0ea5e9, #0284c7);
+    -fx-text-fill: white;
+    -fx-border-color: #0369a1;
+    -fx-border-width: 1;
+    -fx-border-radius: 10;
+    -fx-background-radius: 10;
+    -fx-padding: 12 16;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(gaussian, rgba(14, 165, 233, 0.45), 12, 0.3, 0, 3);
+}
+
+.primary-btn:hover {
+    -fx-background-color: linear-gradient(to bottom, #38bdf8, #0ea5e9);
+    -fx-effect: dropshadow(gaussian, rgba(56, 189, 248, 0.7), 16, 0.4, 0, 4);
+}
+
+/* Botón secundario */
+.secondary-btn {
+    -fx-background-color: rgba(30, 41, 59, 0.85);
+    -fx-text-fill: #e2e8f0;
+    -fx-border-color: rgba(71, 85, 105, 0.6);
+    -fx-border-width: 1;
+    -fx-border-radius: 10;
+    -fx-background-radius: 10;
+    -fx-padding: 11 16;
+    -fx-font-size: 13px;
+    -fx-font-weight: bold;
+    -fx-cursor: hand;
+}
+
+.secondary-btn:hover {
+    -fx-background-color: rgba(51, 65, 85, 0.9);
+    -fx-text-fill: #e2e8f0;
+    -fx-border-color: rgba(100, 116, 139, 0.7);
 }

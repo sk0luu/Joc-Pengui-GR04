@@ -2,7 +2,6 @@ package jocpinguiFinal.Vista;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
-import javafx.scene.control.MenuItem;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Alert;
@@ -23,20 +22,22 @@ import jocpinguiFinal.Model.BBDD;
 
 public class PantallaMenu {
 
-    @FXML private MenuItem newGame;
-    @FXML private MenuItem saveGame;
-    @FXML private MenuItem loadGame;
-    @FXML private MenuItem quitGame;
-
     @FXML private TextField userField;
     @FXML private PasswordField passField;
 
     @FXML private Button loginButton;
     @FXML private Button registerButton;
+    @FXML private Button autoFillButton;
 
     @FXML
     private void initialize() {
         System.out.println("PantallaMenu JavaFX inicializada");
+    }
+
+    @FXML
+    private void handleAutoFill() {
+        userField.setText("DW2526_GR04_PINGU");
+        passField.setText("AOAICGL");
     }
 
     @FXML
@@ -65,6 +66,8 @@ public class PantallaMenu {
                 Stage stage = AppState.getInstance().getVentanaPrincipal();
                 stage.setScene(scene);
                 stage.setTitle("Pinguino Game - Configuración");
+                stage.setFullScreen(true);
+                stage.setFullScreenExitKeyCombination(javafx.scene.input.KeyCombination.NO_MATCH);
                 stage.show();
 
             } catch (Exception e) {
@@ -132,6 +135,7 @@ public class PantallaMenu {
     // Método auxiliar para mostrar alertas
     private void mostrarAlerta(String titulo, String mensaje) {
         Alert alerta = new Alert(AlertType.INFORMATION);
+        alerta.initOwner(AppState.getInstance().getVentanaPrincipal());
         alerta.setTitle(titulo);
         alerta.setHeaderText(null);
         alerta.setContentText(mensaje);

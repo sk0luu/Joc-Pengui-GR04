@@ -8,7 +8,7 @@ import jocpinguiFinal.Model.Pinguino;
 
 public class GestorTablero {
 
-    public void ejecutaCasilla(Partida partida, Pinguino p, Casilla c) {
+    public void ejecutaCasilla(Partida partida, Jugador p, Casilla c) {
         if (c != null) {
             c.realizarAccion(partida, p);
         }

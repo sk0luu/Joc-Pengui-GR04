@@ -1,0 +1,61 @@
+/* ===================================================
+   PANTALLA DE CARGA — PantallaCarga.css
+   Barra de progreso flotante sobre el video de fondo
+   =================================================== */
+
+/* Fondo de fallback si el video no carga */
+.root {
+    -fx-background-color: #000814;
+}
+
+/* Overlay oscuro semitransparente sobre el video */
+.overlay {
+    -fx-background-color: rgba(0, 4, 20, 0.45);
+}
+
+/* Panel inferior con la barra de progreso */
+.progress-panel {
+    -fx-background-color: rgba(0, 8, 30, 0.78);
+    -fx-background-radius: 20 20 0 0;
+    -fx-border-color: rgba(0, 180, 255, 0.25);
+    -fx-border-width: 1 1 0 1;
+    -fx-border-radius: 20 20 0 0;
+    -fx-effect: dropshadow(gaussian, rgba(0, 140, 255, 0.4), 30, 0, 0, -6);
+    -fx-min-width: 900;
+}
+
+/* Título del juego */
+.titulo-carga {
+    -fx-font-size: 22px;
+    -fx-font-weight: 900;
+    -fx-fill: rgba(200, 235, 255, 0.90);
+    -fx-font-family: "Segoe UI Black", "Arial Black", sans-serif;
+    -fx-letter-spacing: 6px;
+    -fx-effect: dropshadow(gaussian, rgba(0, 180, 255, 0.7), 14, 0, 0, 0);
+}
+
+/* Barra de progreso */
+.barra {
+    -fx-accent: #00b4ff;
+    -fx-background-color: transparent;
+    -fx-background-radius: 10;
+    -fx-border-radius: 10;
+}
+
+.barra .track {
+    -fx-background-color: rgba(255, 255, 255, 0.10);
+    -fx-background-radius: 10;
+}
+
+.barra .bar {
+    -fx-background-color: linear-gradient(to right, #0050cc, #00aaff, #40e0ff);
+    -fx-background-radius: 10;
+    -fx-effect: dropshadow(gaussian, rgba(0, 180, 255, 0.8), 14, 0, 0, 0);
+}
+
+/* Texto de estado */
+.estado-text {
+    -fx-font-size: 13px;
+    -fx-fill: rgba(140, 210, 255, 0.80);
+    -fx-font-family: "Segoe UI", sans-serif;
+}

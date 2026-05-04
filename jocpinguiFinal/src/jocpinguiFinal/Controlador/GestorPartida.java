@@ -23,11 +23,11 @@ import jocpinguiFinal.Model.Trineo;
 
 public class GestorPartida implements Serializable {
     private static final long serialVersionUID = 1L;
-    private Partida partida;
-    private GestorTablero gestorTablero;
-    private GestorJugador gestorJugador;
+    private Partida partida; // objeto que contiene el estado de la partida
+    private GestorTablero gestorTablero; // encargado de la logica de las casillas
+    private GestorJugador gestorJugador; // encargado de la logica de movimiento
     private Random random;
-    private Connection conexionBD;
+    private Connection conexionBD; // conexion activa a la base de datos
 
     public GestorPartida() {
         this.gestorTablero = new GestorTablero();
@@ -35,23 +35,29 @@ public class GestorPartida implements Serializable {
         this.random = new Random();
     }
 
-    public void nuevaPartida(ArrayList<String> nombres, ArrayList<String> coloresSeleccionados) {
+    // crea una partida nueva con los jugadores y colores indicados
+    public void nuevaPartida(ArrayList<String> nombres, ArrayList<String> coloresSeleccionados, boolean conFoca) {
         ArrayList<Jugador> listaJugadores = new ArrayList<>();
         for (int i = 0; i < nombres.size() && i < 4; i++) {
             String color = i < coloresSeleccionados.size() ? coloresSeleccionados.get(i) : "Azul";
             PinguinoJugador jugador = new PinguinoJugador(nombres.get(i), color, 0);
-            // Asignar objetos iniciales por defecto
+            // objetos iniciales para cada jugador
             jugador.getInv().añadirItem(new ItemConcreto("Pez", 1));
             jugador.getInv().añadirItem(new ItemConcreto("Nieve", 1));
-            jugador.getInv().añadirItem(new ItemConcreto("Escudo", 1));
             listaJugadores.add(jugador);
         }
 
-        // Añadir la Foca automática como NPC
-        Foca focaNPC = new Foca(0, "Foca Morsa", "gris");
-        listaJugadores.add(focaNPC);
+        // Añadir la Foca automática como NPC solo si el jugador lo elige
+        if (conFoca) {
+            Foca focaNPC = new Foca(0, "Foca", "gris");
+            listaJugadores.add(focaNPC);
+        }
 
         this.partida = new Partida(new Tablero(), listaJugadores);
+    }
+
+    public void nuevaPartida(ArrayList<String> nombres, ArrayList<String> coloresSeleccionados) {
+        nuevaPartida(nombres, coloresSeleccionados, true); // por defecto con foca (compatibilidad)
     }
 
     // compatibilidad con llamadas anteriores
@@ -79,16 +85,13 @@ public class GestorPartida implements Serializable {
         return ultimoTiro;
     }
 
+    // ejecuta el turno completo del jugador actual
     public void ejecutarTurnoCompleto() {
         if (partida != null && !partida.isFinalizado()) {
             Jugador j = partida.getJugador().get(partida.getJugadorActual());
+            // si esta congelado pierde el turno
             if (j.estaCongelado()) {
-                System.out.println("El jugador " + j.getNom()
-                        + " está congelado y pierde este turno. Turnos restantes: " + j.getTurnosCongelado());
                 j.pasaTurnoCongelado();
-                if (!j.estaCongelado()) {
-                    System.out.println("El jugador " + j.getNom() + " ya no está congelado.");
-                }
                 gestorJugador.jugadorFinalizaTurno(j);
                 siguienteTurno();
                 return;
@@ -104,12 +107,12 @@ public class GestorPartida implements Serializable {
         this.ultimoTiro = pasos;
         gestorJugador.jugadorSeMueve(j, pasos, partida.getTablero());
 
-        if (j instanceof Pinguino) {
+        if (j instanceof Jugador) {
             int posActual = j.getPosicion();
             ArrayList<Casilla> casillas = partida.getTablero().getCasillas();
             if (posActual >= 0 && posActual < casillas.size()) {
                 Casilla c = casillas.get(posActual);
-                gestorTablero.ejecutaCasilla(partida, (Pinguino) j, c);
+                gestorTablero.ejecutaCasilla(partida, j, c);
             }
         }
 
@@ -140,7 +143,11 @@ public class GestorPartida implements Serializable {
             } else if (c instanceof Trineo) {
                 return "¡" + j.getNom() + " ha encontrado un trineo y avanza 4 casillas!";
             } else if (c instanceof Agujero) {
-                return "¡" + j.getNom() + " ha caído en un agujero y vuelve a la salida!";
+                if (j.getPosicion() == 0) {
+                    return "¡" + j.getNom() + " ha caído en el primer agujero y vuelve a la salida!";
+                } else {
+                    return "¡" + j.getNom() + " ha caído en un agujero y retrocedió al anterior (casilla " + j.getPosicion() + ")!";
+                }
             } else if (c instanceof SueloQuebradizo) {
                 return "Suelo quebradizo: posibilidad de derrumbe activada.";
             } else {
@@ -184,22 +191,23 @@ public class GestorPartida implements Serializable {
         this.conexionBD = conexion;
     }
 
+    // guarda la partida en la base de datos (blob y tablas relacionales)
     public boolean guardarPartidaBD(String nombrePartida, String usuario) {
         if (partida == null || conexionBD == null) {
-            System.out.println("Error: Partida o conexión nula");
             return false;
         }
 
         try {
             conexionBD.setAutoCommit(false);
 
-            // 1. Guardar BLOB
+            // serializa la partida y la cifra para guardarla como blob
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             ObjectOutputStream oos = new ObjectOutputStream(baos);
             oos.writeObject(partida);
             oos.close();
-            byte[] datosPartida = baos.toByteArray();
+            byte[] datosPartida = aplicarCifrado(baos.toByteArray());
 
+            // inserta en la tabla partidas (el blob)
             String sqlBlob = "INSERT INTO PARTIDAS (nombre, usuario, datos, fecha_creacion) VALUES (?, ?, ?, SYSDATE)";
             PreparedStatement psBlob = conexionBD.prepareStatement(sqlBlob);
             psBlob.setString(1, nombrePartida);
@@ -240,10 +248,9 @@ public class GestorPartida implements Serializable {
                 for (Jugador jug : partida.getJugador()) {
                     if (jug instanceof Pinguino) {
                         Pinguino p = (Pinguino) jug;
-                        // Asegurar que el nombre no contenga espacios ni nulos
                         String nick = p.getNom() == null ? "Jugador_Desconocido" : p.getNom().trim();
 
-                        // Comprobar que existe el jugador en la tabla USUARIO para evitar error de Clave Foránea
+                        // verifica si el usuario existe para evitar errores de clave foranea
                         psChkUsr.setString(1, nick);
                         ResultSet rsChk = psChkUsr.executeQuery();
                         rsChk.next();
@@ -253,7 +260,7 @@ public class GestorPartida implements Serializable {
                         }
                         rsChk.close();
 
-                        // Resumir el inventario
+                        // guarda el resumen del inventario en texto
                         StringBuilder invTexto = new StringBuilder();
                         for (Item item : p.getInv().getItems()) {
                             if (item.getCantidad() > 0) {
@@ -261,7 +268,6 @@ public class GestorPartida implements Serializable {
                             }
                         }
 
-                        // Insertar jugador_partida
                         psJugador.setInt(1, idPartida);
                         psJugador.setString(2, nick);
                         psJugador.setInt(3, p.getPosicion());
@@ -270,7 +276,6 @@ public class GestorPartida implements Serializable {
                         String invAux = invTexto.toString();
                         if (invAux.isEmpty()) invAux = "Vacío";
                         psJugador.setString(5, invAux);
-                        
                         psJugador.executeUpdate();
                     }
                 }
@@ -299,9 +304,9 @@ public class GestorPartida implements Serializable {
         }
     }
 
+    // carga una partida desde el blob de la base de datos
     public boolean cargarPartidaBD(int idPartida) {
         if (conexionBD == null) {
-            System.out.println("Error: Conexión a BB.DD nula");
             return false;
         }
 
@@ -312,28 +317,19 @@ public class GestorPartida implements Serializable {
             ResultSet rs = ps.executeQuery();
 
             if (rs.next()) {
-                byte[] datosPartida = rs.getBytes("datos");
+                // descifra y deserializa el objeto partida
+                byte[] datosPartida = aplicarCifrado(rs.getBytes("datos"));
                 ByteArrayInputStream bais = new ByteArrayInputStream(datosPartida);
                 ObjectInputStream ois = new ObjectInputStream(bais);
                 this.partida = (Partida) ois.readObject();
                 ois.close();
-
-                rs.close();
-                ps.close();
-
-                System.out.println("Partida cargada desde BB.DD");
+                rs.close(); ps.close();
                 return true;
             } else {
-                System.out.println("Partida no encontrada con ID: " + idPartida);
-                rs.close();
-                ps.close();
+                rs.close(); ps.close();
                 return false;
             }
-        } catch (SQLException e) {
-            System.out.println("Error SQL al cargar partida: " + e.getMessage());
-            return false;
-        } catch (IOException | ClassNotFoundException e) {
-            System.out.println("Error al deserializar partida: " + e.getMessage());
+        } catch (SQLException | IOException | ClassNotFoundException e) {
             return false;
         }
     }
@@ -438,16 +434,24 @@ public class GestorPartida implements Serializable {
                             int siguiente = (partida.getJugadorActual() + 1) % total;
                             Jugador objetivo = partida.getJugador().get(siguiente);
                             objetivo.setTurnosCongelado(1);
-                            System.out.println("El jugador " + objetivo.getNom() + " ha sido congelado por 1 turno.");
                         }
                         return true;
                     }
-                    case "escudo":
-                        System.out.println("Escudo usado: protección activada por 1 turno (sin efecto activo). ");
-                        return true;
                 }
             }
         }
         return false;
+    }
+
+    /**
+     * Aplica un cifrado simple XOR a los datos para cumplir con el requisito de encriptación.
+     */
+    private byte[] aplicarCifrado(byte[] data) {
+        byte[] key = "PINGUINO_KEY_2024".getBytes();
+        byte[] result = new byte[data.length];
+        for (int i = 0; i < data.length; i++) {
+            result[i] = (byte) (data[i] ^ key[i % key.length]);
+        }
+        return result;
     }
 }

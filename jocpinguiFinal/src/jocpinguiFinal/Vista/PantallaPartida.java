@@ -2,6 +2,7 @@ package jocpinguiFinal.Vista;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Label;
 import javafx.scene.control.ComboBox;
@@ -49,34 +50,30 @@ public class PantallaPartida {
 	@FXML private Button backButton;
 	@FXML private Button loadGameButton;
 	@FXML private Button saveGameButton;
+	@FXML private CheckBox focaCheckBox;
 	
 	@FXML private Label titleLabel;
 	@FXML private Label infoText;
 	
 	private GestorPartida gestorPartida;
-	private Connection conexionBD;
-	private String usuarioActual;
+	private Connection conexionBD; // conexion a oracle
+	private String usuarioActual; // usuario que ha hecho login
 	private static final String[] COLORES = {"Azul", "Rojo", "Verde", "Amarillo", "Naranja", "Púrpura"};
 	
+	// inicializa el gestor y los combos de colores
 	@FXML
 	private void initialize() {
-		System.out.println("PantallaPartida JavaFX inicializada");
 		gestorPartida = new GestorPartida();
 
-		// Si hay conexión, setearla en GestorPartida
 		if (conexionBD != null) {
 			gestorPartida.setConexionBD(conexionBD);
 		}
 
-		// Inicializar etiquetas
 		if (titleLabel != null) {
 			titleLabel.setText("CONFIGURACIÓN DE PARTIDA");
 		}
-		if (infoText != null) {
-			infoText.setText("Ingresa los nombres de los jugadores y elige colores (mínimo 1, máximo 4)");
-		}
 		
-		// Inicializar ComboBox de colores
+		// configura los 4 selectores de colores
 		if (color1Combo != null) {
 			color1Combo.getItems().addAll(COLORES);
 			aplicarCeldaConImagen(color1Combo);
@@ -157,12 +154,13 @@ public class PantallaPartida {
 		});
 	}
 	
+	// crea la partida y cambia a la pantalla del tablero
 	@FXML
 	private void handleStartGame(ActionEvent event) {
 		ArrayList<String> nombres = new ArrayList<>();
 		ArrayList<String> colores = new ArrayList<>();
 		
-		// Recopilar nombres y colores de jugadores que no estén vacíos
+		// añade jugadores si tienen nombre
 		if (!player1Field.getText().trim().isEmpty()) {
 			nombres.add(player1Field.getText().trim());
 			colores.add(color1Combo.getValue());
@@ -180,21 +178,18 @@ public class PantallaPartida {
 			colores.add(color4Combo.getValue());
 		}
 		
-		// Validar que hay al menos un jugador
 		if (nombres.isEmpty()) {
 			infoText.setText("Error: Debes ingresar al menos un nombre de jugador");
 			return;
 		}
 		
 		try {
-			// Crear la partida con los nombres y colores
-			gestorPartida.nuevaPartida(nombres, colores);
+			boolean conFoca = focaCheckBox != null && focaCheckBox.isSelected();
+			gestorPartida.nuevaPartida(nombres, colores, conFoca);
 			
-			// Cambiar a PantallaJuego
 			FXMLLoader loader = new FXMLLoader(getClass().getResource("/jocpinguiFinal/Vista/PantallaJuego.fxml"));
 			Parent root = loader.load();
 			
-			// Pasar la conexión y el gestor a la pantalla de juego
 			PantallaJuego controllerJuego = loader.getController();
 			controllerJuego.setConexion(conexionBD);
 			controllerJuego.setUsuario(usuarioActual);
@@ -204,8 +199,10 @@ public class PantallaPartida {
 			Stage stage = AppState.getInstance().getVentanaPrincipal();
 			stage.setScene(scene);
 			stage.setTitle("Pinguino Game - En Partida");
+			stage.setFullScreen(true);
+			stage.setFullScreenExitKeyCombination(javafx.scene.input.KeyCombination.NO_MATCH);
+			stage.show();
 		} catch (Exception e) {
-			e.printStackTrace();
 			infoText.setText("Error: No se pudo iniciar la partida");
 		}
 	}
@@ -231,6 +228,7 @@ public class PantallaPartida {
 
 		// Mostrar diálogo de selección
 		ChoiceDialog<String> dialog = new ChoiceDialog<>(opciones.get(0), opciones);
+		dialog.initOwner(AppState.getInstance().getVentanaPrincipal());
 		dialog.setTitle("Cargar Partida");
 		dialog.setHeaderText("Selecciona una partida para cargar");
 		dialog.setContentText("Partidas:");
@@ -254,7 +252,8 @@ public class PantallaPartida {
 				stage.setScene(scene);
 				stage.setTitle("Pinguino Game - En Partida");
 				stage.setFullScreen(true);
-					stage.show();
+				stage.setFullScreenExitKeyCombination(javafx.scene.input.KeyCombination.NO_MATCH);
+				stage.show();
 				} catch (Exception e) {
 					System.out.println("Error al cargar PantallaJuego: " + e.getMessage());
 					mostrarAlerta("Error", "No se pudo cargar la partida");
@@ -303,6 +302,7 @@ public class PantallaPartida {
 			stage.setScene(scene);
 			stage.setTitle("Pinguino Game - Menu");
 			stage.setFullScreen(true);
+			stage.setFullScreenExitKeyCombination(javafx.scene.input.KeyCombination.NO_MATCH);
 			stage.show();
 		} catch (Exception e) {
 			System.out.println("Error al volver al menú: " + e.getMessage());
@@ -362,6 +362,7 @@ public class PantallaPartida {
 	
 	private void mostrarAlerta(String titulo, String mensaje) {
 		Alert alerta = new Alert(AlertType.INFORMATION);
+		alerta.initOwner(AppState.getInstance().getVentanaPrincipal());
 		alerta.setTitle(titulo);
 		alerta.setHeaderText(null);
 		alerta.setContentText(mensaje);

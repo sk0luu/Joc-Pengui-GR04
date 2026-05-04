@@ -15,21 +15,23 @@ public class Main extends Application {
         try {
             // Guardar la ventana principal en AppState para acceso global
             AppState.getInstance().setVentanaPrincipal(ventanaPrincipal);
-            
-            // 1. Buscamos el archivo de diseño de tu menú
-            Parent raiz = FXMLLoader.load(getClass().getResource("/jocpinguiFinal/Vista/PantallaMenu.fxml"));
-            
-            // 2. Creamos la escena (lo que va dentro de la ventana)
+
+            // Cargar la pantalla de carga como primera pantalla
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/jocpinguiFinal/Vista/PantallaCarga.fxml"));
+            Parent raiz = loader.load();
+
+            // Crear la escena
             Scene escena = new Scene(raiz);
-            
-            // 3. Le ponemos título y la mostramos
-            ventanaPrincipal.setTitle("Juego del Pingüino");
+
+            // Título y fullscreen ANTES de show() para que arranque en pantalla completa
+            ventanaPrincipal.setTitle("Joc de'n Pingu");
             ventanaPrincipal.setScene(escena);
-            ventanaPrincipal.setResizable(true);
+            ventanaPrincipal.setFullScreen(true);
+            // Deshabilitar la tecla Escape para que no salga del fullscreen
+            ventanaPrincipal.setFullScreenExitKeyCombination(javafx.scene.input.KeyCombination.NO_MATCH);
             ventanaPrincipal.show();
-            
+
         } catch (Exception e) {
-            // Si algo falla al cargar la ventana, nos lo dirá por aquí
             System.out.println("Error al abrir la ventana: " + e.getMessage());
             e.printStackTrace();
         }

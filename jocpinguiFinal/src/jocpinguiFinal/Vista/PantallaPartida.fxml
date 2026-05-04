@@ -1,92 +1,108 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.control.Menu?>
-<?import javafx.scene.control.MenuBar?>
 <?import javafx.scene.control.TextField?>
-<?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
-<?import javafx.scene.text.Font?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.geometry.Insets?>
 
-<BorderPane xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="jocpinguiFinal.Vista.PantallaPartida" stylesheets="@PantallaPartida.css">
+<StackPane
+    prefHeight="720.0" prefWidth="1280.0"
+    styleClass="root"
+    stylesheets="@PantallaPartida.css"
+    xmlns="http://javafx.com/javafx/21"
+    xmlns:fx="http://javafx.com/fxml/1"
+    fx:controller="jocpinguiFinal.Vista.PantallaPartida">
 
-    <top>
-        <MenuBar styleClass="menu-bar">
-            <menus>
-                <Menu mnemonicParsing="false" text="JOC DEL PENGUI" />
-            </menus>
-        </MenuBar>
-    </top>
+    <!-- Tarjeta centrada, solo ocupa lo que necesita -->
+    <VBox fx:id="contentPane" spacing="14" styleClass="card"
+          maxWidth="560" maxHeight="-Infinity" alignment="CENTER">
+        <padding>
+            <Insets top="36" bottom="36" left="36" right="36"/>
+        </padding>
 
-    <center>
-        <VBox fx:id="contentPane" spacing="18" styleClass="content-pane">
-            <Label fx:id="titleLabel" text="CONFIGURACIÓN DE PARTIDA" />
-            <Label fx:id="infoText" text="Ingresa los nombres y colores de los jugadores (mínimo 1, máximo 4)" />
+        <!-- Título -->
+        <Label fx:id="titleLabel" styleClass="title" text="CONFIGURACION DE PARTIDA" maxWidth="Infinity"/>
+        <Label fx:id="infoText" styleClass="subtitle"
+               text="Nombres y colores de los jugadores (min. 1, max. 4)"
+               wrapText="true" maxWidth="Infinity"/>
 
-            <!-- Jugador 1 -->
-            <HBox spacing="10" styleClass="player-row">
-                <VBox spacing="5" style="-fx-min-width: 250;">
-                    <Label style="-fx-font-weight: bold;" text="Jugador 1" />
-                    <TextField fx:id="player1Field" promptText="Nombre..." />
-                </VBox>
-                <VBox spacing="5" style="-fx-min-width: 150;">
-                    <Label style="-fx-font-weight: bold;" text="Color" />
-                    <ComboBox fx:id="color1Combo" prefWidth="140" />
-                </VBox>
-            </HBox>
+        <Region prefHeight="6"/>
 
-            <!-- Jugador 2 -->
-            <HBox spacing="10" styleClass="player-row">
-                <VBox spacing="5" style="-fx-min-width: 250;">
-                    <Label style="-fx-font-weight: bold;" text="Jugador 2 (Opcional)" />
-                    <TextField fx:id="player2Field" promptText="Nombre..." />
-                </VBox>
-                <VBox spacing="5" style="-fx-min-width: 150;">
-                    <Label style="-fx-font-weight: bold;" text="Color" />
-                    <ComboBox fx:id="color2Combo" prefWidth="140" />
-                </VBox>
-            </HBox>
+        <!-- Jugador 1 -->
+        <HBox spacing="10" styleClass="player-row">
+            <VBox spacing="4" HBox.hgrow="ALWAYS">
+                <Label styleClass="field-label" text="Jugador 1"/>
+                <TextField fx:id="player1Field" promptText="Nombre..." styleClass="field"/>
+            </VBox>
+            <VBox spacing="4">
+                <Label styleClass="field-label" text="Color"/>
+                <ComboBox fx:id="color1Combo" prefWidth="130" styleClass="field"/>
+            </VBox>
+        </HBox>
 
-            <!-- Jugador 3 -->
-            <HBox spacing="10" styleClass="player-row">
-                <VBox spacing="5" style="-fx-min-width: 250;">
-                    <Label style="-fx-font-weight: bold;" text="Jugador 3 (Opcional)" />
-                    <TextField fx:id="player3Field" promptText="Nombre..." />
-                </VBox>
-                <VBox spacing="5" style="-fx-min-width: 150;">
-                    <Label style="-fx-font-weight: bold;" text="Color" />
-                    <ComboBox fx:id="color3Combo" prefWidth="140" />
-                </VBox>
-            </HBox>
+        <!-- Jugador 2 -->
+        <HBox spacing="10" styleClass="player-row">
+            <VBox spacing="4" HBox.hgrow="ALWAYS">
+                <Label styleClass="field-label" text="Jugador 2 (Opcional)"/>
+                <TextField fx:id="player2Field" promptText="Nombre..." styleClass="field"/>
+            </VBox>
+            <VBox spacing="4">
+                <Label styleClass="field-label" text="Color"/>
+                <ComboBox fx:id="color2Combo" prefWidth="130" styleClass="field"/>
+            </VBox>
+        </HBox>
 
-            <!-- Jugador 4 -->
-            <HBox spacing="10" styleClass="player-row">
-                <VBox spacing="5" style="-fx-min-width: 250;">
-                    <Label style="-fx-font-weight: bold;" text="Jugador 4 (Opcional)" />
-                    <TextField fx:id="player4Field" promptText="Nombre..." />
-                </VBox>
-                <VBox spacing="5" style="-fx-min-width: 150;">
-                    <Label style="-fx-font-weight: bold;" text="Color" />
-                    <ComboBox fx:id="color4Combo" prefWidth="140" />
-                </VBox>
-            </HBox>
+        <!-- Jugador 3 -->
+        <HBox spacing="10" styleClass="player-row">
+            <VBox spacing="4" HBox.hgrow="ALWAYS">
+                <Label styleClass="field-label" text="Jugador 3 (Opcional)"/>
+                <TextField fx:id="player3Field" promptText="Nombre..." styleClass="field"/>
+            </VBox>
+            <VBox spacing="4">
+                <Label styleClass="field-label" text="Color"/>
+                <ComboBox fx:id="color3Combo" prefWidth="130" styleClass="field"/>
+            </VBox>
+        </HBox>
 
-            <!-- Botones Save/Load -->
-            <HBox spacing="12" styleClass="button-row">
-                <Button fx:id="loadGameButton" onAction="#handleLoadGame" styleClass="secondary-button" text="Cargar Partida" />
-                <Button fx:id="saveGameButton" onAction="#handleSaveGame" styleClass="secondary-button" text="Guardar Config" />
-            </HBox>
+        <!-- Jugador 4 -->
+        <HBox spacing="10" styleClass="player-row">
+            <VBox spacing="4" HBox.hgrow="ALWAYS">
+                <Label styleClass="field-label" text="Jugador 4 (Opcional)"/>
+                <TextField fx:id="player4Field" promptText="Nombre..." styleClass="field"/>
+            </VBox>
+            <VBox spacing="4">
+                <Label styleClass="field-label" text="Color"/>
+                <ComboBox fx:id="color4Combo" prefWidth="130" styleClass="field"/>
+            </VBox>
+        </HBox>
 
-            <!-- Botones Principal -->
-            <HBox spacing="12" styleClass="button-row">
-                <Button fx:id="startGameButton" onAction="#handleStartGame" styleClass="action-button" text="Iniciar Partida" />
-                <Button fx:id="backButton" onAction="#handleBack" styleClass="secondary-button" text="Atrás" />
-            </HBox>
+        <!-- Opcion Foca -->
+        <CheckBox fx:id="focaCheckBox" text="Incluir la Foca" selected="true" styleClass="foca-check"/>
 
-        </VBox>
-    </center>
+        <Region prefHeight="4"/>
 
-</BorderPane>
+        <!-- Botones Save / Load -->
+        <HBox spacing="12">
+            <Button fx:id="loadGameButton" onAction="#handleLoadGame"
+                    styleClass="secondary-btn" text="Cargar Partida" maxWidth="Infinity" HBox.hgrow="ALWAYS"/>
+            <Button fx:id="saveGameButton" onAction="#handleSaveGame"
+                    styleClass="secondary-btn" text="Guardar Config" maxWidth="Infinity" HBox.hgrow="ALWAYS"/>
+        </HBox>
+
+        <!-- Botones Iniciar / Atras -->
+        <HBox spacing="12">
+            <Button fx:id="startGameButton" onAction="#handleStartGame"
+                    styleClass="primary-btn" text="Iniciar Partida" maxWidth="Infinity" HBox.hgrow="ALWAYS"/>
+            <Button fx:id="backButton" onAction="#handleBack"
+                    styleClass="secondary-btn" text="Atras" maxWidth="Infinity" HBox.hgrow="ALWAYS"/>
+        </HBox>
+
+    </VBox>
+
+</StackPane>

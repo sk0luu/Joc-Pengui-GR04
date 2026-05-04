@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
@@ -19,6 +21,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.shape.Circle?>
 <?import javafx.scene.text.Text?>
+<?import javafx.scene.text.TextFlow?>
 
 <BorderPane styleClass="root" stylesheets="@PantallaJuego.css" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="jocpinguiFinal.Vista.PantallaJuego">
 
@@ -31,9 +34,9 @@
                 <Insets bottom="50" left="50" right="50" top="50" />
             </padding>
 
-            <ScrollPane fitToWidth="true" fitToHeight="true" pannable="true" hbarPolicy="AS_NEEDED" vbarPolicy="AS_NEEDED" style="-fx-background-color: transparent;">
+            <ScrollPane fitToWidth="true" fitToHeight="true" pannable="true" hbarPolicy="AS_NEEDED" vbarPolicy="AS_NEEDED" style="-fx-background-color: transparent;" styleClass="board-scroll">
                 <content>
-                    <GridPane fx:id="tablero" gridLinesVisible="true" maxWidth="Infinity" maxHeight="Infinity" minWidth="0" minHeight="0" styleClass="board">
+                    <GridPane fx:id="tablero" gridLinesVisible="false" hgap="6" vgap="6" maxWidth="Infinity" maxHeight="Infinity" minWidth="0" minHeight="0" styleClass="board">
                         <columnConstraints>
                             <ColumnConstraints percentWidth="20.0" />
                             <ColumnConstraints percentWidth="20.0" />
@@ -57,8 +60,8 @@
 
                 <children>
                     <!-- Esquinas -->
-                    <Text styleClass="cell-title" text="Start" />
-                    <Text styleClass="cell-title" text="Finish" GridPane.columnIndex="4" GridPane.halignment="RIGHT" GridPane.rowIndex="9" />
+                    <Text styleClass="cell-title" text="Start" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
+                    <Text styleClass="cell-title" text="Finish" GridPane.columnIndex="4" GridPane.halignment="CENTER" GridPane.valignment="CENTER" GridPane.rowIndex="9" />
 
                     <!-- Jugadores y NPCs: fx:id para Controller + id para CSS -->
                     <Circle id="P1" fx:id="P1" radius="16.0" styleClass="player" />
@@ -81,6 +84,19 @@
         </StackPane>
     </center>
 
+    <right>
+        <VBox spacing="10" prefWidth="250" styleClass="card">
+            <padding>
+                <Insets top="16" right="16" bottom="16" left="16" />
+            </padding>
+            <BorderPane.margin>
+                <Insets top="50" right="50" bottom="50" left="0" />
+            </BorderPane.margin>
+            <Label styleClass="card-title" text="Top Partida" />
+            <VBox fx:id="topJugadoresBox" spacing="8" />
+        </VBox>
+    </right>
+
     <bottom>
         <FlowPane hgap="16" vgap="16" styleClass="bottom-bar" prefWrapLength="1400.0">
             <padding>
@@ -94,9 +110,14 @@
             </VBox>
 
             <!-- Tarjeta Dado -->
-            <VBox maxWidth="360" spacing="10" styleClass="card">
+            <VBox maxWidth="360" spacing="10" styleClass="card" alignment="CENTER">
                 <Label styleClass="card-title" text="Dado" />
-                <Text fx:id="dadoResultText" styleClass="big-text" text="Ha salido: -" wrappingWidth="240" />
+                <ImageView fx:id="imagenDado" fitWidth="60" fitHeight="60">
+                     <image>
+                          <Image url="@images/dado.png"/>
+                     </image>
+                </ImageView>
+                <Text fx:id="dadoResultText" styleClass="big-text" text="Ha salido: -" wrappingWidth="240" textAlignment="CENTER" />
                 <Button fx:id="dado" maxWidth="Infinity" onAction="#handleDado" styleClass="primary" text="Tirar dado" />
             </VBox>
 
@@ -143,15 +164,15 @@
             <!-- Tarjeta Eventos -->
             <VBox maxWidth="360" spacing="10" styleClass="card">
                 <Label styleClass="card-title" text="Eventos" />
-                <Text fx:id="eventos" styleClass="events" text="Evento ocurrido" wrappingWidth="280" />
+                <TextFlow fx:id="eventosFlow" prefWidth="280" />
             </VBox>
 
             <!-- Tarjeta Control de Partida -->
             <VBox maxWidth="320" spacing="10" styleClass="card">
                 <Label styleClass="card-title" text="Partida" />
-                <Button fx:id="saveGameButton" maxWidth="Infinity" onAction="#handleSaveGame" style="-fx-background-color: grey;" text="Guardar" />
-                <Button fx:id="loadGameButton" maxWidth="Infinity" onAction="#handleLoadGame" style="-fx-background-color: grey;" text="Cargar" />
-                <Button fx:id="backMenuButton" maxWidth="Infinity" onAction="#handleBackMenu" style="-fx-background-color: grey;" text="Volver al Menú" />
+                <Button fx:id="saveGameButton" maxWidth="Infinity" onAction="#handleSaveGame" styleClass="primary" text="Guardar" />
+                <Button fx:id="loadGameButton" maxWidth="Infinity" onAction="#handleLoadGame" styleClass="primary" text="Cargar" />
+                <Button fx:id="backMenuButton" maxWidth="Infinity" onAction="#handleBackMenu" styleClass="primary" text="Volver al Menú" />
             </VBox>
 
         </FlowPane>
