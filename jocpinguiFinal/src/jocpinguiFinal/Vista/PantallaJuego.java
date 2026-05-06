@@ -1292,6 +1292,10 @@ public class PantallaJuego {
 		}
 
 		if (gestorPartida.getPartida().isFinalizado()) {
+			// Guardado automático al ganar para activar los Triggers de Oracle
+			String nombreAuto = "Victoria_" + j.getNom();
+			gestorPartida.guardarPartidaBD(nombreAuto, j.getNom());
+			
 			mostrarAnimacionGanador(gestorPartida.getPartida().getGanador());
 		} else {
 			gestorPartida.siguienteTurno();
@@ -1474,7 +1478,7 @@ public class PantallaJuego {
 						"-fx-cursor: hand;");
 		btn.setOnAction(e -> {
 			win.close();
-			handleBackMenu();
+			volverAlMenu();
 		});
 
 		card.getChildren().addAll(titulo, nombreTxt, btn);

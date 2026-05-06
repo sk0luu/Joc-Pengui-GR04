@@ -207,14 +207,50 @@ public class GestorPartida implements Serializable {
             oos.close();
             byte[] datosPartida = aplicarCifrado(baos.toByteArray());
 
-            // inserta en la tabla partidas (el blob)
-            String sqlBlob = "INSERT INTO PARTIDAS (nombre, usuario, datos, fecha_creacion) VALUES (?, ?, ?, SYSDATE)";
+            // Obtener la puntuación del jugador que guarda la partida
+            int puntuacion = 0;
+            for (Jugador jug : partida.getJugador()) {
+                if (jug.getNom() != null && jug.getNom().equalsIgnoreCase(usuario)) {
+                    puntuacion = jug.getPuntuacion();
+                    break;
+                }
+            }
+
+            // 0. ASEGURAR QUE EL USUARIO EXISTE ANTES DE INSERTAR (Solo para pinguinos, no para la foca)
+            if (!usuario.equalsIgnoreCase("Foca")) {
+                String sqlChk = "SELECT COUNT(*) FROM USUARIO WHERE NICKNAME = ?";
+                PreparedStatement psChk = conexionBD.prepareStatement(sqlChk);
+                psChk.setString(1, usuario);
+                ResultSet rsChkGlobal = psChk.executeQuery();
+                if (rsChkGlobal.next() && rsChkGlobal.getInt(1) == 0) {
+                    String sqlIns = "INSERT INTO USUARIO (NICKNAME, CONTRASENA, VICTORIAS) VALUES (?, 'invitado', 0)";
+                    PreparedStatement psIns = conexionBD.prepareStatement(sqlIns);
+                    psIns.setString(1, usuario);
+                    psIns.executeUpdate();
+                    psIns.close();
+                }
+                rsChkGlobal.close();
+                psChk.close();
+            }
+
+            // 1. Inserta en la tabla partidas (el blob)
+            String sqlBlob = "INSERT INTO PARTIDAS (nombre, usuario, datos, fecha_creacion, PUNTUACION) VALUES (?, ?, ?, SYSDATE, ?)";
             PreparedStatement psBlob = conexionBD.prepareStatement(sqlBlob);
             psBlob.setString(1, nombrePartida);
             psBlob.setString(2, usuario);
             psBlob.setBytes(3, datosPartida);
+            psBlob.setInt(4, puntuacion);
             psBlob.executeUpdate();
             psBlob.close();
+
+            // 1.5. INCREMENTAR VICTORIAS MANUALMENTE (Solo si no es la foca)
+            if (!usuario.equalsIgnoreCase("Foca")) {
+                String sqlUpdateVic = "UPDATE USUARIO SET VICTORIAS = VICTORIAS + 1 WHERE NICKNAME = ?";
+                PreparedStatement psUpdateVic = conexionBD.prepareStatement(sqlUpdateVic);
+                psUpdateVic.setString(1, usuario);
+                psUpdateVic.executeUpdate();
+                psUpdateVic.close();
+            }
 
             // 2. Guardar en tabla relacional PARTIDA
             String sqlPartida = "INSERT INTO PARTIDA (NUM_TURNOS, JUGADOR_ACTUAL, FECHA) VALUES (?, ?, SYSDATE)";
@@ -250,11 +286,11 @@ public class GestorPartida implements Serializable {
                         Pinguino p = (Pinguino) jug;
                         String nick = p.getNom() == null ? "Jugador_Desconocido" : p.getNom().trim();
 
-                        // verifica si el usuario existe para evitar errores de clave foranea
+                        // El usuario ya se asegura al principio o mediante el bucle si son otros pinguinos
+                        // Pero para JUGADOR_PARTIDA necesitamos que todos los pinguinos existan en USUARIO
                         psChkUsr.setString(1, nick);
                         ResultSet rsChk = psChkUsr.executeQuery();
-                        rsChk.next();
-                        if (rsChk.getInt(1) == 0) {
+                        if (rsChk.next() && rsChk.getInt(1) == 0) {
                             psCrearUsr.setString(1, nick);
                             psCrearUsr.executeUpdate();
                         }
@@ -287,19 +323,28 @@ public class GestorPartida implements Serializable {
             conexionBD.commit();
             conexionBD.setAutoCommit(true);
 
-            System.out.println("Partida guardada en BB.DD (BLOB y Tablas Relacionales): " + nombrePartida);
+            System.out.println("Partida guardada con éxito en BLOB y tablas relacionales.");
             return true;
+
         } catch (SQLException e) {
-            System.err.println("--- ERROR SQL GRAVE AL GUARDAR PARTIDA ---");
-            e.printStackTrace();
+            System.err.println("--- ERROR DE BASE DE DATOS AL GUARDAR ---");
+            System.err.println("Mensaje: " + e.getMessage());
+            System.err.println("Código Error Oracle: " + e.getErrorCode());
+            System.err.println("Estado SQL: " + e.getSQLState());
+            
             try {
-                if (conexionBD != null)
+                if (conexionBD != null) {
+                    System.out.println("Ejecutando rollback...");
                     conexionBD.rollback();
+                    conexionBD.setAutoCommit(true);
+                }
             } catch (SQLException ex) {
+                ex.printStackTrace();
             }
             return false;
-        } catch (IOException e) {
-            System.err.println("Error al serializar partida: " + e.getMessage());
+        } catch (Exception e) {
+            System.err.println("Error general al serializar/guardar: " + e.getMessage());
+            e.printStackTrace();
             return false;
         }
     }

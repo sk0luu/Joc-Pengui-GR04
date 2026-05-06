@@ -5,13 +5,16 @@ public abstract class Jugador implements java.io.Serializable {
 	protected int posicion;
 	protected String nombre;
 	protected String color;
-	private int turnosCongelado;
+    protected int puntuacion;
+    private int turnosCongelado;
+
     // constructor base para cualquier tipo de jugador (pinguino o foca)
     public Jugador(int posicion, String nom, String color) {
         this.posicion = 0;
         this.nombre = nom;
         this.color = color;
         this.turnosCongelado = 0;
+        this.puntuacion = 0;
     }
     // devuelve la posicion actual
     public int getPosicion() {
@@ -63,6 +66,14 @@ public abstract class Jugador implements java.io.Serializable {
 		if (this.turnosCongelado > 0) {
 			this.turnosCongelado--;
 		}
+	}
+
+	public int getPuntuacion() {
+		return puntuacion;
+	}
+
+	public void setPuntuacion(int puntuacion) {
+		this.puntuacion = puntuacion;
 	}
 
 	//Este metodo sobreescribe el jugador y pone el nombre color y posicion del jugador
