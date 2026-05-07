@@ -1314,7 +1314,6 @@ public class PantallaJuego {
 			Stage vPrincipal = AppState.getInstance().getVentanaPrincipal();
 			if (vPrincipal != null && vPrincipal.getProperties().get("ANIMACION_MOSTRADA") == null) {
 				vPrincipal.getProperties().put("ANIMACION_MOSTRADA", true);
-<<<<<<< HEAD
 
 				// Sumar victoria al nickname del jugador que ha ganado la partida
 				Jugador ganador = gestorPartida.getPartida().getGanador();
@@ -1322,13 +1321,6 @@ public class PantallaJuego {
 					registrarVictoria(ganador.getNom());
 				}
 
-=======
-				
-				// Guardado automático al ganar
-				String nombreAuto = "Victoria_" + j.getNom();
-				gestorPartida.guardarPartidaBD(nombreAuto, j.getNom());
-				
->>>>>>> 68409ec28a3ecaeeb3d7f58e97d4576706347a65
 				mostrarAnimacionGanador(gestorPartida.getPartida().getGanador());
 			}
 		} else {
@@ -1543,11 +1535,7 @@ public class PantallaJuego {
 						"-fx-cursor: hand;");
 		btn.setOnAction(e -> {
 			win.close();
-<<<<<<< HEAD
 			volverAlMenuDirecto(); // Vuelve directo al menú (victoria ya registrada)
-=======
-			handleBackMenu(); // Esto abrirá el diálogo con las opciones de Guardar/Cargar
->>>>>>> 68409ec28a3ecaeeb3d7f58e97d4576706347a65
 		});
 
 		card.getChildren().addAll(titulo, nombreTxt, btn);

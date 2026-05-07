@@ -247,6 +247,15 @@ public class GestorPartida implements Serializable {
             String sqlBlob = "INSERT INTO PARTIDAS (nombre, usuario, datos, fecha_creacion, PUNTUACION) VALUES (?, ?, ?, SYSDATE, ?)";
             // Usamos "ID" en mayúsculas explícitamente para Oracle
             PreparedStatement psBlob = conexionBD.prepareStatement(sqlBlob, new String[]{"ID"});
+            // Desactivamos el trigger temporalmente para evitar doble conteo de victorias.
+            // Las victorias se gestionan explícitamente desde registrarVictoria() en PantallaJuego.
+            try {
+                conexionBD.prepareStatement("ALTER TRIGGER TRG_INCREMENTAR_VICTORIAS DISABLE").execute();
+            } catch (Exception trigEx) {
+                // Si el trigger no existe, no hay problema
+                System.out.println("[BD] Trigger TRG_INCREMENTAR_VICTORIAS no encontrado (ignorando): " + trigEx.getMessage());
+            }
+
             psBlob.setString(1, nombrePartida);
             psBlob.setString(2, usuarioParaInsertar);
             psBlob.setBytes(3, datosPartida);
@@ -261,7 +270,12 @@ public class GestorPartida implements Serializable {
             rsKeys.close();
             psBlob.close();
 
-            // El incremento de VICTORIAS ahora lo hace el TRIGGER TRG_INCREMENTAR_VICTORIAS en la BD
+            // Volvemos a habilitar el trigger tras el INSERT
+            try {
+                conexionBD.prepareStatement("ALTER TRIGGER TRG_INCREMENTAR_VICTORIAS ENABLE").execute();
+            } catch (Exception trigEx) {
+                System.out.println("[BD] No se pudo re-habilitar TRG_INCREMENTAR_VICTORIAS: " + trigEx.getMessage());
+            }
 
             // 2. Guardar en tabla relacional PARTIDA usando el mismo ID
             if (idPartida != -1) {
