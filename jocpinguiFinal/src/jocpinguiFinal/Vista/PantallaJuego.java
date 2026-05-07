@@ -1285,18 +1285,26 @@ public class PantallaJuego {
 	}
 
 	private void verificarFinDeJuego(Jugador j) {
-		// Validar si el jugador acaba de ganar para actualizar la Partida
+		// Validar si el jugador acaba de ganar
 		if (j.getPosicion() >= TOTAL_CELLS - 1) {
 			gestorPartida.getPartida().setFinalizado(true);
 			gestorPartida.getPartida().setGanador(j);
+			// Sumamos el último turno (el de la victoria) antes de guardar
+			gestorPartida.getPartida().setTurnos(gestorPartida.getPartida().getTurnos() + 1);
 		}
 
 		if (gestorPartida.getPartida().isFinalizado()) {
-			// Guardado automático al ganar para activar los Triggers de Oracle
-			String nombreAuto = "Victoria_" + j.getNom();
-			gestorPartida.guardarPartidaBD(nombreAuto, j.getNom());
-			
-			mostrarAnimacionGanador(gestorPartida.getPartida().getGanador());
+			// Usamos AppState para acceder a las propiedades de la ventana principal
+			Stage vPrincipal = AppState.getInstance().getVentanaPrincipal();
+			if (vPrincipal != null && vPrincipal.getProperties().get("ANIMACION_MOSTRADA") == null) {
+				vPrincipal.getProperties().put("ANIMACION_MOSTRADA", true);
+				
+				// Guardado automático al ganar
+				String nombreAuto = "Victoria_" + j.getNom();
+				gestorPartida.guardarPartidaBD(nombreAuto, j.getNom());
+				
+				mostrarAnimacionGanador(gestorPartida.getPartida().getGanador());
+			}
 		} else {
 			gestorPartida.siguienteTurno();
 			actualizarInfoJugadores();
@@ -1409,6 +1417,7 @@ public class PantallaJuego {
 		// ── Confeti en toda la pantalla ──────────────────────────────────────
 		javafx.scene.layout.Pane confeti = new javafx.scene.layout.Pane();
 		confeti.setMouseTransparent(true);
+		confeti.setPickOnBounds(false); // Refuerzo para que no bloquee clics
 		String[] paleta = { "#FFD700", "#FF6B6B", "#4ECDC4", "#45B7D1", "#A78BFA", "#F9A8D4", "#86EFAC", "#FCD34D" };
 		java.util.Random rnd = new java.util.Random();
 		for (int i = 0; i < 150; i++) {
@@ -1470,7 +1479,7 @@ public class PantallaJuego {
 				"-fx-font-size: 30px; -fx-font-weight: 900; -fx-fill: white;" +
 						"-fx-font-family: 'Segoe UI Black', 'Arial Black', sans-serif;");
 
-		Button btn = new Button("Volver al Menu");
+		Button btn = new Button("Volver al Menú");
 		btn.setStyle(
 				"-fx-font-size: 16px; -fx-font-weight: bold;" +
 						"-fx-background-color: #FFD700;" +
@@ -1478,15 +1487,16 @@ public class PantallaJuego {
 						"-fx-cursor: hand;");
 		btn.setOnAction(e -> {
 			win.close();
-			volverAlMenu();
+			handleBackMenu(); // Esto abrirá el diálogo con las opciones de Guardar/Cargar
 		});
 
 		card.getChildren().addAll(titulo, nombreTxt, btn);
 		raiz.getChildren().addAll(confeti, card);
+		card.toFront();
 
 		// ── Escena y posición ────────────────────────────────────────────────
 		javafx.scene.Scene sc = new javafx.scene.Scene(raiz, w, h);
-		sc.setFill(javafx.scene.paint.Color.TRANSPARENT);
+		sc.setFill(javafx.scene.paint.Color.rgb(0, 0, 0, 0.01));
 		win.setScene(sc);
 
 		win.setX(principal.getX());
