@@ -175,6 +175,7 @@ public class GestorPartida implements Serializable {
 
     public void siguienteTurno() {
         if (partida != null) {
+            partida.setTurnos(partida.getTurnos() + 1);
             int total = partida.getJugador().size();
             if (total > 0) {
                 int siguiente = (partida.getJugadorActual() + 1) % total;
@@ -197,6 +198,9 @@ public class GestorPartida implements Serializable {
             return false;
         }
 
+        // Limpiamos el nombre de usuario para evitar errores de espacios
+        final String usuarioLimpio = (usuario != null) ? usuario.trim() : "Invitado";
+
         try {
             conexionBD.setAutoCommit(false);
 
@@ -210,22 +214,28 @@ public class GestorPartida implements Serializable {
             // Obtener la puntuación del jugador que guarda la partida
             int puntuacion = 0;
             for (Jugador jug : partida.getJugador()) {
-                if (jug.getNom() != null && jug.getNom().equalsIgnoreCase(usuario)) {
+                if (jug.getNom() != null && jug.getNom().equalsIgnoreCase(usuarioLimpio)) {
                     puntuacion = jug.getPuntuacion();
                     break;
                 }
             }
 
-            // 0. ASEGURAR QUE EL USUARIO EXISTE ANTES DE INSERTAR (Solo para pinguinos, no para la foca)
-            if (!usuario.equalsIgnoreCase("Foca")) {
-                String sqlChk = "SELECT COUNT(*) FROM USUARIO WHERE NICKNAME = ?";
+            // 0. ASEGURAR QUE EL USUARIO EXISTE ANTES DE INSERTAR
+            String usuarioParaInsertar = usuarioLimpio;
+            if (!usuarioLimpio.equalsIgnoreCase("Foca")) {
+                String sqlChk = "SELECT NICKNAME FROM USUARIO WHERE UPPER(NICKNAME) = UPPER(?)";
                 PreparedStatement psChk = conexionBD.prepareStatement(sqlChk);
-                psChk.setString(1, usuario);
+                psChk.setString(1, usuarioLimpio);
                 ResultSet rsChkGlobal = psChk.executeQuery();
-                if (rsChkGlobal.next() && rsChkGlobal.getInt(1) == 0) {
+
+                if (rsChkGlobal.next()) {
+                    // Si existe, recuperamos el nombre exacto como está en la BD (ej. "Lexoke" en vez de "lexoke")
+                    usuarioParaInsertar = rsChkGlobal.getString("NICKNAME");
+                } else {
+                    // Si no existe, lo creamos con el nombre que puso el jugador
                     String sqlIns = "INSERT INTO USUARIO (NICKNAME, CONTRASENA, VICTORIAS) VALUES (?, 'invitado', 0)";
                     PreparedStatement psIns = conexionBD.prepareStatement(sqlIns);
-                    psIns.setString(1, usuario);
+                    psIns.setString(1, usuarioLimpio);
                     psIns.executeUpdate();
                     psIns.close();
                 }
@@ -235,40 +245,50 @@ public class GestorPartida implements Serializable {
 
             // 1. Inserta en la tabla partidas (el blob)
             String sqlBlob = "INSERT INTO PARTIDAS (nombre, usuario, datos, fecha_creacion, PUNTUACION) VALUES (?, ?, ?, SYSDATE, ?)";
-            PreparedStatement psBlob = conexionBD.prepareStatement(sqlBlob);
+            // Usamos "ID" en mayúsculas explícitamente para Oracle
+            PreparedStatement psBlob = conexionBD.prepareStatement(sqlBlob, new String[]{"ID"});
             psBlob.setString(1, nombrePartida);
-            psBlob.setString(2, usuario);
+            psBlob.setString(2, usuarioParaInsertar);
             psBlob.setBytes(3, datosPartida);
             psBlob.setInt(4, puntuacion);
             psBlob.executeUpdate();
-            psBlob.close();
-
-            // 1.5. INCREMENTAR VICTORIAS MANUALMENTE (Solo si no es la foca)
-            if (!usuario.equalsIgnoreCase("Foca")) {
-                String sqlUpdateVic = "UPDATE USUARIO SET VICTORIAS = VICTORIAS + 1 WHERE NICKNAME = ?";
-                PreparedStatement psUpdateVic = conexionBD.prepareStatement(sqlUpdateVic);
-                psUpdateVic.setString(1, usuario);
-                psUpdateVic.executeUpdate();
-                psUpdateVic.close();
-            }
-
-            // 2. Guardar en tabla relacional PARTIDA
-            String sqlPartida = "INSERT INTO PARTIDA (NUM_TURNOS, JUGADOR_ACTUAL, FECHA) VALUES (?, ?, SYSDATE)";
-            PreparedStatement psPartida = conexionBD.prepareStatement(sqlPartida);
-            psPartida.setInt(1, 0); // Si quieres un registro de turno podrías ponerlo
-            psPartida.setInt(2, partida.getJugadorActual());
-            psPartida.executeUpdate();
-            psPartida.close();
 
             int idPartida = -1;
-            // Evitar getGeneratedKeys() en Oracle porque el driver ojdbc a veces no lo soporta bien o devuelve el ROWID internamente 
-            PreparedStatement psMax = conexionBD.prepareStatement("SELECT MAX(ID_PARTIDA) FROM PARTIDA");
-            ResultSet rsMax = psMax.executeQuery();
-            if (rsMax.next()) {
-                idPartida = rsMax.getInt(1);
+            ResultSet rsKeys = psBlob.getGeneratedKeys();
+            if (rsKeys.next()) {
+                idPartida = rsKeys.getInt(1);
             }
-            rsMax.close();
-            psMax.close();
+            rsKeys.close();
+            psBlob.close();
+
+            // El incremento de VICTORIAS ahora lo hace el TRIGGER TRG_INCREMENTAR_VICTORIAS en la BD
+
+            // 2. Guardar en tabla relacional PARTIDA usando el mismo ID
+            if (idPartida != -1) {
+                String sqlPartida = "INSERT INTO PARTIDA (ID_PARTIDA, NUM_TURNOS, JUGADOR_ACTUAL, FECHA) VALUES (?, ?, ?, SYSDATE)";
+                PreparedStatement psPartida = conexionBD.prepareStatement(sqlPartida);
+                psPartida.setInt(1, idPartida);
+                psPartida.setInt(2, partida.getTurnos());
+                psPartida.setInt(3, partida.getJugadorActual());
+                psPartida.executeUpdate();
+                psPartida.close();
+            } else {
+                // Fallback por si getGeneratedKeys falló, aunque no debería en Oracle moderno
+                String sqlPartida = "INSERT INTO PARTIDA (NUM_TURNOS, JUGADOR_ACTUAL, FECHA) VALUES (?, ?, SYSDATE)";
+                PreparedStatement psPartida = conexionBD.prepareStatement(sqlPartida);
+                psPartida.setInt(1, partida.getTurnos());
+                psPartida.setInt(2, partida.getJugadorActual());
+                psPartida.executeUpdate();
+                psPartida.close();
+
+                PreparedStatement psMax = conexionBD.prepareStatement("SELECT MAX(ID_PARTIDA) FROM PARTIDA");
+                ResultSet rsMax = psMax.executeQuery();
+                if (rsMax.next()) {
+                    idPartida = rsMax.getInt(1);
+                }
+                rsMax.close();
+                psMax.close();
+            }
 
             // 3. Guardar detalles del jugador en JUGADOR_PARTIDA
             if (idPartida != -1) {
@@ -386,7 +406,7 @@ public class GestorPartida implements Serializable {
         }
 
         try {
-            String sql = "SELECT id, nombre, fecha_creacion FROM PARTIDAS WHERE usuario = ? ORDER BY fecha_creacion DESC";
+            String sql = "SELECT id, nombre, fecha_creacion FROM PARTIDAS WHERE UPPER(usuario) = UPPER(?) ORDER BY fecha_creacion DESC";
             PreparedStatement ps = conexionBD.prepareStatement(sql);
             ps.setString(1, usuario);
             ResultSet rs = ps.executeQuery();

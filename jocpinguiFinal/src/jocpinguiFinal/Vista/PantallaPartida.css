@@ -162,3 +162,71 @@
     -fx-text-fill: #e2e8f0;
     -fx-border-color: rgba(100, 116, 139, 0.7);
 }
+
+/* =============================================
+   PANEL RANKING
+   ============================================= */
+
+.ranking-card {
+    -fx-background-color: transparent;
+}
+
+.ranking-inner {
+    -fx-background-color: rgba(10, 18, 36, 0.93);
+    -fx-background-radius: 20;
+    -fx-border-color: rgba(250, 204, 21, 0.35);
+    -fx-border-radius: 20;
+    -fx-border-width: 1.5;
+    -fx-effect: dropshadow(gaussian, rgba(250, 204, 21, 0.25), 28, 0.15, 0, 4),
+                dropshadow(gaussian, rgba(0, 0, 0, 0.7), 18, 0, 0, 0);
+}
+
+.ranking-title {
+    -fx-font-size: 18px;
+    -fx-font-weight: 900;
+    -fx-text-fill: #facc15;
+    -fx-alignment: center;
+    -fx-font-family: "Segoe UI Black", "Arial Black", sans-serif;
+    -fx-effect: dropshadow(gaussian, rgba(250, 204, 21, 0.55), 10, 0.3, 0, 0);
+}
+
+.ranking-subtitle {
+    -fx-font-size: 11px;
+    -fx-text-fill: rgba(203, 213, 225, 0.7);
+    -fx-alignment: center;
+}
+
+.ranking-row {
+    -fx-background-color: rgba(30, 41, 59, 0.6);
+    -fx-background-radius: 10;
+    -fx-border-color: rgba(56, 189, 248, 0.10);
+    -fx-border-radius: 10;
+    -fx-border-width: 1;
+    -fx-padding: 7 12 7 12;
+}
+
+.ranking-pos {
+    -fx-font-size: 13px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #facc15;
+    -fx-min-width: 28;
+}
+
+.ranking-name {
+    -fx-font-size: 13px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #e2e8f0;
+}
+
+.ranking-wins {
+    -fx-font-size: 12px;
+    -fx-text-fill: #38bdf8;
+    -fx-font-weight: bold;
+}
+
+.ranking-empty {
+    -fx-font-size: 12px;
+    -fx-text-fill: rgba(148, 163, 184, 0.7);
+    -fx-alignment: center;
+    -fx-padding: 10 0 0 0;
+}

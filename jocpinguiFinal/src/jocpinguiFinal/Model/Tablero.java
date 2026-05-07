@@ -47,7 +47,6 @@ public class Tablero implements java.io.Serializable {
 		for (int i = 0; i < 4; i++) especiales.add(new Trineo(0));
 		for (int i = 0; i < 3; i++) especiales.add(new Agujero(0));
 		for (int i = 0; i < 3; i++) especiales.add(new SueloQuebradizo(0));
-		
 		String[] listaEventos = {
 			"Viento a favor: +2", "Tormenta de nieve: -2", 
 			"Tormenta de nieve: Pierdes turno", "Robo en el nido: Pierdes un objeto",

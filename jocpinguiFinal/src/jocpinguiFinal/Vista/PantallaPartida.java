@@ -15,9 +15,15 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
+import javafx.scene.layout.Region;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.stage.FileChooser;
 import javafx.scene.Node;
+import java.sql.ResultSet;
+import java.sql.PreparedStatement;
 
 import java.io.File;
 import java.sql.Connection;
@@ -54,7 +60,11 @@ public class PantallaPartida {
 	
 	@FXML private Label titleLabel;
 	@FXML private Label infoText;
-	
+
+	// Ranking panel
+	@FXML private VBox rankingBox;
+	@FXML private Label rankingEmptyLabel;
+
 	private GestorPartida gestorPartida;
 	private Connection conexionBD; // conexion a oracle
 	private String usuarioActual; // usuario que ha hecho login
@@ -353,6 +363,68 @@ public class PantallaPartida {
 		// Si el gestor ya fue inicializado, actualizar la conexión
 		if (gestorPartida != null && conexion != null) {
 			gestorPartida.setConexionBD(conexion);
+		}
+		// Cargar ranking al recibir la conexión
+		cargarRanking();
+	}
+
+	// Consulta la BD y rellena el panel de ranking con top 10 victorias
+	private void cargarRanking() {
+		if (rankingBox == null) return;
+		rankingBox.getChildren().clear();
+
+		if (conexionBD == null) {
+			if (rankingEmptyLabel != null) rankingEmptyLabel.setText("Sin conexión a la BD");
+			return;
+		}
+
+		try {
+			String sql = "SELECT NICKNAME, VICTORIAS FROM USUARIO " +
+					     "WHERE VICTORIAS > 0 ORDER BY VICTORIAS DESC FETCH FIRST 10 ROWS ONLY";
+			PreparedStatement ps = conexionBD.prepareStatement(sql);
+			ResultSet rs = ps.executeQuery();
+
+			int pos = 1;
+			boolean hayDatos = false;
+			String[] medallas = {"🥇", "🥈", "🥉"};
+
+			while (rs.next()) {
+				hayDatos = true;
+				String nick = rs.getString("NICKNAME");
+				int victorias = rs.getInt("VICTORIAS");
+
+				// Fila de ranking
+				HBox fila = new HBox(8);
+				fila.getStyleClass().add("ranking-row");
+
+				String posStr = pos <= 3 ? medallas[pos - 1] : pos + ".";
+				Label lblPos = new Label(posStr);
+				lblPos.getStyleClass().add("ranking-pos");
+
+				Label lblNick = new Label(nick);
+				lblNick.getStyleClass().add("ranking-name");
+				HBox.setHgrow(lblNick, Priority.ALWAYS);
+				lblNick.setMaxWidth(Double.MAX_VALUE);
+
+				Label lblVic = new Label(victorias + " ★");
+				lblVic.getStyleClass().add("ranking-wins");
+
+				fila.getChildren().addAll(lblPos, lblNick, lblVic);
+				rankingBox.getChildren().add(fila);
+				pos++;
+			}
+
+			rs.close();
+			ps.close();
+
+			if (rankingEmptyLabel != null) {
+				rankingEmptyLabel.setVisible(!hayDatos);
+				rankingEmptyLabel.setText(hayDatos ? "" : "Aún no hay victorias registradas");
+			}
+
+		} catch (Exception e) {
+			System.out.println("Error cargando ranking: " + e.getMessage());
+			if (rankingEmptyLabel != null) rankingEmptyLabel.setText("Error al cargar el ranking");
 		}
 	}
 	

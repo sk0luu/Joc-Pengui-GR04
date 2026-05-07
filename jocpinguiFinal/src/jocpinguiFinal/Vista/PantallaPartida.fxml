@@ -19,7 +19,7 @@
     xmlns:fx="http://javafx.com/fxml/1"
     fx:controller="jocpinguiFinal.Vista.PantallaPartida">
 
-    <!-- Tarjeta centrada, solo ocupa lo que necesita -->
+    <!-- Tarjeta de configuración centrada -->
     <VBox fx:id="contentPane" spacing="14" styleClass="card"
           maxWidth="560" maxHeight="-Infinity" alignment="CENTER">
         <padding>
@@ -87,13 +87,9 @@
 
         <Region prefHeight="4"/>
 
-        <!-- Botones Save / Load -->
-        <HBox spacing="12">
-            <Button fx:id="loadGameButton" onAction="#handleLoadGame"
-                    styleClass="secondary-btn" text="Cargar Partida" maxWidth="Infinity" HBox.hgrow="ALWAYS"/>
-            <Button fx:id="saveGameButton" onAction="#handleSaveGame"
-                    styleClass="secondary-btn" text="Guardar Config" maxWidth="Infinity" HBox.hgrow="ALWAYS"/>
-        </HBox>
+        <!-- Botón Cargar -->
+        <Button fx:id="loadGameButton" onAction="#handleLoadGame"
+                styleClass="secondary-btn" text="Cargar Partida" maxWidth="Infinity"/>
 
         <!-- Botones Iniciar / Atras -->
         <HBox spacing="12">
@@ -103,6 +99,27 @@
                     styleClass="secondary-btn" text="Atras" maxWidth="Infinity" HBox.hgrow="ALWAYS"/>
         </HBox>
 
+    </VBox>
+
+    <!-- Panel de Ranking (derecha, superpuesto sobre el fondo) -->
+    <VBox fx:id="rankingPanel" styleClass="ranking-card"
+          maxWidth="300" maxHeight="-Infinity"
+          alignment="TOP_CENTER" spacing="0"
+          StackPane.alignment="CENTER_RIGHT">
+        <padding>
+            <Insets top="0" bottom="0" left="0" right="40"/>
+        </padding>
+        <VBox styleClass="ranking-inner" spacing="10">
+            <padding>
+                <Insets top="24" bottom="24" left="20" right="20"/>
+            </padding>
+            <Label text="🏆  RANKING" styleClass="ranking-title" maxWidth="Infinity"/>
+            <Label text="Top victorias globales" styleClass="ranking-subtitle" maxWidth="Infinity"/>
+            <Region prefHeight="6"/>
+            <VBox fx:id="rankingBox" spacing="6"/>
+            <Label fx:id="rankingEmptyLabel" text="Cargando ranking..."
+                   styleClass="ranking-empty" maxWidth="Infinity" wrapText="true"/>
+        </VBox>
     </VBox>
 
 </StackPane>

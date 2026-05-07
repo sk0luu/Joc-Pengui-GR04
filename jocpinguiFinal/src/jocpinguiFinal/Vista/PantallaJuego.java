@@ -618,11 +618,21 @@ public class PantallaJuego {
 
 	private void volverAlMenu() {
 		try {
+			// Limpiar el guard de animación para que futuras partidas puedan registrar victorias
+			Stage stage = AppState.getInstance().getVentanaPrincipal();
+			if (stage != null) {
+				stage.getProperties().remove("ANIMACION_MOSTRADA");
+			}
+
 			FXMLLoader loader = new FXMLLoader(getClass().getResource("/jocpinguiFinal/Vista/PantallaPartida.fxml"));
 			Parent root = loader.load();
 
+			// Pasar la conexión y el usuario al controlador para que el ranking
+			// se actualice con los datos frescos de la BD
+			PantallaPartida controllerPartida = loader.getController();
+			controllerPartida.setConexion(conexionBD, usuarioActual);
+
 			Scene scene = new Scene(root);
-			Stage stage = AppState.getInstance().getVentanaPrincipal();
 			stage.setScene(scene);
 			stage.setTitle("Pinguino Game - Configuración");
 			stage.setFullScreen(true);
@@ -633,6 +643,12 @@ public class PantallaJuego {
 			System.out.println("Error al volver al menú: " + e.getMessage());
 			e.printStackTrace();
 		}
+	}
+
+	// Vuelve al menú directamente sin diálogo (usada desde la pantalla de victoria)
+	private void volverAlMenuDirecto() {
+		invocarMetodo(backgroundMusicPlayer, "stop");
+		volverAlMenu();
 	}
 
 	@FXML
@@ -1285,18 +1301,28 @@ public class PantallaJuego {
 	}
 
 	private void verificarFinDeJuego(Jugador j) {
-		// Validar si el jugador acaba de ganar para actualizar la Partida
+		// Validar si el jugador acaba de ganar
 		if (j.getPosicion() >= TOTAL_CELLS - 1) {
 			gestorPartida.getPartida().setFinalizado(true);
 			gestorPartida.getPartida().setGanador(j);
+			// Sumamos el último turno (el de la victoria) antes de guardar
+			gestorPartida.getPartida().setTurnos(gestorPartida.getPartida().getTurnos() + 1);
 		}
 
 		if (gestorPartida.getPartida().isFinalizado()) {
-			// Guardado automático al ganar para activar los Triggers de Oracle
-			String nombreAuto = "Victoria_" + j.getNom();
-			gestorPartida.guardarPartidaBD(nombreAuto, j.getNom());
-			
-			mostrarAnimacionGanador(gestorPartida.getPartida().getGanador());
+			// Usamos AppState para acceder a las propiedades de la ventana principal
+			Stage vPrincipal = AppState.getInstance().getVentanaPrincipal();
+			if (vPrincipal != null && vPrincipal.getProperties().get("ANIMACION_MOSTRADA") == null) {
+				vPrincipal.getProperties().put("ANIMACION_MOSTRADA", true);
+
+				// Sumar victoria al nickname del jugador que ha ganado la partida
+				Jugador ganador = gestorPartida.getPartida().getGanador();
+				if (ganador != null) {
+					registrarVictoria(ganador.getNom());
+				}
+
+				mostrarAnimacionGanador(gestorPartida.getPartida().getGanador());
+			}
 		} else {
 			gestorPartida.siguienteTurno();
 			actualizarInfoJugadores();
@@ -1324,6 +1350,36 @@ public class PantallaJuego {
 				dado.setDisable(false);
 				agregarEvento("Turno de " + nuevoActual.getNom() + " (Casilla " + nuevoActual.getPosicion() + ")");
 			}
+		}
+	}
+
+	// Incrementa el contador de victorias del usuario en la BD
+	private void registrarVictoria(String usuario) {
+		if (conexionBD == null || usuario == null || usuario.isEmpty()) {
+			System.out.println("[Ranking] No hay conexi\u00f3n BD o usuario para registrar victoria.");
+			return;
+		}
+		try {
+			String usuarioLimpio = usuario.trim();
+
+			// Forzamos autoCommit=true para que el UPDATE se confirme inmediatamente,
+			// independientemente del estado previo de la transacci\u00f3n
+			conexionBD.setAutoCommit(true);
+
+			java.sql.PreparedStatement ps = conexionBD.prepareStatement(
+				"UPDATE USUARIO SET VICTORIAS = NVL(VICTORIAS, 0) + 1 WHERE UPPER(NICKNAME) = UPPER(?)");
+			ps.setString(1, usuarioLimpio);
+			int filas = ps.executeUpdate();
+			ps.close();
+
+			if (filas == 0) {
+				System.out.println("[Ranking] ADVERTENCIA: No se encontr\u00f3 el usuario '" + usuarioLimpio + "' en la BD. Victoria no registrada.");
+			} else {
+				System.out.println("[Ranking] Victoria registrada para '" + usuarioLimpio + "'. Filas actualizadas: " + filas);
+			}
+		} catch (Exception e) {
+			System.out.println("[Ranking] Error al registrar victoria: " + e.getMessage());
+			e.printStackTrace();
 		}
 	}
 
@@ -1409,6 +1465,7 @@ public class PantallaJuego {
 		// ── Confeti en toda la pantalla ──────────────────────────────────────
 		javafx.scene.layout.Pane confeti = new javafx.scene.layout.Pane();
 		confeti.setMouseTransparent(true);
+		confeti.setPickOnBounds(false); // Refuerzo para que no bloquee clics
 		String[] paleta = { "#FFD700", "#FF6B6B", "#4ECDC4", "#45B7D1", "#A78BFA", "#F9A8D4", "#86EFAC", "#FCD34D" };
 		java.util.Random rnd = new java.util.Random();
 		for (int i = 0; i < 150; i++) {
@@ -1470,7 +1527,7 @@ public class PantallaJuego {
 				"-fx-font-size: 30px; -fx-font-weight: 900; -fx-fill: white;" +
 						"-fx-font-family: 'Segoe UI Black', 'Arial Black', sans-serif;");
 
-		Button btn = new Button("Volver al Menu");
+		Button btn = new Button("Volver al Menú");
 		btn.setStyle(
 				"-fx-font-size: 16px; -fx-font-weight: bold;" +
 						"-fx-background-color: #FFD700;" +
@@ -1478,15 +1535,16 @@ public class PantallaJuego {
 						"-fx-cursor: hand;");
 		btn.setOnAction(e -> {
 			win.close();
-			volverAlMenu();
+			volverAlMenuDirecto(); // Vuelve directo al menú (victoria ya registrada)
 		});
 
 		card.getChildren().addAll(titulo, nombreTxt, btn);
 		raiz.getChildren().addAll(confeti, card);
+		card.toFront();
 
 		// ── Escena y posición ────────────────────────────────────────────────
 		javafx.scene.Scene sc = new javafx.scene.Scene(raiz, w, h);
-		sc.setFill(javafx.scene.paint.Color.TRANSPARENT);
+		sc.setFill(javafx.scene.paint.Color.rgb(0, 0, 0, 0.01));
 		win.setScene(sc);
 
 		win.setX(principal.getX());
