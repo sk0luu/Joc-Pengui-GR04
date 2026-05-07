@@ -227,7 +227,11 @@ public class GestorPartida implements Serializable {
                 PreparedStatement psChk = conexionBD.prepareStatement(sqlChk);
                 psChk.setString(1, usuarioLimpio);
                 ResultSet rsChkGlobal = psChk.executeQuery();
+<<<<<<< HEAD
 
+=======
+                
+>>>>>>> 68409ec28a3ecaeeb3d7f58e97d4576706347a65
                 if (rsChkGlobal.next()) {
                     // Si existe, recuperamos el nombre exacto como está en la BD (ej. "Lexoke" en vez de "lexoke")
                     usuarioParaInsertar = rsChkGlobal.getString("NICKNAME");
