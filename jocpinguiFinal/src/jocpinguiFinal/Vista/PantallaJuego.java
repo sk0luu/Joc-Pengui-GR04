@@ -885,31 +885,47 @@ public class PantallaJuego {
 				if (jugador instanceof Foca) {
 					invocarMetodo(sealSound, "play");
 				}
-				int posicionNueva = 0;
-				mensaje = "¡El oso ataca a " + jugador.getNom() + "! Vuelve al inicio.";
 
-				jugador.setPosicion(posicionNueva);
-				posicionDespues = posicionNueva;
+				// Dejar que el modelo decida: si tiene pez lo consume (soborno),
+				// si no lo tiene lo manda al inicio.
+				int posAntesDelOso = jugador.getPosicion();
+				casilla.realizarAccion(gestorPartida.getPartida(), jugador);
+				int posicionNueva = jugador.getPosicion();
 
-				// Actualizar posición visual
-				int jugadorIndex = gestorPartida.getPartida().getJugador().indexOf(jugador);
-				if (jugadorIndex >= 0) {
-					playerPositions.put(jugadorIndex, posicionNueva);
-					Circle circle = playerCircles.get(jugadorIndex);
-					if (circle != null) {
-						int newRow = posicionNueva / COLUMNS;
-						int newCol = posicionNueva % COLUMNS;
-						GridPane.setRowIndex(circle, newRow);
-						GridPane.setColumnIndex(circle, newCol);
-						circle.setTranslateX(0);
-						circle.setTranslateY(0);
+				if (posicionNueva == posAntesDelOso) {
+					// El pez fue consumido; el jugador se queda donde está
+					mensaje = "¡" + jugador.getNom() + " sobornó al oso con un pez! Sigue en la casilla " + posicionNueva + ".";
+					// Actualizar panel de inventario para reflejar el pez consumido
+					if (jugador instanceof Pinguino) {
+						actualizarInventario((Pinguino) jugador);
 					}
-				}
+					agregarEvento(mensaje);
+					return;
+				} else {
+					// No tenía pez; el modelo ya lo mandó al inicio (posición 0)
+					mensaje = "¡El oso ataca a " + jugador.getNom() + "! Vuelve al inicio.";
+					posicionDespues = posicionNueva;
 
-				agregarEvento(mensaje);
-				// Aplicar recursivamente el efecto de la nueva casilla
-				aplicarCasilla(jugador, posicionNueva);
-				return;
+					// Actualizar posición visual
+					int jugadorIndex = gestorPartida.getPartida().getJugador().indexOf(jugador);
+					if (jugadorIndex >= 0) {
+						playerPositions.put(jugadorIndex, posicionNueva);
+						Circle circle = playerCircles.get(jugadorIndex);
+						if (circle != null) {
+							int newRow = posicionNueva / COLUMNS;
+							int newCol = posicionNueva % COLUMNS;
+							GridPane.setRowIndex(circle, newRow);
+							GridPane.setColumnIndex(circle, newCol);
+							circle.setTranslateX(0);
+							circle.setTranslateY(0);
+						}
+					}
+
+					agregarEvento(mensaje);
+					// Aplicar recursivamente el efecto de la nueva casilla (posición 0 = salida)
+					aplicarCasilla(jugador, posicionNueva);
+					return;
+				}
 			} else if (casilla instanceof SueloQuebradizo) {
 				int cantItems = 0;
 				if (jugador instanceof Pinguino) {
@@ -1032,25 +1048,17 @@ public class PantallaJuego {
 				}
 
 				Pinguino p = (Pinguino) pinguino;
-				Inventario inv = p.getInv();
-				Item pez = null;
-				boolean pezEncontrado = false;
-				ArrayList<Item> itemsP = inv.getItems();
-				for (int i = 0; i < itemsP.size() && !pezEncontrado; i++) {
-					Item it = itemsP.get(i);
-					if (it.getNombre().toLowerCase().contains("pez")) {
-						pez = it;
-						pezEncontrado = true;
-					}
-				}
 
-				if (pez != null && pez.getCantidad() > 0) {
-					pez.setCantidad(pez.getCantidad() - 1);
-					if (pez.getCantidad() <= 0)
-						inv.eliminarItem(pez);
-					foca.congelar(2);
-					agregarEvento("¡" + p.getNom() + " alimentó a la Foca! Queda bloqueada 2 turnos.");
+				// La Foca NO se puede sobornar automáticamente:
+				// el jugador DEBE usar un pez manualmente (botón "Usar pez") ANTES de caer aquí.
+				if (foca.isSoborno()) {
+					// Ya fue sobornada manualmente → no ataca
+					agregarEvento("La Foca recuerda el soborno y deja pasar a " + p.getNom() + ".");
+					// Resetear el soborno para el próximo encuentro
+					foca.setSoborno(false);
+					return;
 				} else {
+					// No fue sobornada → ataca
 					invocarMetodo(sealSound, "play");
 					int mejorPos = -1;
 					for (int i = 0; i < posicion; i++) {
@@ -1435,6 +1443,8 @@ public class PantallaJuego {
 					}
 				} else {
 					agregarEvento("La Foca iba a aplastar a " + p.getNom() + " pero recordó su soborno.");
+					// Consumir el soborno tras usarlo
+					foca.setSoborno(false);
 				}
 				colision = true;
 			}

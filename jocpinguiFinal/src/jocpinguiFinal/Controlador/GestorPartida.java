@@ -211,14 +211,6 @@ public class GestorPartida implements Serializable {
             oos.close();
             byte[] datosPartida = aplicarCifrado(baos.toByteArray());
 
-            // Obtener la puntuación del jugador que guarda la partida
-            int puntuacion = 0;
-            for (Jugador jug : partida.getJugador()) {
-                if (jug.getNom() != null && jug.getNom().equalsIgnoreCase(usuarioLimpio)) {
-                    puntuacion = jug.getPuntuacion();
-                    break;
-                }
-            }
 
             // 0. ASEGURAR QUE EL USUARIO EXISTE ANTES DE INSERTAR
             String usuarioParaInsertar = usuarioLimpio;
@@ -244,7 +236,7 @@ public class GestorPartida implements Serializable {
             }
 
             // 1. Inserta en la tabla partidas (el blob)
-            String sqlBlob = "INSERT INTO PARTIDAS (nombre, usuario, datos, fecha_creacion, PUNTUACION) VALUES (?, ?, ?, SYSDATE, ?)";
+            String sqlBlob = "INSERT INTO PARTIDAS (nombre, usuario, datos, fecha_creacion) VALUES (?, ?, ?, SYSDATE)";
             // Usamos "ID" en mayúsculas explícitamente para Oracle
             PreparedStatement psBlob = conexionBD.prepareStatement(sqlBlob, new String[]{"ID"});
             // Desactivamos el trigger temporalmente para evitar doble conteo de victorias.
@@ -259,7 +251,6 @@ public class GestorPartida implements Serializable {
             psBlob.setString(1, nombrePartida);
             psBlob.setString(2, usuarioParaInsertar);
             psBlob.setBytes(3, datosPartida);
-            psBlob.setInt(4, puntuacion);
             psBlob.executeUpdate();
 
             int idPartida = -1;
