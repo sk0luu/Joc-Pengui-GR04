@@ -1258,6 +1258,7 @@ public class PantallaJuego {
 				actualizarInfoJugadores();
 			}
 		}
+		}
 	}
 
 	private void verificarFinDeJuego(Jugador j) {
