@@ -40,7 +40,11 @@ public class GestorPartida implements Serializable {
         ArrayList<Jugador> listaJugadores = new ArrayList<>();
         for (int i = 0; i < nombres.size() && i < 4; i++) {
             String color = i < coloresSeleccionados.size() ? coloresSeleccionados.get(i) : "Azul";
-            PinguinoJugador jugador = new PinguinoJugador(nombres.get(i), color, 0);
+            
+            // REGISTRO AUTOMÁTICO EN BD: Aseguramos que el usuario existe antes de iniciar
+            String nombreFinal = asegurarUsuarioEnBD(nombres.get(i));
+            
+            PinguinoJugador jugador = new PinguinoJugador(nombreFinal, color, 0);
             // objetos iniciales para cada jugador
             jugador.getInv().añadirItem(new ItemConcreto("Pez", 1));
             jugador.getInv().añadirItem(new ItemConcreto("Nieve", 1));
@@ -192,6 +196,44 @@ public class GestorPartida implements Serializable {
         this.conexionBD = conexion;
     }
 
+    /**
+     * Asegura que un usuario existe en la tabla USUARIO. 
+     * Si no existe, lo crea con una contraseña por defecto.
+     * Retorna el nombre exacto de la base de datos (por si ya existía con otra capitalización).
+     */
+    public String asegurarUsuarioEnBD(String nickname) {
+        if (conexionBD == null || nickname == null || nickname.trim().isEmpty() || nickname.equalsIgnoreCase("Foca")) {
+            return (nickname != null) ? nickname.trim() : "Invitado";
+        }
+
+        String nickLimpio = nickname.trim();
+        try {
+            // Verificar si existe (insensible a mayúsculas)
+            String sqlChk = "SELECT NICKNAME FROM USUARIO WHERE UPPER(NICKNAME) = UPPER(?)";
+            try (PreparedStatement psChk = conexionBD.prepareStatement(sqlChk)) {
+                psChk.setString(1, nickLimpio);
+                try (ResultSet rsChk = psChk.executeQuery()) {
+                    if (rsChk.next()) {
+                        // Ya existe, retornamos el nombre tal cual está en la BD
+                        return rsChk.getString("NICKNAME");
+                    } else {
+                        // No existe, lo insertamos
+                        String sqlIns = "INSERT INTO USUARIO (NICKNAME, CONTRASENA, VICTORIAS) VALUES (?, 'invitado', 0)";
+                        try (PreparedStatement psIns = conexionBD.prepareStatement(sqlIns)) {
+                            psIns.setString(1, nickLimpio);
+                            psIns.executeUpdate();
+                            System.out.println("[BD] Usuario registrado automáticamente al inicio: " + nickLimpio);
+                        }
+                        return nickLimpio;
+                    }
+                }
+            }
+        } catch (SQLException e) {
+            System.err.println("[BD] Error al asegurar usuario " + nickLimpio + ": " + e.getMessage());
+            return nickLimpio;
+        }
+    }
+
     // guarda la partida en la base de datos (blob y tablas relacionales)
     public boolean guardarPartidaBD(String nombrePartida, String usuario) {
         if (partida == null || conexionBD == null) {
@@ -212,28 +254,8 @@ public class GestorPartida implements Serializable {
             byte[] datosPartida = aplicarCifrado(baos.toByteArray());
 
 
-            // 0. ASEGURAR QUE EL USUARIO EXISTE ANTES DE INSERTAR
-            String usuarioParaInsertar = usuarioLimpio;
-            if (!usuarioLimpio.equalsIgnoreCase("Foca")) {
-                String sqlChk = "SELECT NICKNAME FROM USUARIO WHERE UPPER(NICKNAME) = UPPER(?)";
-                PreparedStatement psChk = conexionBD.prepareStatement(sqlChk);
-                psChk.setString(1, usuarioLimpio);
-                ResultSet rsChkGlobal = psChk.executeQuery();
-
-                if (rsChkGlobal.next()) {
-                    // Si existe, recuperamos el nombre exacto como está en la BD (ej. "Lexoke" en vez de "lexoke")
-                    usuarioParaInsertar = rsChkGlobal.getString("NICKNAME");
-                } else {
-                    // Si no existe, lo creamos con el nombre que puso el jugador
-                    String sqlIns = "INSERT INTO USUARIO (NICKNAME, CONTRASENA, VICTORIAS) VALUES (?, 'invitado', 0)";
-                    PreparedStatement psIns = conexionBD.prepareStatement(sqlIns);
-                    psIns.setString(1, usuarioLimpio);
-                    psIns.executeUpdate();
-                    psIns.close();
-                }
-                rsChkGlobal.close();
-                psChk.close();
-            }
+            // 0. ASEGURAR QUE EL USUARIO EXISTE ANTES DE INSERTAR LA PARTIDA
+            String usuarioParaInsertar = asegurarUsuarioEnBD(usuarioLimpio);
 
             // 1. Inserta en la tabla partidas (el blob)
             String sqlBlob = "INSERT INTO PARTIDAS (nombre, usuario, datos, fecha_creacion) VALUES (?, ?, ?, SYSDATE)";
@@ -297,12 +319,6 @@ public class GestorPartida implements Serializable {
 
             // 3. Guardar detalles del jugador en JUGADOR_PARTIDA
             if (idPartida != -1) {
-                String sqlVerificarUsr = "SELECT COUNT(*) FROM USUARIO WHERE NICKNAME = ?";
-                PreparedStatement psChkUsr = conexionBD.prepareStatement(sqlVerificarUsr);
-
-                String sqlCrearUsr = "INSERT INTO USUARIO (NICKNAME, CONTRASENA) VALUES (?, 'invitado')";
-                PreparedStatement psCrearUsr = conexionBD.prepareStatement(sqlCrearUsr);
-
                 String sqlJugador = "INSERT INTO JUGADOR_PARTIDA (ID_PARTIDA, NICKNAME, POSICION, COLOR, INVENTARIO) VALUES (?, ?, ?, ?, ?)";
                 PreparedStatement psJugador = conexionBD.prepareStatement(sqlJugador);
 
@@ -311,15 +327,8 @@ public class GestorPartida implements Serializable {
                         Pinguino p = (Pinguino) jug;
                         String nick = p.getNom() == null ? "Jugador_Desconocido" : p.getNom().trim();
 
-                        // El usuario ya se asegura al principio o mediante el bucle si son otros pinguinos
-                        // Pero para JUGADOR_PARTIDA necesitamos que todos los pinguinos existan en USUARIO
-                        psChkUsr.setString(1, nick);
-                        ResultSet rsChk = psChkUsr.executeQuery();
-                        if (rsChk.next() && rsChk.getInt(1) == 0) {
-                            psCrearUsr.setString(1, nick);
-                            psCrearUsr.executeUpdate();
-                        }
-                        rsChk.close();
+                        // Aseguramos que el pinguino existe en la tabla USUARIO
+                        String nickOficial = asegurarUsuarioEnBD(nick);
 
                         // guarda el resumen del inventario en texto
                         StringBuilder invTexto = new StringBuilder();
@@ -330,7 +339,7 @@ public class GestorPartida implements Serializable {
                         }
 
                         psJugador.setInt(1, idPartida);
-                        psJugador.setString(2, nick);
+                        psJugador.setString(2, nickOficial);
                         psJugador.setInt(3, p.getPosicion());
                         psJugador.setString(4, p.getColor() != null ? p.getColor() : "Desconocido");
                         
@@ -340,8 +349,6 @@ public class GestorPartida implements Serializable {
                         psJugador.executeUpdate();
                     }
                 }
-                psChkUsr.close();
-                psCrearUsr.close();
                 psJugador.close();
             }
 
