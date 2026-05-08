@@ -797,33 +797,24 @@ public class PantallaJuego {
 			// Aplicar efecto según el tipo de casilla
 			if (casilla instanceof Agujero) {
 				invocarMetodo(agujeroSound, "play");
-				int destino = 0;
-				int posActualHoyo = posicion;
 
-				// Buscar el agujero anterior en el tablero basándonos en el índice del array
-				int mejorPos = -1;
-				for (int i = 0; i < posActualHoyo; i++) {
-					if (casillas.get(i) instanceof Agujero) {
-						mejorPos = i;
-					}
-				}
-
-				if (mejorPos != -1) {
-					destino = mejorPos;
-				}
-
-				jugador.setPosicion(destino);
+				// Delegar al modelo: Agujero.realizarAccion() aplica la mecánica correcta:
+				//   · primer agujero (sin agujero previo) → posición 0 (inicio)
+				//   · cualquier otro agujero → agujero anterior más cercano
+				int posAntesDelAgujero = jugador.getPosicion();
+				casilla.realizarAccion(gestorPartida.getPartida(), jugador);
+				int destino = jugador.getPosicion();
 				posicionDespues = destino;
+
+				System.out.println("[DEBUG] Jugador cae en hoyo en " + posAntesDelAgujero + ", destino: " + destino);
 
 				if (destino == 0) {
 					mensaje = "¡" + jugador.getNom() + " cayó en el primer agujero y volvió al inicio!";
 				} else {
-					mensaje = "¡" + jugador.getNom() + " cayó en un agujero y volvió al anterior en casilla " + destino
-							+ "!";
+					mensaje = "¡" + jugador.getNom() + " cayó en un agujero y volvió al anterior en casilla " + destino + "!";
 				}
-				System.out.println("[DEBUG] Jugador cae en hoyo en " + posActualHoyo + ", destino: " + destino);
 
-				// Actualizar posición visual inmediatamente
+				// Actualizar posición visual
 				int jugadorIndex = gestorPartida.getPartida().getJugador().indexOf(jugador);
 				if (jugadorIndex >= 0) {
 					playerPositions.put(jugadorIndex, destino);
