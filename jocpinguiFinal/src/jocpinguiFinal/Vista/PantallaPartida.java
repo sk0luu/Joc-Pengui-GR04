@@ -190,30 +190,29 @@ public class PantallaPartida {
 		
 		if (nombres.isEmpty()) {
 			infoText.setText("Error: Debes ingresar al menos un nombre de jugador");
-			return;
-		}
-		
-		try {
-			boolean conFoca = focaCheckBox != null && focaCheckBox.isSelected();
-			gestorPartida.nuevaPartida(nombres, colores, conFoca);
-			
-			FXMLLoader loader = new FXMLLoader(getClass().getResource("/jocpinguiFinal/Vista/PantallaJuego.fxml"));
-			Parent root = loader.load();
-			
-			PantallaJuego controllerJuego = loader.getController();
-			controllerJuego.setConexion(conexionBD);
-			controllerJuego.setUsuario(usuarioActual);
-			controllerJuego.setGestorPartida(gestorPartida);
-			
-			Scene scene = new Scene(root);
-			Stage stage = AppState.getInstance().getVentanaPrincipal();
-			stage.setScene(scene);
-			stage.setTitle("Pinguino Game - En Partida");
-			stage.setFullScreen(true);
-			stage.setFullScreenExitKeyCombination(javafx.scene.input.KeyCombination.NO_MATCH);
-			stage.show();
-		} catch (Exception e) {
-			infoText.setText("Error: No se pudo iniciar la partida");
+		} else {
+			try {
+				boolean conFoca = focaCheckBox != null && focaCheckBox.isSelected();
+				gestorPartida.nuevaPartida(nombres, colores, conFoca);
+				
+				FXMLLoader loader = new FXMLLoader(getClass().getResource("/jocpinguiFinal/Vista/PantallaJuego.fxml"));
+				Parent root = loader.load();
+				
+				PantallaJuego controllerJuego = loader.getController();
+				controllerJuego.setConexion(conexionBD);
+				controllerJuego.setUsuario(usuarioActual);
+				controllerJuego.setGestorPartida(gestorPartida);
+				
+				Scene scene = new Scene(root);
+				Stage stage = AppState.getInstance().getVentanaPrincipal();
+				stage.setScene(scene);
+				stage.setTitle("Pinguino Game - En Partida");
+				stage.setFullScreen(true);
+				stage.setFullScreenExitKeyCombination(javafx.scene.input.KeyCombination.NO_MATCH);
+				stage.show();
+			} catch (Exception e) {
+				infoText.setText("Error: No se pudo iniciar la partida");
+			}
 		}
 	}
 	
@@ -224,52 +223,51 @@ public class PantallaPartida {
 
 		if (partidas.isEmpty()) {
 			infoText.setText("No hay partidas guardadas");
-			return;
-		}
+		} else {
+			// Crear lista de opciones con nombre + fecha
+			ArrayList<String> opciones = new ArrayList<>();
+			Map<String, Integer> mapaNombresID = new HashMap<>();
+			for (String[] partida : partidas) {
+				String opcion = partida[1] + " (" + partida[2] + ")";
+				opciones.add(opcion);
+				mapaNombresID.put(opcion, Integer.parseInt(partida[0]));
+			}
 
-		// Crear lista de opciones con nombre + fecha
-		ArrayList<String> opciones = new ArrayList<>();
-		Map<String, Integer> mapaNombresID = new HashMap<>();
-		for (String[] partida : partidas) {
-			String opcion = partida[1] + " (" + partida[2] + ")";
-			opciones.add(opcion);
-			mapaNombresID.put(opcion, Integer.parseInt(partida[0]));
-		}
+			// Mostrar diálogo de selección
+			ChoiceDialog<String> dialog = new ChoiceDialog<>(opciones.get(0), opciones);
+			dialog.initOwner(AppState.getInstance().getVentanaPrincipal());
+			dialog.setTitle("Cargar Partida");
+			dialog.setHeaderText("Selecciona una partida para cargar");
+			dialog.setContentText("Partidas:");
 
-		// Mostrar diálogo de selección
-		ChoiceDialog<String> dialog = new ChoiceDialog<>(opciones.get(0), opciones);
-		dialog.initOwner(AppState.getInstance().getVentanaPrincipal());
-		dialog.setTitle("Cargar Partida");
-		dialog.setHeaderText("Selecciona una partida para cargar");
-		dialog.setContentText("Partidas:");
-
-		Optional<String> resultado = dialog.showAndWait();
-		if (resultado.isPresent()) {
-			int idPartida = mapaNombresID.get(resultado.get());
-			if (gestorPartida.cargarPartidaBD(idPartida)) {
-				// Cargar directamente el juego
-				try {
-					FXMLLoader loader = new FXMLLoader(getClass().getResource("/jocpinguiFinal/Vista/PantallaJuego.fxml"));
-					Parent root = loader.load();
-					
-					PantallaJuego controllerJuego = loader.getController();
-					controllerJuego.setConexion(conexionBD);
-					controllerJuego.setUsuario(usuarioActual);
-					controllerJuego.setGestorPartida(gestorPartida);
-					
-					Scene scene = new Scene(root);
-				Stage stage = AppState.getInstance().getVentanaPrincipal();
-				stage.setScene(scene);
-				stage.setTitle("Pinguino Game - En Partida");
-				stage.setFullScreen(true);
-				stage.setFullScreenExitKeyCombination(javafx.scene.input.KeyCombination.NO_MATCH);
-				stage.show();
-				} catch (Exception e) {
-					System.out.println("Error al cargar PantallaJuego: " + e.getMessage());
-					mostrarAlerta("Error", "No se pudo cargar la partida");
+			Optional<String> resultado = dialog.showAndWait();
+			if (resultado.isPresent()) {
+				int idPartida = mapaNombresID.get(resultado.get());
+				if (gestorPartida.cargarPartidaBD(idPartida)) {
+					// Cargar directamente el juego
+					try {
+						FXMLLoader loader = new FXMLLoader(getClass().getResource("/jocpinguiFinal/Vista/PantallaJuego.fxml"));
+						Parent root = loader.load();
+						
+						PantallaJuego controllerJuego = loader.getController();
+						controllerJuego.setConexion(conexionBD);
+						controllerJuego.setUsuario(usuarioActual);
+						controllerJuego.setGestorPartida(gestorPartida);
+						
+						Scene scene = new Scene(root);
+						Stage stage = AppState.getInstance().getVentanaPrincipal();
+						stage.setScene(scene);
+						stage.setTitle("Pinguino Game - En Partida");
+						stage.setFullScreen(true);
+						stage.setFullScreenExitKeyCombination(javafx.scene.input.KeyCombination.NO_MATCH);
+						stage.show();
+					} catch (Exception e) {
+						System.out.println("Error al cargar PantallaJuego: " + e.getMessage());
+						mostrarAlerta("Error", "No se pudo cargar la partida");
+					}
+				} else {
+					mostrarAlerta("Error", "No se pudo cargar la partida del archivo");
 				}
-			} else {
-				mostrarAlerta("Error", "No se pudo cargar la partida del archivo");
 			}
 		}
 	}
@@ -278,25 +276,24 @@ public class PantallaPartida {
 	private void handleSaveGame(ActionEvent event) {
 		if (gestorPartida == null || gestorPartida.getPartida() == null) {
 			mostrarAlerta("Error", "No hay partida para guardar. Inicia una partida primero.");
-			return;
-		}
+		} else {
+			FileChooser fileChooser = new FileChooser();
+			fileChooser.setTitle("Guardar Partida");
+			fileChooser.getExtensionFilters().add(
+				new FileChooser.ExtensionFilter("Archivos de Partida (*.partida)", "*.partida")
+			);
+			fileChooser.setInitialFileName("partida.partida");
 
-		FileChooser fileChooser = new FileChooser();
-		fileChooser.setTitle("Guardar Partida");
-		fileChooser.getExtensionFilters().add(
-			new FileChooser.ExtensionFilter("Archivos de Partida (*.partida)", "*.partida")
-		);
-		fileChooser.setInitialFileName("partida.partida");
+			Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+			File archivo = fileChooser.showSaveDialog(stage);
 
-		Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-		File archivo = fileChooser.showSaveDialog(stage);
-
-		if (archivo != null) {
-			if (gestorPartida.guardarPartida(archivo)) {
-				mostrarAlerta("Éxito", "Partida guardada en: " + archivo.getName());
-				System.out.println("Partida guardada en: " + archivo.getAbsolutePath());
-			} else {
-				mostrarAlerta("Error", "Error al guardar la partida");
+			if (archivo != null) {
+				if (gestorPartida.guardarPartida(archivo)) {
+					mostrarAlerta("Éxito", "Partida guardada en: " + archivo.getName());
+					System.out.println("Partida guardada en: " + archivo.getAbsolutePath());
+				} else {
+					mostrarAlerta("Error", "Error al guardar la partida");
+				}
 			}
 		}
 	}
@@ -375,56 +372,55 @@ public class PantallaPartida {
 
 		if (conexionBD == null) {
 			if (rankingEmptyLabel != null) rankingEmptyLabel.setText("Sin conexión a la BD");
-			return;
-		}
+		} else {
+			try {
+				String sql = "SELECT NICKNAME, VICTORIAS FROM USUARIO " +
+						     "WHERE VICTORIAS > 0 ORDER BY VICTORIAS DESC FETCH FIRST 10 ROWS ONLY";
+				PreparedStatement ps = conexionBD.prepareStatement(sql);
+				ResultSet rs = ps.executeQuery();
 
-		try {
-			String sql = "SELECT NICKNAME, VICTORIAS FROM USUARIO " +
-					     "WHERE VICTORIAS > 0 ORDER BY VICTORIAS DESC FETCH FIRST 10 ROWS ONLY";
-			PreparedStatement ps = conexionBD.prepareStatement(sql);
-			ResultSet rs = ps.executeQuery();
+				int pos = 1;
+				boolean hayDatos = false;
+				String[] medallas = {"🥇", "🥈", "🥉"};
 
-			int pos = 1;
-			boolean hayDatos = false;
-			String[] medallas = {"🥇", "🥈", "🥉"};
+				while (rs.next()) {
+					hayDatos = true;
+					String nick = rs.getString("NICKNAME");
+					int victorias = rs.getInt("VICTORIAS");
 
-			while (rs.next()) {
-				hayDatos = true;
-				String nick = rs.getString("NICKNAME");
-				int victorias = rs.getInt("VICTORIAS");
+					// Fila de ranking
+					HBox fila = new HBox(8);
+					fila.getStyleClass().add("ranking-row");
 
-				// Fila de ranking
-				HBox fila = new HBox(8);
-				fila.getStyleClass().add("ranking-row");
+					String posStr = pos <= 3 ? medallas[pos - 1] : pos + ".";
+					Label lblPos = new Label(posStr);
+					lblPos.getStyleClass().add("ranking-pos");
 
-				String posStr = pos <= 3 ? medallas[pos - 1] : pos + ".";
-				Label lblPos = new Label(posStr);
-				lblPos.getStyleClass().add("ranking-pos");
+					Label lblNick = new Label(nick);
+					lblNick.getStyleClass().add("ranking-name");
+					HBox.setHgrow(lblNick, Priority.ALWAYS);
+					lblNick.setMaxWidth(Double.MAX_VALUE);
 
-				Label lblNick = new Label(nick);
-				lblNick.getStyleClass().add("ranking-name");
-				HBox.setHgrow(lblNick, Priority.ALWAYS);
-				lblNick.setMaxWidth(Double.MAX_VALUE);
+					Label lblVic = new Label(victorias + " ★");
+					lblVic.getStyleClass().add("ranking-wins");
 
-				Label lblVic = new Label(victorias + " ★");
-				lblVic.getStyleClass().add("ranking-wins");
+					fila.getChildren().addAll(lblPos, lblNick, lblVic);
+					rankingBox.getChildren().add(fila);
+					pos++;
+				}
 
-				fila.getChildren().addAll(lblPos, lblNick, lblVic);
-				rankingBox.getChildren().add(fila);
-				pos++;
+				rs.close();
+				ps.close();
+
+				if (rankingEmptyLabel != null) {
+					rankingEmptyLabel.setVisible(!hayDatos);
+					rankingEmptyLabel.setText(hayDatos ? "" : "Aún no hay victorias registradas");
+				}
+
+			} catch (Exception e) {
+				System.out.println("Error cargando ranking: " + e.getMessage());
+				if (rankingEmptyLabel != null) rankingEmptyLabel.setText("Error al cargar el ranking");
 			}
-
-			rs.close();
-			ps.close();
-
-			if (rankingEmptyLabel != null) {
-				rankingEmptyLabel.setVisible(!hayDatos);
-				rankingEmptyLabel.setText(hayDatos ? "" : "Aún no hay victorias registradas");
-			}
-
-		} catch (Exception e) {
-			System.out.println("Error cargando ranking: " + e.getMessage());
-			if (rankingEmptyLabel != null) rankingEmptyLabel.setText("Error al cargar el ranking");
 		}
 	}
 	

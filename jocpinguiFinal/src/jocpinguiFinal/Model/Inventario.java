@@ -48,13 +48,16 @@ public class Inventario implements java.io.Serializable {
 	}
 
 	private void incrementarOAgregar(String nombre, int cantidad) {
+		boolean encontrado = false;
 		for (Item it : items) {
 			if (it.getNombre().equalsIgnoreCase(nombre)) {
 				it.setCantidad(it.getCantidad() + cantidad);
-				return;
+				encontrado = true;
 			}
 		}
-		items.add(new ItemConcreto(nombre, cantidad));
+		if (!encontrado) {
+			items.add(new ItemConcreto(nombre, cantidad));
+		}
 	}
 	//Este metodo elimina el item que decidas
 	public void eliminarItem(Item item) {

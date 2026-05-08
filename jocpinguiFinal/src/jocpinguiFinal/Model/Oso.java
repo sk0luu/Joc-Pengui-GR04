@@ -26,11 +26,10 @@ public class Oso extends Casilla {
                 pez.setCantidad(pez.getCantidad() - 1);
                 if (pez.getCantidad() <= 0) p.getInv().eliminarItem(pez);
                 System.out.println("¡Has sobornado al oso con un pez! Te deja marchar en paz.");
-                return;
+            } else {
+                jugador.setPosicion(0);
+                System.out.println("¡El oso te ha golpeado! Vuelves al inicio.");
             }
         }
-        
-        jugador.setPosicion(0);
-        System.out.println("¡El oso te ha golpeado! Vuelves al inicio.");
     }
 }

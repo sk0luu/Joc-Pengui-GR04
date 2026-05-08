@@ -48,36 +48,35 @@ public class PantallaMenu {
         // Validar que no esté vacío
         if (username.trim().isEmpty()) {
             mostrarAlerta("Error", "El usuario no puede estar vacío");
-            return;
-        }
-
-        Connection conexion = verificarCredencialesOracleYConectar(username, password);
-        if (conexion != null) {
-            try {
-                // Cambio a PantallaPartida
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("/jocpinguiFinal/Vista/PantallaPartida.fxml"));
-                Parent root = loader.load();
-                
-                // Pasar la conexión y usuario a PantallaPartida
-                PantallaPartida controllerPartida = loader.getController();
-                controllerPartida.setConexion(conexion, username);
-
-                Scene scene = new Scene(root);
-                Stage stage = AppState.getInstance().getVentanaPrincipal();
-                stage.setScene(scene);
-                stage.setTitle("Pinguino Game - Configuración");
-                stage.setFullScreen(true);
-                stage.setFullScreenExitKeyCombination(javafx.scene.input.KeyCombination.NO_MATCH);
-                stage.show();
-
-            } catch (Exception e) {
-                System.out.println("Error al cargar PantallaPartida.fxml: " + e.getMessage());
-                e.printStackTrace();
-                mostrarAlerta("Error", "No se pudo cargar la pantalla de configuración");
-            }
         } else {
-            mostrarAlerta("Error", "Usuario o contraseña incorrectos");
-            passField.clear();
+            Connection conexion = verificarCredencialesOracleYConectar(username, password);
+            if (conexion != null) {
+                try {
+                    // Cambio a PantallaPartida
+                    FXMLLoader loader = new FXMLLoader(getClass().getResource("/jocpinguiFinal/Vista/PantallaPartida.fxml"));
+                    Parent root = loader.load();
+                    
+                    // Pasar la conexión y usuario a PantallaPartida
+                    PantallaPartida controllerPartida = loader.getController();
+                    controllerPartida.setConexion(conexion, username);
+
+                    Scene scene = new Scene(root);
+                    Stage stage = AppState.getInstance().getVentanaPrincipal();
+                    stage.setScene(scene);
+                    stage.setTitle("Pinguino Game - Configuración");
+                    stage.setFullScreen(true);
+                    stage.setFullScreenExitKeyCombination(javafx.scene.input.KeyCombination.NO_MATCH);
+                    stage.show();
+
+                } catch (Exception e) {
+                    System.out.println("Error al cargar PantallaPartida.fxml: " + e.getMessage());
+                    e.printStackTrace();
+                    mostrarAlerta("Error", "No se pudo cargar la pantalla de configuración");
+                }
+            } else {
+                mostrarAlerta("Error", "Usuario o contraseña incorrectos");
+                passField.clear();
+            }
         }
     }
 

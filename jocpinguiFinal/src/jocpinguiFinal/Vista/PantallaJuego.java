@@ -486,34 +486,33 @@ public class PantallaJuego {
 			lento_t.setText("Dado lento: 0");
 			peces_t.setText("Peces: 0");
 			nieve_t.setText("Bolas de nieve: 0");
-			return;
-		}
+		} else {
+			Pinguino p = (Pinguino) jugador;
+			Inventario inv = p.getInv();
 
-		Pinguino p = (Pinguino) jugador;
-		Inventario inv = p.getInv();
+			int pezCount = 0;
+			int nieveCount = 0;
+			int rapidoCount = 0;
+			int lentoCount = 0;
 
-		int pezCount = 0;
-		int nieveCount = 0;
-		int rapidoCount = 0;
-		int lentoCount = 0;
-
-		for (Item item : inv.getItems()) {
-			String nombre = item.getNombre().toLowerCase();
-			if (nombre.contains("pez")) {
-				pezCount += item.getCantidad();
-			} else if (nombre.contains("nieve") || nombre.contains("hielo")) {
-				nieveCount += item.getCantidad();
-			} else if (nombre.contains("rápido")) {
-				rapidoCount += item.getCantidad();
-			} else if (nombre.contains("lento")) {
-				lentoCount += item.getCantidad();
+			for (Item item : inv.getItems()) {
+				String nombre = item.getNombre().toLowerCase();
+				if (nombre.contains("pez")) {
+					pezCount += item.getCantidad();
+				} else if (nombre.contains("nieve") || nombre.contains("hielo")) {
+					nieveCount += item.getCantidad();
+				} else if (nombre.contains("rápido")) {
+					rapidoCount += item.getCantidad();
+				} else if (nombre.contains("lento")) {
+					lentoCount += item.getCantidad();
+				}
 			}
-		}
 
-		rapido_t.setText("Dado rápido: " + rapidoCount);
-		lento_t.setText("Dado lento: " + lentoCount);
-		peces_t.setText("Peces: " + pezCount);
-		nieve_t.setText("Bolas de nieve: " + nieveCount);
+			rapido_t.setText("Dado rápido: " + rapidoCount);
+			lento_t.setText("Dado lento: " + lentoCount);
+			peces_t.setText("Peces: " + pezCount);
+			nieve_t.setText("Bolas de nieve: " + nieveCount);
+		}
 	}
 
 	// Acciones del menú principal
@@ -526,25 +525,24 @@ public class PantallaJuego {
 	private void handleSaveGame() {
 		if (gestorPartida == null || gestorPartida.getPartida() == null) {
 			agregarEvento("Error: No hay partida para guardar");
-			return;
-		}
+		} else {
+			// Mostrar diálogo para ingreso del nombre de la partida
+			TextInputDialog dialog = new TextInputDialog("Mi Partida");
+			dialog.initOwner(AppState.getInstance().getVentanaPrincipal());
+			dialog.setTitle("Guardar Partida");
+			dialog.setHeaderText("Ingresa un nombre para la partida");
+			dialog.setContentText("Nombre:");
 
-		// Mostrar diálogo para ingreso del nombre de la partida
-		TextInputDialog dialog = new TextInputDialog("Mi Partida");
-		dialog.initOwner(AppState.getInstance().getVentanaPrincipal());
-		dialog.setTitle("Guardar Partida");
-		dialog.setHeaderText("Ingresa un nombre para la partida");
-		dialog.setContentText("Nombre:");
+			Optional<String> resultado = dialog.showAndWait();
+			if (resultado.isPresent() && !resultado.get().trim().isEmpty()) {
+				String nombrePartida = resultado.get().trim();
 
-		Optional<String> resultado = dialog.showAndWait();
-		if (resultado.isPresent() && !resultado.get().trim().isEmpty()) {
-			String nombrePartida = resultado.get().trim();
-
-			if (gestorPartida.guardarPartidaBD(nombrePartida, usuarioActual)) {
-				agregarEvento("Partida guardada en BB.DD: " + nombrePartida);
-				System.out.println("Partida guardada en BB.DD");
-			} else {
-				agregarEvento("Error al guardar la partida en BB.DD");
+				if (gestorPartida.guardarPartidaBD(nombrePartida, usuarioActual)) {
+					agregarEvento("Partida guardada en BB.DD: " + nombrePartida);
+					System.out.println("Partida guardada en BB.DD");
+				} else {
+					agregarEvento("Error al guardar la partida en BB.DD");
+				}
 			}
 		}
 	}
@@ -555,34 +553,33 @@ public class PantallaJuego {
 
 		if (partidas.isEmpty()) {
 			agregarEvento("No hay partidas guardadas");
-			return;
-		}
+		} else {
+			// Crear lista de opciones con nombre + fecha
+			ArrayList<String> opciones = new ArrayList<>();
+			Map<String, Integer> mapaNombresID = new HashMap<>();
+			for (String[] partida : partidas) {
+				String opcion = partida[1] + " (" + partida[2] + ")";
+				opciones.add(opcion);
+				mapaNombresID.put(opcion, Integer.parseInt(partida[0]));
+			}
 
-		// Crear lista de opciones con nombre + fecha
-		ArrayList<String> opciones = new ArrayList<>();
-		Map<String, Integer> mapaNombresID = new HashMap<>();
-		for (String[] partida : partidas) {
-			String opcion = partida[1] + " (" + partida[2] + ")";
-			opciones.add(opcion);
-			mapaNombresID.put(opcion, Integer.parseInt(partida[0]));
-		}
+			// Mostrar diálogo de selección
+			ChoiceDialog<String> dialog = new ChoiceDialog<>(opciones.get(0), opciones);
+			dialog.initOwner(AppState.getInstance().getVentanaPrincipal());
+			dialog.setTitle("Cargar Partida");
+			dialog.setHeaderText("Selecciona una partida para cargar");
+			dialog.setContentText("Partidas:");
 
-		// Mostrar diálogo de selección
-		ChoiceDialog<String> dialog = new ChoiceDialog<>(opciones.get(0), opciones);
-		dialog.initOwner(AppState.getInstance().getVentanaPrincipal());
-		dialog.setTitle("Cargar Partida");
-		dialog.setHeaderText("Selecciona una partida para cargar");
-		dialog.setContentText("Partidas:");
-
-		Optional<String> resultado = dialog.showAndWait();
-		if (resultado.isPresent()) {
-			int idPartida = mapaNombresID.get(resultado.get());
-			if (gestorPartida.cargarPartidaBD(idPartida)) {
-				iniciarLogicaJuego();
-				agregarEvento("Partida cargada: " + resultado.get());
-				System.out.println("Partida cargada desde BB.DD");
-			} else {
-				agregarEvento("Error al cargar la partida");
+			Optional<String> resultado = dialog.showAndWait();
+			if (resultado.isPresent()) {
+				int idPartida = mapaNombresID.get(resultado.get());
+				if (gestorPartida.cargarPartidaBD(idPartida)) {
+					iniciarLogicaJuego();
+					agregarEvento("Partida cargada: " + resultado.get());
+					System.out.println("Partida cargada desde BB.DD");
+				} else {
+					agregarEvento("Error al cargar la partida");
+				}
 			}
 		}
 	}
@@ -662,77 +659,64 @@ public class PantallaJuego {
 	private void handleDado(ActionEvent event) {
 		if (gestorPartida == null || gestorPartida.getPartida() == null) {
 			agregarEvento("Error: Partida no inicializada");
-			return;
-		}
-
-		dado.setDisable(true);
-
-		int indiceActual = gestorPartida.getPartida().getJugadorActual();
-		Jugador jugadorActual = gestorPartida.getPartida().getJugador().get(indiceActual);
-
-		if (jugadorActual.estaCongelado()) {
-			agregarEvento("¡" + jugadorActual.getNom() + " está congelado y pierde su turno!");
-			PauseTransition pause = new PauseTransition(Duration.millis(1500));
-			pause.setOnFinished(e -> {
-				jugadorActual.pasaTurnoCongelado();
-				gestorPartida.siguienteTurno();
-				actualizarInfoJugadores();
-				dado.setDisable(false);
-			});
-			pause.play();
-			return;
-		}
-
-		invocarMetodo(diceSound, "play");
-		System.out.println("Sonido de dado intentado");
-		animarDado();
-		// Tirar dado
-		Dado d = new Dado();
-		int resultado = d.tirar();
-
-		if ("admin#67".equals(jugadorActual.getNom())) {
-			resultado = 6;
-		}
-
-		dadoResultText.setText("Ha salido: " + resultado);
-
-		// Guardar posición anterior
-		int posAnterior = jugadorActual.getPosicion();
-
-		// Mover jugador
-		jugadorActual.setPosicion(posAnterior + resultado);
-
-		// Validar límites
-		if (jugadorActual.getPosicion() < 0) {
-			jugadorActual.setPosicion(0);
-		}
-		if (jugadorActual.getPosicion() >= TOTAL_CELLS) {
-			jugadorActual.setPosicion(TOTAL_CELLS - 1);
-		}
-
-		int posNueva = jugadorActual.getPosicion();
-		playerPositions.put(indiceActual, posNueva);
-
-		System.out.println("Jugador " + indiceActual + " movió de " + posAnterior + " a " + posNueva);
-
-		// Animar movimiento
-		animarMovimiento(indiceActual, posAnterior, posNueva, () -> {
-			try {
-				// Después de la animación, aplicar efecto de la casilla
-				aplicarCasilla(jugadorActual, posNueva);
-				comprobarSiChocaConFoca(jugadorActual, posNueva, indiceActual);
-			} catch (Exception e) {
-				System.err.println("Error ejecutando casillas: " + e.getMessage());
-				e.printStackTrace();
+		} else {
+			dado.setDisable(true);
+			int indiceActual = gestorPartida.getPartida().getJugadorActual();
+			Jugador jugadorActual = gestorPartida.getPartida().getJugador().get(indiceActual);
+			if (jugadorActual.estaCongelado()) {
+				agregarEvento("¡" + jugadorActual.getNom() + " está congelado y pierde su turno!");
+				PauseTransition pause = new PauseTransition(Duration.millis(1500));
+				pause.setOnFinished(e -> {
+					jugadorActual.pasaTurnoCongelado();
+					gestorPartida.siguienteTurno();
+					actualizarInfoJugadores();
+					dado.setDisable(false);
+				});
+				pause.play();
+			} else {
+				invocarMetodo(diceSound, "play");
+				System.out.println("Sonido de dado intentado");
+				animarDado();
+				// Tirar dado
+				Dado d = new Dado();
+				int resultado = d.tirar();
+				if ("admin#67".equals(jugadorActual.getNom())) {
+					resultado = 6;
+				}
+				dadoResultText.setText("Ha salido: " + resultado);
+				// Guardar posición anterior
+				int posAnterior = jugadorActual.getPosicion();
+				// Mover jugador
+				jugadorActual.setPosicion(posAnterior + resultado);
+				// Validar límites
+				if (jugadorActual.getPosicion() < 0) {
+					jugadorActual.setPosicion(0);
+				}
+				if (jugadorActual.getPosicion() >= TOTAL_CELLS) {
+					jugadorActual.setPosicion(TOTAL_CELLS - 1);
+				}
+				int posNueva = jugadorActual.getPosicion();
+				playerPositions.put(indiceActual, posNueva);
+				System.out.println("Jugador " + indiceActual + " movió de " + posAnterior + " a " + posNueva);
+				// Animar movimiento
+				animarMovimiento(indiceActual, posAnterior, posNueva, () -> {
+					try {
+						// Después de la animación, aplicar efecto de la casilla
+						aplicarCasilla(jugadorActual, posNueva);
+						comprobarSiChocaConFoca(jugadorActual, posNueva, indiceActual);
+					} catch (Exception e) {
+						System.err.println("Error ejecutando casillas: " + e.getMessage());
+						e.printStackTrace();
+					}
+					// Pausa para que el jugador vea el efecto
+					PauseTransition pause = new PauseTransition(Duration.millis(2500));
+					pause.setOnFinished(e -> {
+						verificarFinDeJuego(jugadorActual);
+					});
+					pause.play();
+				});
 			}
-
-			// Pausa para que el jugador vea el efecto
-			PauseTransition pause = new PauseTransition(Duration.millis(2500));
-			pause.setOnFinished(e -> {
-				verificarFinDeJuego(jugadorActual);
-			});
-			pause.play();
-		});
+		}
 	}
 
 	private void animarMovimiento(int playerIndex, int posAnterior, int posNueva, Runnable onFinished) {
@@ -778,8 +762,7 @@ public class PantallaJuego {
 		// ── MODO ADMIN: inmunidad total a efectos de casilla ─────────────────
 		if ("admin#67".equals(jugador.getNom())) {
 			agregarEvento("[ADMIN] Inmune a los efectos de la casilla.");
-			return;
-		}
+		} else {
 
 		// Mandar a este pingüino al frente para que no quede detrás del texto
 
@@ -830,7 +813,6 @@ public class PantallaJuego {
 				}
 
 				agregarEvento(mensaje);
-				return;
 			} else if (casilla instanceof Trineo) {
 				invocarMetodo(trineoSound, "play");
 				System.out.println("Sonido de trineo intentado");
@@ -871,7 +853,6 @@ public class PantallaJuego {
 					mensaje = "¡" + jugador.getNom() + " encontró el último trineo!";
 					agregarEvento(mensaje);
 				}
-				return;
 			} else if (casilla instanceof Oso) {
 				if (jugador instanceof Foca) {
 					invocarMetodo(sealSound, "play");
@@ -891,7 +872,6 @@ public class PantallaJuego {
 						actualizarInventario((Pinguino) jugador);
 					}
 					agregarEvento(mensaje);
-					return;
 				} else {
 					// No tenía pez; el modelo ya lo mandó al inicio (posición 0)
 					mensaje = "¡El oso ataca a " + jugador.getNom() + "! Vuelve al inicio.";
@@ -915,7 +895,6 @@ public class PantallaJuego {
 					agregarEvento(mensaje);
 					// Aplicar recursivamente el efecto de la nueva casilla (posición 0 = salida)
 					aplicarCasilla(jugador, posicionNueva);
-					return;
 				}
 			} else if (casilla instanceof SueloQuebradizo) {
 				int cantItems = 0;
@@ -952,7 +931,6 @@ public class PantallaJuego {
 					mensaje = "¡" + jugador.getNom() + " no lleva peso y pasa el suelo quebradizo con cuidado!";
 					agregarEvento(mensaje);
 				}
-				return;
 			} else if (casilla instanceof Evento) {
 				invocarMetodo(eventoSound, "play");
 				Evento e = (Evento) casilla;
@@ -1020,63 +998,52 @@ public class PantallaJuego {
 		}
 
 		agregarEvento(mensaje);
+		}
 	}
 
 	private void comprobarSiChocaConFoca(Jugador pinguino, int posicion, int indiceActual) {
-		if (!(pinguino instanceof Pinguino))
-			return;
-		// Modo admin: inmune a la foca
-		if ("admin#67".equals(pinguino.getNom()))
-			return;
+		if (pinguino instanceof Pinguino && !"admin#67".equals(pinguino.getNom())) {
+			Pinguino p = (Pinguino) pinguino;
+			for (Jugador jug : gestorPartida.getPartida().getJugador()) {
+				if (jug instanceof Foca && jug.getPosicion() == posicion) {
+					Foca foca = (Foca) jug;
 
-		for (Jugador jug : gestorPartida.getPartida().getJugador()) {
-			if (jug instanceof Foca && jug.getPosicion() == posicion) {
-				Foca foca = (Foca) jug;
-
-				if (foca.estaCongelado()) {
-					agregarEvento("La Foca está bloqueada y no hace nada.");
-					return;
-				}
-
-				Pinguino p = (Pinguino) pinguino;
-
-				// La Foca NO se puede sobornar automáticamente:
-				// el jugador DEBE usar un pez manualmente (botón "Usar pez") ANTES de caer aquí.
-				if (foca.isSoborno()) {
-					// Ya fue sobornada manualmente → no ataca
-					agregarEvento("La Foca recuerda el soborno y deja pasar a " + p.getNom() + ".");
-					// Resetear el soborno para el próximo encuentro
-					foca.setSoborno(false);
-					return;
-				} else {
-					// No fue sobornada → ataca
-					invocarMetodo(sealSound, "play");
-					int mejorPos = -1;
-					for (int i = 0; i < posicion; i++) {
-						if (gestorPartida.getPartida().getTablero().getCasillas().get(i) instanceof Agujero) {
-							mejorPos = i;
+					if (foca.estaCongelado()) {
+						agregarEvento("La Foca está bloqueada y no hace nada.");
+					} else if (foca.isSoborno()) {
+						// Ya fue sobornada manualmente → no ataca
+						agregarEvento("La Foca recuerda el soborno y deja pasar a " + p.getNom() + ".");
+						// Resetear el soborno para el próximo encuentro
+						foca.setSoborno(false);
+					} else {
+						// No fue sobornada → ataca
+						invocarMetodo(sealSound, "play");
+						int mejorPos = -1;
+						for (int i = 0; i < posicion; i++) {
+							if (gestorPartida.getPartida().getTablero().getCasillas().get(i) instanceof Agujero) {
+								mejorPos = i;
+							}
 						}
-					}
-					int destino = (mejorPos != -1) ? mejorPos : 0;
-					p.setPosicion(destino);
-					agregarEvento("¡La Foca golpea a " + p.getNom() + " y lo envía al agujero anterior (casilla "
-							+ destino + ")!");
+						int destino = (mejorPos != -1) ? mejorPos : 0;
+						p.setPosicion(destino);
+						agregarEvento("¡La Foca golpea a " + p.getNom() + " y lo envía al agujero anterior (casilla "
+								+ destino + ")!");
 
-					// Mover visualmente
-					playerPositions.put(indiceActual, destino);
-					Circle circle = playerCircles.get(indiceActual);
-					if (circle != null) {
-						int r = destino / COLUMNS;
-						int c = destino % COLUMNS;
-						GridPane.setRowIndex(circle, r);
-						GridPane.setColumnIndex(circle, c);
-						circle.setTranslateX(0);
-						circle.setTranslateY(0);
+						// Mover visualmente
+						playerPositions.put(indiceActual, destino);
+						Circle circle = playerCircles.get(indiceActual);
+						if (circle != null) {
+							int r = destino / COLUMNS;
+							int c = destino % COLUMNS;
+							GridPane.setRowIndex(circle, r);
+							GridPane.setColumnIndex(circle, c);
+							circle.setTranslateX(0);
+							circle.setTranslateY(0);
+						}
+						// Aplicar efecto de la casilla de destino
+						aplicarCasilla(p, destino);
 					}
-					// Aplicar efecto de la casilla de destino
-					aplicarCasilla(p, destino);
 				}
-				return;
 			}
 		}
 	}
@@ -1104,35 +1071,30 @@ public class PantallaJuego {
 	private void usarItem(String tipoItem) {
 		if (gestorPartida == null || gestorPartida.getPartida() == null) {
 			agregarEvento("Error: Partida no inicializada");
-			return;
-		}
+		} else {
+			int indiceActual = gestorPartida.getPartida().getJugadorActual();
+			Jugador jugadorActual = gestorPartida.getPartida().getJugador().get(indiceActual);
 
-		int indiceActual = gestorPartida.getPartida().getJugadorActual();
-		Jugador jugadorActual = gestorPartida.getPartida().getJugador().get(indiceActual);
+			if (!(jugadorActual instanceof Pinguino)) {
+				agregarEvento("Error: Jugador no es un pingüino");
+			} else {
+				Pinguino p = (Pinguino) jugadorActual;
+				Inventario inv = p.getInv();
 
-		if (!(jugadorActual instanceof Pinguino)) {
-			agregarEvento("Error: Jugador no es un pingüino");
-			return;
-		}
+				Item itemEncontrado = null;
+				boolean itemBuscado = false;
+				ArrayList<Item> listaItemsP = inv.getItems();
+				for (int i = 0; i < listaItemsP.size() && !itemBuscado; i++) {
+					Item item = listaItemsP.get(i);
+					if (item.getNombre().toLowerCase().contains(tipoItem.toLowerCase())) {
+						itemEncontrado = item;
+						itemBuscado = true;
+					}
+				}
 
-		Pinguino p = (Pinguino) jugadorActual;
-		Inventario inv = p.getInv();
-
-		Item itemEncontrado = null;
-		boolean itemBuscado = false;
-		ArrayList<Item> listaItemsP = inv.getItems();
-		for (int i = 0; i < listaItemsP.size() && !itemBuscado; i++) {
-			Item item = listaItemsP.get(i);
-			if (item.getNombre().toLowerCase().contains(tipoItem.toLowerCase())) {
-				itemEncontrado = item;
-				itemBuscado = true;
-			}
-		}
-
-		if (itemEncontrado == null) {
-			agregarEvento(tipoItem + " no disponible en el inventario");
-			return;
-		}
+				if (itemEncontrado == null) {
+					agregarEvento(tipoItem + " no disponible en el inventario");
+				} else {
 
 		String mensaje = "";
 
@@ -1174,32 +1136,29 @@ public class PantallaJuego {
 
 			if (nombresObjetivos.isEmpty()) {
 				agregarEvento("No hay objetivos para lanzar la bola de nieve");
-				return;
-			}
-
-			ChoiceDialog<String> dialog = new ChoiceDialog<>(nombresObjetivos.get(0), nombresObjetivos);
-			dialog.initOwner(AppState.getInstance().getVentanaPrincipal());
-			dialog.setTitle("Lanzar Bola de Nieve");
-			dialog.setHeaderText("¿A quién quieres congelar?");
-			dialog.setContentText("Objetivo:");
-
-			Optional<String> result = dialog.showAndWait();
-			if (result.isPresent()) {
-				Jugador objetivo = mapaObjetivos.get(result.get());
-				objetivo.congelar(1);
-
-				// Consumir item ahora que sabemos que se ha usado
-				itemEncontrado.setCantidad(itemEncontrado.getCantidad() - 1);
-				if (itemEncontrado.getCantidad() <= 0) {
-					inv.eliminarItem(itemEncontrado);
-				}
-
-				mensaje = "¡" + p.getNom() + " lanzó una bola de nieve a " + objetivo.getNom() + "!";
-				agregarEvento(mensaje);
-				actualizarInfoJugadores();
 			} else {
-				// El usuario canceló la selección, no consumimos el item
-				return;
+				ChoiceDialog<String> dialog = new ChoiceDialog<>(nombresObjetivos.get(0), nombresObjetivos);
+				dialog.initOwner(AppState.getInstance().getVentanaPrincipal());
+				dialog.setTitle("Lanzar Bola de Nieve");
+				dialog.setHeaderText("¿A quién quieres congelar?");
+				dialog.setContentText("Objetivo:");
+
+				Optional<String> result = dialog.showAndWait();
+				if (result.isPresent()) {
+					Jugador objetivo = mapaObjetivos.get(result.get());
+					objetivo.congelar(1);
+
+					// Consumir item ahora que sabemos que se ha usado
+					itemEncontrado.setCantidad(itemEncontrado.getCantidad() - 1);
+					if (itemEncontrado.getCantidad() <= 0) {
+						inv.eliminarItem(itemEncontrado);
+					}
+
+					mensaje = "¡" + p.getNom() + " lanzó una bola de nieve a " + objetivo.getNom() + "!";
+					agregarEvento(mensaje);
+					actualizarInfoJugadores();
+				}
+				// Si el usuario canceló el diálogo, no se consume el item ni se hace nada
 			}
 		} else if (tipoItem.toLowerCase().contains("rápido")) {
 			// Consumir item
@@ -1295,8 +1254,10 @@ public class PantallaJuego {
 			});
 		}
 
-		agregarEvento(mensaje);
-		actualizarInfoJugadores();
+				agregarEvento(mensaje);
+				actualizarInfoJugadores();
+			}
+		}
 	}
 
 	private void verificarFinDeJuego(Jugador j) {

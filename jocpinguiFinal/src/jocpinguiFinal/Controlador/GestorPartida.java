@@ -94,10 +94,10 @@ public class GestorPartida implements Serializable {
                 j.pasaTurnoCongelado();
                 gestorJugador.jugadorFinalizaTurno(j);
                 siguienteTurno();
-                return;
+            } else {
+                procesarTurnoJugador(j);
+                siguienteTurno();
             }
-            procesarTurnoJugador(j);
-            siguienteTurno();
         }
     }
 
