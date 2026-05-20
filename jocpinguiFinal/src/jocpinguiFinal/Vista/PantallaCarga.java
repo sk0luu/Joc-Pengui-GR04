@@ -19,18 +19,25 @@ import javafx.util.Duration;
 
 import java.net.URL;
 
+/**
+ * vista donde se muestran y seleccionan las partidas guardadas en la bbdd.
+ */
 public class PantallaCarga {
 
     @FXML
+    // variable que guarda informacion sobre barraprogreso
     private ProgressBar barraProgreso;
 
     @FXML
+    // variable que guarda informacion sobre textoestado
     private Text textoEstado;
 
     @FXML
+    // variable que guarda informacion sobre videocontainer
     private StackPane videoContainer;
 
     @FXML
+    // metodo encargado de la funcion initialize recibiendo parametros: ninguno
     private void initialize() {
         // ── Intentar cargar y reproducir el video ────────────────────────────
         cargarVideo();
@@ -54,20 +61,25 @@ public class PantallaCarga {
         timeline.play();
     }
 
+    // metodo encargado de la funcion cargarvideo recibiendo parametros: ninguno
     private void cargarVideo() {
         try {
+            // variable que guarda informacion sobre videourl
             URL videoUrl = getClass().getResource("/jocpinguiFinal/resources/Video 2.mp4");
             if (videoUrl == null) {
                 System.out.println("[PantallaCarga] Video no encontrado en resources.");
                 return;
             }
 
+            // variable que guarda informacion sobre media
             Media media = new Media(videoUrl.toExternalForm());
+            // variable que guarda informacion sobre mediaplayer
             MediaPlayer mediaPlayer = new MediaPlayer(media);
             mediaPlayer.setAutoPlay(true);
             mediaPlayer.setCycleCount(MediaPlayer.INDEFINITE); // bucle mientras carga
             mediaPlayer.setMute(true);                         // sin audio
 
+            // variable que guarda informacion sobre mediaview
             MediaView mediaView = new MediaView(mediaPlayer);
             mediaView.setPreserveRatio(false);
 
@@ -83,12 +95,17 @@ public class PantallaCarga {
         }
     }
 
+    // metodo encargado de la funcion cargarmenuprincipal recibiendo parametros: ninguno
     private void cargarMenuPrincipal() {
         try {
+            // variable que guarda informacion sobre loader
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/jocpinguiFinal/Vista/PantallaMenu.fxml"));
+            // variable que guarda informacion sobre root
             Parent root = loader.load();
 
+            // variable que guarda informacion sobre stage
             Stage stage = AppState.getInstance().getVentanaPrincipal();
+            // variable que guarda informacion sobre scene
             Scene scene = new Scene(root);
 
             root.setOpacity(0);
@@ -97,6 +114,7 @@ public class PantallaCarga {
             stage.setFullScreenExitKeyCombination(javafx.scene.input.KeyCombination.NO_MATCH);
             stage.show();
 
+            // variable que guarda informacion sobre fadein
             FadeTransition fadeIn = new FadeTransition(Duration.millis(700), root);
             fadeIn.setFromValue(0);
             fadeIn.setToValue(1);

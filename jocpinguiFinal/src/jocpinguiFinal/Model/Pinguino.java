@@ -1,7 +1,12 @@
 package jocpinguiFinal.Model;
 
+/**
+ * clase padre o especifica para los pinguinos que se mueven por el tablero.
+ */
 public abstract class Pinguino extends Jugador {
+	// variable que guarda informacion sobre serialversionuid
 	private static final long serialVersionUID = 1L;
+	// variable que guarda informacion sobre inv
 	private Inventario inv;
 	
 	//Este constructor le pone nombre color y posicion al pinguino
@@ -27,6 +32,7 @@ public abstract class Pinguino extends Jugador {
 	
 	//Este metodo muestra el nombre posicion y color del pinguino
 	@Override
+	// metodo encargado de la funcion tostring recibiendo parametros: ninguno
 	public String toString() {
 		return "Pinguino: " + nombre + " Posicion: " + posicion + " color: " + color;
 	}

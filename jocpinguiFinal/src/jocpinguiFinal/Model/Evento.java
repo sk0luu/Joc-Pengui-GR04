@@ -1,6 +1,10 @@
 package jocpinguiFinal.Model;
 import java.util.Random;
+/**
+ * clase base o manejadora para los eventos especiales del tablero.
+ */
 public class Evento extends Casilla{
+	// variable que guarda informacion sobre eventos
 	private String[] eventos;
     // constructor para situar la casilla de evento con su lista de posibles sucesos
     public Evento(int posicion, String[] eventos) {
@@ -17,9 +21,13 @@ public class Evento extends Casilla{
     }
     // al caer en evento, se elige uno al azar y se aplica su efecto (movimiento, items o congelacion)
     @Override
+    // metodo encargado de la funcion realizaraccion recibiendo parametros: Partida partida, Jugador jugador
     public void realizarAccion(Partida partida, Jugador jugador) {
+		// variable que guarda informacion sobre r
 		Random r = new Random();
+		// variable que guarda informacion sobre aleatorio
 		int aleatorio = r.nextInt(eventos.length);
+		// variable que guarda informacion sobre ev
 		String ev = eventos[aleatorio];
 		System.out.println("Evento: " + ev);
 
@@ -31,8 +39,10 @@ public class Evento extends Casilla{
 			jugador.congelar(1);
 		} else if (ev.contains("objeto")) {
 			if (jugador instanceof Pinguino) {
+				// variable que guarda informacion sobre p
 				Pinguino p = (Pinguino) jugador;
 				if (!p.getInv().getItems().isEmpty()) {
+					// variable que guarda informacion sobre it
 					Item it = p.getInv().getItems().get(r.nextInt(p.getInv().getItems().size()));
 					it.setCantidad(it.getCantidad() - 1);
 					if (it.getCantidad() <= 0) p.getInv().eliminarItem(it);
@@ -45,6 +55,7 @@ public class Evento extends Casilla{
 			}
 		} else if (ev.toLowerCase().contains("nieve")) {
 			if (jugador instanceof Pinguino) {
+				// variable que guarda informacion sobre cant
 				int cant = r.nextInt(3) + 1;
 				((Pinguino) jugador).getInv().añadirItem(new ItemConcreto("Nieve", cant));
 			}

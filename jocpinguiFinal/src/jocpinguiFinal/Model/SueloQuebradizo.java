@@ -1,5 +1,8 @@
 package jocpinguiFinal.Model;
 import java.util.Random;
+/**
+ * casilla de suelo quebradizo, introduce un riesgo al pasar o caer sobre ella.
+ */
 public class SueloQuebradizo extends Casilla{
     // constructor para situar el suelo quebradizo
     public SueloQuebradizo(int posicion) {
@@ -7,7 +10,9 @@ public class SueloQuebradizo extends Casilla{
     }
     // el hielo se rompe segun el peso del jugador (numero de items)
     @Override
+    // metodo encargado de la funcion realizaraccion recibiendo parametros: Partida partida, Jugador jugador
     public void realizarAccion(Partida partida, Jugador jugador) {
+		// variable que guarda informacion sobre cantitems
 		int cantItems = 0;
 		if (jugador instanceof Pinguino) {
 			cantItems = ((Pinguino) jugador).getInv().getTotalItems();

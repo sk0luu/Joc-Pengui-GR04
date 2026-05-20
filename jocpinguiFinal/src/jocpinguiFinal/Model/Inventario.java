@@ -1,8 +1,13 @@
 package jocpinguiFinal.Model;
 import java.util.ArrayList;
 
+/**
+ * bolsa o mochila virtual donde los jugadores guardan items (peces, bolas de nieve).
+ */
 public class Inventario implements java.io.Serializable {
+	// variable que guarda informacion sobre serialversionuid
 	private static final long serialVersionUID = 1L;
+	// variable que guarda informacion sobre items
 	private ArrayList<Item> items;
 	//Creamos el constructor y ponemos el arraylist de los items del jugador
 	public Inventario() {
@@ -12,21 +17,29 @@ public class Inventario implements java.io.Serializable {
 	public ArrayList<Item> getItems() {
 		return items;
 	}
+	// metodo encargado de la funcion añadiritem recibiendo parametros: Item item
 	public void añadirItem(Item item) {
+		// variable que guarda informacion sobre nombre
 		String nombre = item.getNombre().toLowerCase();
 		
 		if (nombre.contains("pez")) {
+			// variable que guarda informacion sobre actualpez
 			int actualPez = getCantidadDe("pez");
+			// variable que guarda informacion sobre aañadir
 			int aAñadir = Math.min(item.getCantidad(), 2 - actualPez);
 			if (aAñadir <= 0) return;
 			incrementarOAgregar("Pez", aAñadir);
 		} else if (nombre.contains("nieve")) {
+			// variable que guarda informacion sobre actualnieve
 			int actualNieve = getCantidadDe("nieve");
+			// variable que guarda informacion sobre aañadir
 			int aAñadir = Math.min(item.getCantidad(), 6 - actualNieve);
 			if (aAñadir <= 0) return;
 			incrementarOAgregar("Nieve", aAñadir);
 		} else if (nombre.contains("rápido") || nombre.contains("lento") || nombre.contains("dado")) {
+			// variable que guarda informacion sobre actualdados
 			int actualDados = getCantidadDe("rápido") + getCantidadDe("lento") + getCantidadDe("dado");
+			// variable que guarda informacion sobre aañadir
 			int aAñadir = Math.min(item.getCantidad(), 3 - actualDados);
 			if (aAñadir <= 0) return;
 			String nombreFinal = nombre.contains("rápido") ? "Dado Rápido" : 
@@ -37,7 +50,9 @@ public class Inventario implements java.io.Serializable {
 		}
 	}
 
+	// metodo que devuelve el valor de cantidadde
 	private int getCantidadDe(String subcadena) {
+		// variable que guarda informacion sobre cant
 		int cant = 0;
 		for (Item it : items) {
 			if (it.getNombre().toLowerCase().contains(subcadena.toLowerCase())) {
@@ -47,7 +62,9 @@ public class Inventario implements java.io.Serializable {
 		return cant;
 	}
 
+	// metodo encargado de la funcion incrementaroagregar recibiendo parametros: String nombre, int cantidad
 	private void incrementarOAgregar(String nombre, int cantidad) {
+		// variable que guarda informacion sobre encontrado
 		boolean encontrado = false;
 		for (Item it : items) {
 			if (it.getNombre().equalsIgnoreCase(nombre)) {
@@ -69,7 +86,9 @@ public class Inventario implements java.io.Serializable {
 			System.out.println(items.get(i));
 		}
 	}
+	// metodo que devuelve el valor de totalitems
 	public int getTotalItems() {
+		// variable que guarda informacion sobre total
 		int total = 0;
 		for (Item it : items) {
 			total += it.getCantidad();

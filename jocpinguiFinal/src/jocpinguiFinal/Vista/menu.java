@@ -9,9 +9,14 @@ import java.util.Scanner;
 
 import jocpinguiFinal.Model.BBDD;
 
+/**
+ * panel antiguo o alternativo del menu principal.
+ */
 public class menu {
+    // variable que guarda informacion sobre con
     public static Connection con;
 
+    // metodo principal que arranca la ejecucion de la clase
     public static void main(String[] args) {
 
         // Ejemplo de uso con la tabla ACTOR y las columnas NACTOR, NOMBRE y FECHAN
@@ -20,6 +25,7 @@ public class menu {
         Scanner scan = new Scanner(System.in);
         con = BBDD.conectarBaseDatos(scan);
         System.out.println("Print");
+        // variable que guarda informacion sobre a
         String[] a = { "NACTOR", "NOMBRE", "FECHAN" };
         BBDD.print(con, "SELECT * FROM ACTOR", a);
         ////////////////////////////////////////////////////////////////////////////////////
@@ -37,6 +43,7 @@ public class menu {
         BBDD.print(con, "SELECT * FROM ACTOR", a);
         ////////////////////////////////////////////////////////////////////////////////////
         System.out.println("Select");
+        // variable que guarda informacion sobre cols
         ArrayList<String> cols = new ArrayList<>();
         cols.add("NACTOR");
         cols.add("NOMBRE");

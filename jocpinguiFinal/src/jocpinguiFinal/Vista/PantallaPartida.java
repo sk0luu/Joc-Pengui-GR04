@@ -35,6 +35,9 @@ import jocpinguiFinal.Controlador.GestorPartida;
 import jocpinguiFinal.Model.Jugador;
 import jocpinguiFinal.Model.Partida;
 
+/**
+ * pantalla donde se configuran los jugadores y colores antes de empezar.
+ */
 public class PantallaPartida {
 	
 	@FXML private MenuItem newGame;
@@ -65,13 +68,18 @@ public class PantallaPartida {
 	@FXML private VBox rankingBox;
 	@FXML private Label rankingEmptyLabel;
 
+	// variable que guarda informacion sobre gestorpartida
 	private GestorPartida gestorPartida;
+	// variable que guarda informacion sobre conexionbd
 	private Connection conexionBD; // conexion a oracle
+	// variable que guarda informacion sobre usuarioactual
 	private String usuarioActual; // usuario que ha hecho login
+	// variable que guarda informacion sobre colores
 	private static final String[] COLORES = {"Azul", "Rojo", "Verde", "Amarillo", "Naranja", "Púrpura"};
 	
 	// inicializa el gestor y los combos de colores
 	@FXML
+	// metodo encargado de la funcion initialize recibiendo parametros: ninguno
 	private void initialize() {
 		gestorPartida = new GestorPartida();
 
@@ -106,9 +114,11 @@ public class PantallaPartida {
 		}
 	}
 	
+	// metodo encargado de la funcion aplicarceldaconimagen recibiendo parametros: ComboBox<String> combo
 	private void aplicarCeldaConImagen(ComboBox<String> combo) {
 		combo.setCellFactory(listView -> new javafx.scene.control.ListCell<String>() {
 			@Override
+			// metodo encargado de la funcion updateitem recibiendo parametros: String item, boolean empty
 			protected void updateItem(String item, boolean empty) {
 				super.updateItem(item, empty);
 				if (empty || item == null) {
@@ -117,8 +127,11 @@ public class PantallaPartida {
 				} else {
 					setText(item);
 					try {
+						// variable que guarda informacion sobre colorbuscado
 						String colorBuscado = item.toLowerCase().replace("ú", "u").replace("ó", "o");
+						// variable que guarda informacion sobre base
 						String base = "/jocpinguiFinal/Vista/images/pinguino_" + colorBuscado;
+						// variable que guarda informacion sobre imagepath
 						String imagePath = base + ".png";
 						java.io.InputStream is = getClass().getResourceAsStream(imagePath);
 						if (is == null) { is = getClass().getResourceAsStream(base + ".jpg"); }
@@ -137,6 +150,7 @@ public class PantallaPartida {
 		
 		combo.setButtonCell(new javafx.scene.control.ListCell<String>() {
 			@Override
+			// metodo encargado de la funcion updateitem recibiendo parametros: String item, boolean empty
 			protected void updateItem(String item, boolean empty) {
 				super.updateItem(item, empty);
 				if (empty || item == null) {
@@ -145,8 +159,11 @@ public class PantallaPartida {
 				} else {
 					setText(item);
 					try {
+						// variable que guarda informacion sobre colorbuscado
 						String colorBuscado = item.toLowerCase().replace("ú", "u").replace("ó", "o");
+						// variable que guarda informacion sobre base
 						String base = "/jocpinguiFinal/Vista/images/pinguino_" + colorBuscado;
+						// variable que guarda informacion sobre imagepath
 						String imagePath = base + ".png";
 						java.io.InputStream is = getClass().getResourceAsStream(imagePath);
 						if (is == null) { is = getClass().getResourceAsStream(base + ".jpg"); }
@@ -166,8 +183,11 @@ public class PantallaPartida {
 	
 	// crea la partida y cambia a la pantalla del tablero
 	@FXML
+	// metodo encargado de la funcion handlestartgame recibiendo parametros: ActionEvent event
 	private void handleStartGame(ActionEvent event) {
+		// variable que guarda informacion sobre nombres
 		ArrayList<String> nombres = new ArrayList<>();
+		// variable que guarda informacion sobre colores
 		ArrayList<String> colores = new ArrayList<>();
 		
 		// añade jugadores si tienen nombre
@@ -192,18 +212,24 @@ public class PantallaPartida {
 			infoText.setText("Error: Debes ingresar al menos un nombre de jugador");
 		} else {
 			try {
+				// variable que guarda informacion sobre confoca
 				boolean conFoca = focaCheckBox != null && focaCheckBox.isSelected();
 				gestorPartida.nuevaPartida(nombres, colores, conFoca);
 				
+				// variable que guarda informacion sobre loader
 				FXMLLoader loader = new FXMLLoader(getClass().getResource("/jocpinguiFinal/Vista/PantallaJuego.fxml"));
+				// variable que guarda informacion sobre root
 				Parent root = loader.load();
 				
+				// variable que guarda informacion sobre controllerjuego
 				PantallaJuego controllerJuego = loader.getController();
 				controllerJuego.setConexion(conexionBD);
 				controllerJuego.setUsuario(usuarioActual);
 				controllerJuego.setGestorPartida(gestorPartida);
 				
+				// variable que guarda informacion sobre scene
 				Scene scene = new Scene(root);
+				// variable que guarda informacion sobre stage
 				Stage stage = AppState.getInstance().getVentanaPrincipal();
 				stage.setScene(scene);
 				stage.setTitle("Pinguino Game - En Partida");
@@ -217,8 +243,11 @@ public class PantallaPartida {
 	}
 	
 	@FXML
+	// metodo encargado de la funcion handleloadgame recibiendo parametros: ActionEvent event
 	private void handleLoadGame(ActionEvent event) {
+		// variable que guarda informacion sobre usuario
 		String usuario = this.usuarioActual;
+		// variable que guarda informacion sobre partidas
 		ArrayList<String[]> partidas = gestorPartida.listarPartidasBD(usuario);
 
 		if (partidas.isEmpty()) {
@@ -228,6 +257,7 @@ public class PantallaPartida {
 			ArrayList<String> opciones = new ArrayList<>();
 			Map<String, Integer> mapaNombresID = new HashMap<>();
 			for (String[] partida : partidas) {
+				// variable que guarda informacion sobre opcion
 				String opcion = partida[1] + " (" + partida[2] + ")";
 				opciones.add(opcion);
 				mapaNombresID.put(opcion, Integer.parseInt(partida[0]));
@@ -240,21 +270,28 @@ public class PantallaPartida {
 			dialog.setHeaderText("Selecciona una partida para cargar");
 			dialog.setContentText("Partidas:");
 
+			// variable que guarda informacion sobre resultado
 			Optional<String> resultado = dialog.showAndWait();
 			if (resultado.isPresent()) {
+				// variable que guarda informacion sobre idpartida
 				int idPartida = mapaNombresID.get(resultado.get());
 				if (gestorPartida.cargarPartidaBD(idPartida)) {
 					// Cargar directamente el juego
 					try {
+						// variable que guarda informacion sobre loader
 						FXMLLoader loader = new FXMLLoader(getClass().getResource("/jocpinguiFinal/Vista/PantallaJuego.fxml"));
+						// variable que guarda informacion sobre root
 						Parent root = loader.load();
 						
+						// variable que guarda informacion sobre controllerjuego
 						PantallaJuego controllerJuego = loader.getController();
 						controllerJuego.setConexion(conexionBD);
 						controllerJuego.setUsuario(usuarioActual);
 						controllerJuego.setGestorPartida(gestorPartida);
 						
+						// variable que guarda informacion sobre scene
 						Scene scene = new Scene(root);
+						// variable que guarda informacion sobre stage
 						Stage stage = AppState.getInstance().getVentanaPrincipal();
 						stage.setScene(scene);
 						stage.setTitle("Pinguino Game - En Partida");
@@ -273,10 +310,12 @@ public class PantallaPartida {
 	}
 	
 	@FXML
+	// metodo encargado de la funcion handlesavegame recibiendo parametros: ActionEvent event
 	private void handleSaveGame(ActionEvent event) {
 		if (gestorPartida == null || gestorPartida.getPartida() == null) {
 			mostrarAlerta("Error", "No hay partida para guardar. Inicia una partida primero.");
 		} else {
+			// variable que guarda informacion sobre filechooser
 			FileChooser fileChooser = new FileChooser();
 			fileChooser.setTitle("Guardar Partida");
 			fileChooser.getExtensionFilters().add(
@@ -284,7 +323,9 @@ public class PantallaPartida {
 			);
 			fileChooser.setInitialFileName("partida.partida");
 
+			// variable que guarda informacion sobre stage
 			Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+			// variable que guarda informacion sobre archivo
 			File archivo = fileChooser.showSaveDialog(stage);
 
 			if (archivo != null) {
@@ -299,12 +340,17 @@ public class PantallaPartida {
 	}
 	
 	@FXML
+	// metodo encargado de la funcion handleback recibiendo parametros: ActionEvent event
 	private void handleBack(ActionEvent event) {
 		try {
+			// variable que guarda informacion sobre loader
 			FXMLLoader loader = new FXMLLoader(getClass().getResource("/jocpinguiFinal/Vista/PantallaMenu.fxml"));
+			// variable que guarda informacion sobre root
 			Parent root = loader.load();
 			
+			// variable que guarda informacion sobre scene
 			Scene scene = new Scene(root);
+			// variable que guarda informacion sobre stage
 			Stage stage = AppState.getInstance().getVentanaPrincipal();
 			stage.setScene(scene);
 			stage.setTitle("Pinguino Game - Menu");
@@ -318,6 +364,7 @@ public class PantallaPartida {
 	}
 	
 	@FXML
+	// metodo encargado de la funcion handlenewgame recibiendo parametros: ninguno
 	private void handleNewGame() {
 		player1Field.clear();
 		player2Field.clear();
@@ -331,29 +378,35 @@ public class PantallaPartida {
 	}
 	
 	@FXML
+	// metodo encargado de la funcion handlequitgame recibiendo parametros: ninguno
 	private void handleQuitGame() {
 		System.out.println("Saliendo del juego...");
 		System.exit(0);
 	}
 	
 	@FXML
+	// metodo encargado de la funcion handleloadgamemenu recibiendo parametros: ninguno
 	private void handleLoadGameMenu() {
 		System.out.println("Lógica para cargar partida");
 	}
 	
 	@FXML
+	// metodo encargado de la funcion handlesavegamemenu recibiendo parametros: ninguno
 	private void handleSaveGameMenu() {
 		System.out.println("Lógica para guardar partida");
 	}
 	
+	// metodo que actualiza o establece el valor de gestorpartida
 	public void setGestorPartida(GestorPartida gestor) {
 		this.gestorPartida = gestor;
 	}
 	
+	// metodo que devuelve el valor de gestorpartida
 	public GestorPartida getGestorPartida() {
 		return gestorPartida;
 	}
 	
+	// metodo que actualiza o establece el valor de conexion
 	public void setConexion(Connection conexion, String usuario) {
 		this.conexionBD = conexion;
 		this.usuarioActual = usuario;
@@ -376,31 +429,42 @@ public class PantallaPartida {
 			try {
 				String sql = "SELECT NICKNAME, VICTORIAS FROM USUARIO " +
 						     "WHERE VICTORIAS > 0 ORDER BY VICTORIAS DESC FETCH FIRST 10 ROWS ONLY";
+				// variable que guarda informacion sobre ps
 				PreparedStatement ps = conexionBD.prepareStatement(sql);
+				// variable que guarda informacion sobre rs
 				ResultSet rs = ps.executeQuery();
 
+				// variable que guarda informacion sobre pos
 				int pos = 1;
+				// variable que guarda informacion sobre haydatos
 				boolean hayDatos = false;
+				// variable que guarda informacion sobre medallas
 				String[] medallas = {"🥇", "🥈", "🥉"};
 
 				while (rs.next()) {
 					hayDatos = true;
+					// variable que guarda informacion sobre nick
 					String nick = rs.getString("NICKNAME");
+					// variable que guarda informacion sobre victorias
 					int victorias = rs.getInt("VICTORIAS");
 
 					// Fila de ranking
 					HBox fila = new HBox(8);
 					fila.getStyleClass().add("ranking-row");
 
+					// variable que guarda informacion sobre posstr
 					String posStr = pos <= 3 ? medallas[pos - 1] : pos + ".";
+					// variable que guarda informacion sobre lblpos
 					Label lblPos = new Label(posStr);
 					lblPos.getStyleClass().add("ranking-pos");
 
+					// variable que guarda informacion sobre lblnick
 					Label lblNick = new Label(nick);
 					lblNick.getStyleClass().add("ranking-name");
 					HBox.setHgrow(lblNick, Priority.ALWAYS);
 					lblNick.setMaxWidth(Double.MAX_VALUE);
 
+					// variable que guarda informacion sobre lblvic
 					Label lblVic = new Label(victorias + " ★");
 					lblVic.getStyleClass().add("ranking-wins");
 
@@ -424,11 +488,14 @@ public class PantallaPartida {
 		}
 	}
 	
+	// metodo que devuelve el valor de usuarioactual
 	public String getUsuarioActual() {
 		return usuarioActual;
 	}
 	
+	// metodo encargado de la funcion mostraralerta recibiendo parametros: String titulo, String mensaje
 	private void mostrarAlerta(String titulo, String mensaje) {
+		// variable que guarda informacion sobre alerta
 		Alert alerta = new Alert(AlertType.INFORMATION);
 		alerta.initOwner(AppState.getInstance().getVentanaPrincipal());
 		alerta.setTitle(titulo);

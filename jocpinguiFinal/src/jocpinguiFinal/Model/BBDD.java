@@ -7,24 +7,25 @@ import java.util.Map;
 import java.util.Scanner;
 
 /**
- * Clase que proporciona métodos para interactuar con una base de datos Oracle.
+ * clase que proporciona metodos para interactuar con una base de datos oracle.
+ * aqui es donde se definen las funciones basicas para conectar, desconectar y
+ * ejecutar consultas (como selects e inserts) que usaran otras partes del juego.
  */
 public class BBDD {
 
 	/**
-	 * Intenta establecer una conexión a la base de datos Oracle. NO HACE FALTA QUE
-	 * ENTENDÁIS CÓMO FUNCIONA, SE HACE TODO DE MANERA AUTOMÁTICA.
+	 * intenta establecer una conexion a la base de datos oracle.
+	 * se elige entre el entorno "centro" o "fuera" y luego pide credenciales.
 	 *
-	 * @param scan Scanner de main con el que vais a leer por consola
-	 * @return Objeto Connection si la conexión es exitosa, null en caso contrario.
-	 *         LA VARIABLE QUE DEVUELVE LA TENÉIS QUE GUARDAR PARA LAS DEMÁS
-	 *         FUNCIONES
+	 * @param scan scanner de main con el que vais a leer por consola
+	 * @return objeto connection si la conexion es exitosa, null en caso contrario.
 	 */
 	public static Connection conectarBaseDatos(Scanner scan) {
 		System.out.println("Intentando conectarse a la base de datos...");
 
 		// 1) Elegir entorno con validación
 		String entorno = "";
+		// variable que guarda informacion sobre valido
 		boolean valido = false;
 		while (!valido) {
 			// PODEIS HARDCODEAR ESTAS VARIABLES SI VAIS A USAR SIEMPRE LAS MISMAS
@@ -46,9 +47,11 @@ public class BBDD {
 		// PODEIS HARDCODEAR ESTAS CREDENCIALES SI VAIS A USAR SIEMPRE LAS MISMAS
 		// VVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV
 		System.out.println("¿Usuario?");
+		// variable que guarda informacion sobre user
 		String user = scan.nextLine().trim();
 
 		System.out.println("¿Contraseña?");
+		// variable que guarda informacion sobre pwd
 		String pwd = scan.nextLine(); // aquí NO hago trim por si la contraseña tuviera espacios
 
 		// 3) Conectar
@@ -56,6 +59,7 @@ public class BBDD {
 			// En muchos casos con JDBC moderno no hace falta, pero lo dejamos por si acaso
 			Class.forName("oracle.jdbc.driver.OracleDriver");
 
+			// variable que guarda informacion sobre con
 			Connection con = DriverManager.getConnection(url, user, pwd);
 
 			// 4) Comprobar que la conexión es válida (timeout 5 s)
@@ -98,6 +102,7 @@ public class BBDD {
 	 * @param sql Sentencia SQL de inserción que hayáis creado.
 	 */
 	public static int insert(Connection con, String sql) {
+		// metodo encargado de la funcion executeinsupdel recibiendo parametros: con, sql, "Insert"
 		return executeInsUpDel(con, sql, "Insert");
 	}
 
@@ -108,6 +113,7 @@ public class BBDD {
 	 * @param sql Sentencia SQL de actualización que hayáis creado.
 	 */
 	public static int update(Connection con, String sql) {
+		// metodo encargado de la funcion executeinsupdel recibiendo parametros: con, sql, "Update"
 		return executeInsUpDel(con, sql, "Update");
 	}
 
@@ -118,16 +124,20 @@ public class BBDD {
 	 * @param sql Sentencia SQL de eliminación que hayáis creado.
 	 */
 	public static int delete(Connection con, String sql) {
+		// metodo encargado de la funcion executeinsupdel recibiendo parametros: con, sql, "Delete"
 		return executeInsUpDel(con, sql, "Delete");
 	}
 
 	/**
-	 * Realiza una consulta en la base de datos y devuelve los resultados.
+	 * realiza una consulta select en la base de datos y devuelve los resultados.
+	 * aqui se seleccionan los datos pidiendolos a la base de datos mediante sql.
+	 * esto es fundamental para leer datos guardados, aunque el blob de la partida
+	 * se maneja desde el gestorpartida.
 	 *
-	 * @param con Objeto Connection que representa la conexión a la base de datos.
-	 * @param sql Sentencia SQL de consulta.
-	 * @return Devuelve un ArrayList con todas las filas del SELECT. Cada fila es un
-	 *         Map con sus columnas (columna -> valor).
+	 * @param con objeto connection que representa la conexion a la base de datos.
+	 * @param sql sentencia sql de consulta (ej. select * from tabla).
+	 * @return devuelve un arraylist con todas las filas del select. cada fila es un
+	 *         map con sus columnas (columna -> valor).
 	 */
 	public static ArrayList<LinkedHashMap<String, String>> select(Connection con, String sql) {
 
@@ -140,14 +150,18 @@ public class BBDD {
 
 		try (Statement st = con.createStatement(); ResultSet rs = st.executeQuery(sql)) {
 
+			// variable que guarda informacion sobre meta
 			ResultSetMetaData meta = rs.getMetaData();
+			// variable que guarda informacion sobre numcolumnas
 			int numColumnas = meta.getColumnCount();
 
 			while (rs.next()) {
 				LinkedHashMap<String, String> fila = new LinkedHashMap<>();
 
 				for (int i = 1; i <= numColumnas; i++) {
+					// variable que guarda informacion sobre columna
 					String columna = meta.getColumnLabel(i);
+					// variable que guarda informacion sobre valor
 					String valor = rs.getString(i);
 					fila.put(columna, valor);
 				}
@@ -180,7 +194,9 @@ public class BBDD {
 
 		try (Statement st = con.createStatement(); ResultSet rs = st.executeQuery(sql)) {
 
+			// variable que guarda informacion sobre fila
 			int fila = 0;
+			// variable que guarda informacion sobre hayresultados
 			boolean hayResultados = false;
 
 			while (rs.next()) {
@@ -217,6 +233,7 @@ public class BBDD {
 		}
 
 		try (Statement st = con.createStatement()) {
+			// variable que guarda informacion sobre filas
 			int filas = st.executeUpdate(sql);
 			System.out.println(etiqueta + " hecho correctamente. Filas afectadas: " + filas);
 			return filas;

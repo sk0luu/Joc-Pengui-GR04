@@ -8,9 +8,13 @@ import javafx.stage.Stage;
 import jocpinguiFinal.Vista.AppState;
 
 // "extends Application" es como decirle a Java: "¡Oye, quiero abrir una ventana!"
+/**
+ * punto de entrada principal del programa. inicia la aplicacion.
+ */
 public class Main extends Application {
 
     @Override
+    // metodo encargado de la funcion start recibiendo parametros: Stage ventanaPrincipal
     public void start(Stage ventanaPrincipal) {
         try {
             // Guardar la ventana principal en AppState para acceso global
@@ -18,6 +22,7 @@ public class Main extends Application {
 
             // Cargar la pantalla de carga como primera pantalla
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/jocpinguiFinal/Vista/PantallaCarga.fxml"));
+            // variable que guarda informacion sobre raiz
             Parent raiz = loader.load();
 
             // Crear la escena
@@ -37,6 +42,7 @@ public class Main extends Application {
         }
     }
 
+    // metodo principal que arranca la ejecucion de la clase
     public static void main(String[] args) {
         // Este comando es el que lanza todo el motor de JavaFX
         launch(args);

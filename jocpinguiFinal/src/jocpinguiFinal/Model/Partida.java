@@ -2,13 +2,23 @@ package jocpinguiFinal.Model;
 
 import java.util.ArrayList;
 
+/**
+ * guarda todo el estado de la partida actual: turno, jugadores y configuracion del tablero.
+ */
 public class Partida implements java.io.Serializable {
+	// variable que guarda informacion sobre serialversionuid
 	private static final long serialVersionUID = 1L;
+	// variable que guarda informacion sobre tablero
 	protected Tablero tablero;
+	// variable que guarda informacion sobre jugadores
 	private ArrayList<Jugador> jugadores;
+	// variable que guarda informacion sobre turnos
 	protected int turnos;
+	// variable que guarda informacion sobre jugadoractual
 	protected int jugadorActual;
+	// variable que guarda informacion sobre finalizado
 	protected boolean finalizado;
+	// variable que guarda informacion sobre ganador
 	protected Jugador ganador;
 	//Constructor de Partida para iniciar la partida
 	public Partida(Tablero tablero, ArrayList<Jugador> jugadores) {

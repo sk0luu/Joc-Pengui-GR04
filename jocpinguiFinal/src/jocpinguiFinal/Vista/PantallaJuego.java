@@ -50,52 +50,73 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
+/**
+ * vista principal donde se dibuja el tablero, los pinguinos y se interactua durante el juego.
+ */
 public class PantallaJuego {
 
 	// Elementos del menú principal
 	@FXML
+	// variable que guarda informacion sobre newgame
 	private MenuItem newGame;
 	@FXML
+	// variable que guarda informacion sobre savegame
 	private MenuItem saveGame;
 	@FXML
+	// variable que guarda informacion sobre loadgame
 	private MenuItem loadGame;
 	@FXML
+	// variable que guarda informacion sobre quitgame
 	private MenuItem quitGame;
 
 	// Botones de acción en la interfaz
 	@FXML
+	// variable que guarda informacion sobre dado
 	private Button dado;
 	@FXML
+	// variable que guarda informacion sobre rapido
 	private Button rapido;
 	@FXML
+	// variable que guarda informacion sobre lento
 	private Button lento;
 	@FXML
+	// variable que guarda informacion sobre peces
 	private Button peces;
 	@FXML
+	// variable que guarda informacion sobre nieve
 	private Button nieve;
 	@FXML
+	// variable que guarda informacion sobre savegamebutton
 	private Button saveGameButton;
 	@FXML
+	// variable que guarda informacion sobre loadgamebutton
 	private Button loadGameButton;
 	@FXML
+	// variable que guarda informacion sobre backmenubutton
 	private Button backMenuButton;
 
 	// Textos informativos en pantalla
 	@FXML
+	// variable que guarda informacion sobre dadoresulttext
 	private Text dadoResultText;
 	@FXML
+	// variable que guarda informacion sobre rapido_t
 	private Text rapido_t;
 	@FXML
+	// variable que guarda informacion sobre lento_t
 	private Text lento_t;
 	@FXML
+	// variable que guarda informacion sobre peces_t
 	private Text peces_t;
 	@FXML
+	// variable que guarda informacion sobre nieve_t
 	private Text nieve_t;
 	@FXML
 	private javafx.scene.text.TextFlow eventosFlow;
 
 	// Etiquetas de la interfaz
 	@FXML
+	// variable que guarda informacion sobre jugadoractuallabel
 	private Label jugadorActualLabel;
 	@FXML
 	private javafx.scene.layout.VBox topJugadoresBox;
@@ -104,39 +125,60 @@ public class PantallaJuego {
 
 	// Tablero de juego y piezas de los jugadores
 	@FXML
+	// variable que guarda informacion sobre tablero
 	private GridPane tablero;
 	@FXML
+	// variable que guarda informacion sobre p1
 	private Circle P1;
 	@FXML
+	// variable que guarda informacion sobre p2
 	private Circle P2;
 	@FXML
+	// variable que guarda informacion sobre p3
 	private Circle P3;
 	@FXML
+	// variable que guarda informacion sobre p4
 	private Circle P4;
 	@FXML
+	// variable que guarda informacion sobre p5
 	private Circle P5;
 
+	// variable que guarda informacion sobre gestorpartida
 	private GestorPartida gestorPartida;
 	private Map<Integer, Circle> playerCircles; // Mapeo de índice de jugador a círculo
 	private Map<Integer, Integer> playerPositions; // Mapeo de índice de jugador a posición
+	// variable que guarda informacion sobre conexionbd
 	private Connection conexionBD;
+	// variable que guarda informacion sobre usuarioactual
 	private String usuarioActual;
 
+	// variable que guarda informacion sobre columns
 	private static final int COLUMNS = 5;
+	// variable que guarda informacion sobre total_cells
 	private static final int TOTAL_CELLS = 50;
+	// variable que guarda informacion sobre tag_casilla_text
 	private static final String TAG_CASILLA_TEXT = "CASILLA_TEXT";
 
+	// variable que guarda informacion sobre dicesound
 	private Object diceSound;
+	// variable que guarda informacion sobre agujerosound
 	private Object agujeroSound;
+	// variable que guarda informacion sobre sealsound
 	private Object sealSound;
+	// variable que guarda informacion sobre victoriasound
 	private Object victoriaSound;
+	// variable que guarda informacion sobre trineosound
 	private Object trineoSound;
+	// variable que guarda informacion sobre hielosound
 	private Object hieloSound;
+	// variable que guarda informacion sobre eventosound
 	private Object eventoSound;
+	// variable que guarda informacion sobre backgroundmusicplayer
 	private Object backgroundMusicPlayer;
 
 	private java.util.LinkedList<String> historialEventos = new java.util.LinkedList<>();
 
+	// metodo encargado de la funcion agregarevento recibiendo parametros: String msg
 	private void agregarEvento(String msg) {
 		if (msg == null || msg.trim().isEmpty())
 			return;
@@ -165,12 +207,14 @@ public class PantallaJuego {
 	}
 
 	@FXML
+	// metodo encargado de la funcion initialize recibiendo parametros: ninguno
 	private void initialize() {
 		playerCircles = new HashMap<>();
 		playerPositions = new HashMap<>();
 		cargarSonidos();
 	}
 
+	// metodo que actualiza o establece el valor de gestorpartida
 	public void setGestorPartida(GestorPartida gestor) {
 		this.gestorPartida = gestor;
 		if (conexionBD != null) {
@@ -179,14 +223,17 @@ public class PantallaJuego {
 		iniciarLogicaJuego();
 	}
 
+	// metodo que actualiza o establece el valor de conexion
 	public void setConexion(Connection conexion) {
 		this.conexionBD = conexion;
 	}
 
+	// metodo que actualiza o establece el valor de usuario
 	public void setUsuario(String usuario) {
 		this.usuarioActual = usuario;
 	}
 
+	// metodo encargado de la funcion cargarsonidos recibiendo parametros: ninguno
 	private void cargarSonidos() {
 		diceSound = cargarAudioClip("/jocpinguiFinal/resources/sounds/dado.mp3");
 		System.out.println("Sonido de dado cargado: " + (diceSound != null));
@@ -203,6 +250,7 @@ public class PantallaJuego {
 		eventoSound = cargarAudioClip("/jocpinguiFinal/resources/sounds/ruido evento.mp3");
 		System.out.println("Sonido de evento cargado: " + (eventoSound != null));
 
+		// variable que guarda informacion sobre bgmusic
 		Object bgMusic = cargarMedia("/jocpinguiFinal/resources/sounds/musica_fondo.mp3");
 		System.out.println("Música de fondo cargada: " + (bgMusic != null));
 		if (bgMusic != null) {
@@ -221,24 +269,31 @@ public class PantallaJuego {
 		}
 	}
 
+	// metodo encargado de la funcion cargaraudioclip recibiendo parametros: String recurso
 	private Object cargarAudioClip(String recurso) {
+		// variable que guarda informacion sobre url
 		URL url = getClass().getResource(recurso);
 		if (url == null) {
 			System.out.println("Audio no encontrado: " + recurso);
 			return null;
 		}
+		// metodo encargado de la funcion crearinstancia recibiendo parametros: "javafx.scene.media.AudioClip", url.toExternalForm()
 		return crearInstancia("javafx.scene.media.AudioClip", url.toExternalForm());
 	}
 
+	// metodo encargado de la funcion cargarmedia recibiendo parametros: String recurso
 	private Object cargarMedia(String recurso) {
+		// variable que guarda informacion sobre url
 		URL url = getClass().getResource(recurso);
 		if (url == null) {
 			System.out.println("Media no encontrado: " + recurso);
 			return null;
 		}
+		// metodo encargado de la funcion crearinstancia recibiendo parametros: "javafx.scene.media.Media", url.toExternalForm()
 		return crearInstancia("javafx.scene.media.Media", url.toExternalForm());
 	}
 
+	// metodo encargado de la funcion crearmediaplayer recibiendo parametros: Object media
 	private Object crearMediaPlayer(Object media) {
 		if (media == null)
 			return null;
@@ -253,6 +308,7 @@ public class PantallaJuego {
 		}
 	}
 
+	// metodo encargado de la funcion crearinstancia recibiendo parametros: String className, String parametro
 	private Object crearInstancia(String className, String parametro) {
 		try {
 			Class<?> clazz = Class.forName(className);
@@ -264,6 +320,7 @@ public class PantallaJuego {
 		}
 	}
 
+	// metodo encargado de la funcion invocarmetodo recibiendo parametros: Object objeto, String metodo, Class<?> paramType, Object arg
 	private void invocarMetodo(Object objeto, String metodo, Class<?> paramType, Object arg) {
 		if (objeto == null)
 			return;
@@ -275,6 +332,7 @@ public class PantallaJuego {
 		}
 	}
 
+	// metodo encargado de la funcion invocarmetodo recibiendo parametros: Object objeto, String metodo
 	private void invocarMetodo(Object objeto, String metodo) {
 		if (objeto == null)
 			return;
@@ -294,6 +352,7 @@ public class PantallaJuego {
 		}
 	}
 
+	// metodo encargado de la funcion obtenercolorhex recibiendo parametros: String color
 	private String obtenerColorHex(String color) {
 		switch (color) {
 			case "rojo":
@@ -313,13 +372,17 @@ public class PantallaJuego {
 		}
 	}
 
+	// metodo encargado de la funcion mostrartiposdecasillasentablero recibiendo parametros: Tablero t
 	private void mostrarTiposDeCasillasEnTablero(Tablero t) {
 		tablero.getChildren().removeIf(node -> TAG_CASILLA_TEXT.equals(node.getUserData()));
 
+		// variable que guarda informacion sobre insertindex
 		int insertIndex = 0;
 		// Añadir fondo de cristal a cada celda del grid
 		for (int i = 0; i < TOTAL_CELLS; i++) {
+			// variable que guarda informacion sobre row
 			int row = i / COLUMNS;
+			// variable que guarda informacion sobre col
 			int col = i % COLUMNS;
 			javafx.scene.layout.Pane bgCell = new javafx.scene.layout.Pane();
 			bgCell.getStyleClass().add("cell-bg");
@@ -330,18 +393,23 @@ public class PantallaJuego {
 		}
 
 		for (int i = 0; i < t.getCasillas().size(); i++) {
+			// variable que guarda informacion sobre casilla
 			Casilla casilla = t.getCasillas().get(i);
 
 			if (i > 0 && i < TOTAL_CELLS - 1) {
+				// variable que guarda informacion sobre tipo
 				String tipo = casilla.getClass().getSimpleName();
 
+				// variable que guarda informacion sobre row
 				int row = i / COLUMNS;
+				// variable que guarda informacion sobre col
 				int col = i % COLUMNS;
 
 				javafx.scene.Node nodoCelda;
 
 				if (casilla instanceof Oso) {
 					try {
+						// variable que guarda informacion sobre img
 						Image img = new Image(getClass().getResourceAsStream("/jocpinguiFinal/Vista/images/oso.png"));
 						javafx.scene.image.ImageView iv = new javafx.scene.image.ImageView(img);
 						iv.setFitWidth(60);
@@ -349,6 +417,7 @@ public class PantallaJuego {
 						iv.setPreserveRatio(true);
 						nodoCelda = iv;
 					} catch (Exception e) {
+						// variable que guarda informacion sobre texto
 						Text texto = new Text("Oso");
 						texto.getStyleClass().add("cell-type");
 						nodoCelda = texto;
@@ -363,6 +432,7 @@ public class PantallaJuego {
 						iv.setPreserveRatio(true);
 						nodoCelda = iv;
 					} catch (Exception e) {
+						// variable que guarda informacion sobre texto
 						Text texto = new Text("Agujero");
 						texto.getStyleClass().add("cell-type");
 						nodoCelda = texto;
@@ -377,6 +447,7 @@ public class PantallaJuego {
 						iv.setPreserveRatio(true);
 						nodoCelda = iv;
 					} catch (Exception e) {
+						// variable que guarda informacion sobre texto
 						Text texto = new Text("Normal");
 						texto.getStyleClass().add("cell-type");
 						nodoCelda = texto;
@@ -391,6 +462,7 @@ public class PantallaJuego {
 						iv.setPreserveRatio(true);
 						nodoCelda = iv;
 					} catch (Exception e) {
+						// variable que guarda informacion sobre texto
 						Text texto = new Text("Trineo");
 						texto.getStyleClass().add("cell-type");
 						nodoCelda = texto;
@@ -405,6 +477,7 @@ public class PantallaJuego {
 						iv.setPreserveRatio(true);
 						nodoCelda = iv;
 					} catch (Exception e) {
+						// variable que guarda informacion sobre texto
 						Text texto = new Text("Evento");
 						texto.getStyleClass().add("cell-type");
 						nodoCelda = texto;
@@ -419,11 +492,13 @@ public class PantallaJuego {
 						iv.setPreserveRatio(true);
 						nodoCelda = iv;
 					} catch (Exception e) {
+						// variable que guarda informacion sobre texto
 						Text texto = new Text("SueloQuebradizo");
 						texto.getStyleClass().add("cell-type");
 						nodoCelda = texto;
 					}
 				} else {
+					// variable que guarda informacion sobre texto
 					Text texto = new Text(tipo);
 					texto.getStyleClass().add("cell-type");
 					nodoCelda = texto;
@@ -440,13 +515,17 @@ public class PantallaJuego {
 		}
 	}
 
+	// metodo encargado de la funcion actualizarinfojugadores recibiendo parametros: ninguno
 	private void actualizarInfoJugadores() {
 		if (gestorPartida == null || gestorPartida.getPartida() == null)
 			return;
 
+		// variable que guarda informacion sobre indiceactual
 		int indiceActual = gestorPartida.getPartida().getJugadorActual();
+		// variable que guarda informacion sobre jugadoractual
 		Jugador jugadorActual = gestorPartida.getPartida().getJugador().get(indiceActual);
 
+		// variable que guarda informacion sobre infoextra
 		String infoExtra = "";
 
 		jugadorActualLabel
@@ -456,20 +535,25 @@ public class PantallaJuego {
 		actualizarTopJugadores();
 	}
 
+	// metodo encargado de la funcion actualizartopjugadores recibiendo parametros: ninguno
 	private void actualizarTopJugadores() {
 		if (topJugadoresBox == null || gestorPartida == null || gestorPartida.getPartida() == null)
 			return;
 		topJugadoresBox.getChildren().clear();
+		// variable que guarda informacion sobre jugadores
 		ArrayList<Jugador> jugadores = new ArrayList<>(gestorPartida.getPartida().getJugador());
 		jugadores.sort((j1, j2) -> Integer.compare(j2.getPosicion(), j1.getPosicion()));
 		for (int i = 0; i < jugadores.size(); i++) {
+			// variable que guarda informacion sobre j
 			Jugador j = jugadores.get(i);
+			// variable que guarda informacion sobre label
 			Label label = new Label((i + 1) + ". " + j.getNom() + " - Casilla " + j.getPosicion());
 			label.setStyle("-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #cbd5e1;");
 			topJugadoresBox.getChildren().add(label);
 		}
 	}
 
+	// metodo encargado de la funcion animardado recibiendo parametros: ninguno
 	private void animarDado() {
 		if (imagenDado != null) {
 			javafx.animation.RotateTransition rt = new javafx.animation.RotateTransition(Duration.millis(350),
@@ -480,6 +564,7 @@ public class PantallaJuego {
 		}
 	}
 
+	// metodo encargado de la funcion actualizarinventario recibiendo parametros: Jugador jugador
 	private void actualizarInventario(Jugador jugador) {
 		if (!(jugador instanceof Pinguino)) {
 			rapido_t.setText("Dado rápido: 0");
@@ -487,15 +572,22 @@ public class PantallaJuego {
 			peces_t.setText("Peces: 0");
 			nieve_t.setText("Bolas de nieve: 0");
 		} else {
+			// variable que guarda informacion sobre p
 			Pinguino p = (Pinguino) jugador;
+			// variable que guarda informacion sobre inv
 			Inventario inv = p.getInv();
 
+			// variable que guarda informacion sobre pezcount
 			int pezCount = 0;
+			// variable que guarda informacion sobre nievecount
 			int nieveCount = 0;
+			// variable que guarda informacion sobre rapidocount
 			int rapidoCount = 0;
+			// variable que guarda informacion sobre lentocount
 			int lentoCount = 0;
 
 			for (Item item : inv.getItems()) {
+				// variable que guarda informacion sobre nombre
 				String nombre = item.getNombre().toLowerCase();
 				if (nombre.contains("pez")) {
 					pezCount += item.getCantidad();
@@ -517,11 +609,13 @@ public class PantallaJuego {
 
 	// Acciones del menú principal
 	@FXML
+	// metodo encargado de la funcion handlenewgame recibiendo parametros: ninguno
 	private void handleNewGame() {
 		System.out.println("New game.");
 	}
 
 	@FXML
+	// metodo encargado de la funcion handlesavegame recibiendo parametros: ninguno
 	private void handleSaveGame() {
 		if (gestorPartida == null || gestorPartida.getPartida() == null) {
 			agregarEvento("Error: No hay partida para guardar");
@@ -533,8 +627,10 @@ public class PantallaJuego {
 			dialog.setHeaderText("Ingresa un nombre para la partida");
 			dialog.setContentText("Nombre:");
 
+			// variable que guarda informacion sobre resultado
 			Optional<String> resultado = dialog.showAndWait();
 			if (resultado.isPresent() && !resultado.get().trim().isEmpty()) {
+				// variable que guarda informacion sobre nombrepartida
 				String nombrePartida = resultado.get().trim();
 
 				if (gestorPartida.guardarPartidaBD(nombrePartida, usuarioActual)) {
@@ -548,7 +644,9 @@ public class PantallaJuego {
 	}
 
 	@FXML
+	// metodo encargado de la funcion handleloadgame recibiendo parametros: ninguno
 	private void handleLoadGame() {
+		// variable que guarda informacion sobre partidas
 		ArrayList<String[]> partidas = gestorPartida.listarPartidasBD(usuarioActual);
 
 		if (partidas.isEmpty()) {
@@ -558,6 +656,7 @@ public class PantallaJuego {
 			ArrayList<String> opciones = new ArrayList<>();
 			Map<String, Integer> mapaNombresID = new HashMap<>();
 			for (String[] partida : partidas) {
+				// variable que guarda informacion sobre opcion
 				String opcion = partida[1] + " (" + partida[2] + ")";
 				opciones.add(opcion);
 				mapaNombresID.put(opcion, Integer.parseInt(partida[0]));
@@ -570,8 +669,10 @@ public class PantallaJuego {
 			dialog.setHeaderText("Selecciona una partida para cargar");
 			dialog.setContentText("Partidas:");
 
+			// variable que guarda informacion sobre resultado
 			Optional<String> resultado = dialog.showAndWait();
 			if (resultado.isPresent()) {
+				// variable que guarda informacion sobre idpartida
 				int idPartida = mapaNombresID.get(resultado.get());
 				if (gestorPartida.cargarPartidaBD(idPartida)) {
 					iniciarLogicaJuego();
@@ -585,19 +686,25 @@ public class PantallaJuego {
 	}
 
 	@FXML
+	// metodo encargado de la funcion handlebackmenu recibiendo parametros: ninguno
 	private void handleBackMenu() {
+		// variable que guarda informacion sobre alerta
 		Alert alerta = new Alert(AlertType.CONFIRMATION);
 		alerta.initOwner(AppState.getInstance().getVentanaPrincipal());
 		alerta.setTitle("Volver al Menú");
 		alerta.setHeaderText("¿Deseas volver al menú?");
 		alerta.setContentText("Si vuelves sin guardar, perderás la partida actual.\n¿Qué deseas hacer?");
 
+		// variable que guarda informacion sobre btnguardar
 		ButtonType btnGuardar = new ButtonType("Guardar y Volver");
+		// variable que guarda informacion sobre btnsinguardar
 		ButtonType btnSinGuardar = new ButtonType("Volver sin Guardar");
+		// variable que guarda informacion sobre btncancelar
 		ButtonType btnCancelar = new ButtonType("Cancelar");
 
 		alerta.getButtonTypes().setAll(btnGuardar, btnSinGuardar, btnCancelar);
 
+		// variable que guarda informacion sobre resultado
 		Optional<ButtonType> resultado = alerta.showAndWait();
 
 		if (resultado.isPresent()) {
@@ -613,6 +720,7 @@ public class PantallaJuego {
 		}
 	}
 
+	// metodo encargado de la funcion volveralmenu recibiendo parametros: ninguno
 	private void volverAlMenu() {
 		try {
 			// Limpiar el guard de animación para que futuras partidas puedan registrar victorias
@@ -621,7 +729,9 @@ public class PantallaJuego {
 				stage.getProperties().remove("ANIMACION_MOSTRADA");
 			}
 
+			// variable que guarda informacion sobre loader
 			FXMLLoader loader = new FXMLLoader(getClass().getResource("/jocpinguiFinal/Vista/PantallaPartida.fxml"));
+			// variable que guarda informacion sobre root
 			Parent root = loader.load();
 
 			// Pasar la conexión y el usuario al controlador para que el ranking
@@ -629,6 +739,7 @@ public class PantallaJuego {
 			PantallaPartida controllerPartida = loader.getController();
 			controllerPartida.setConexion(conexionBD, usuarioActual);
 
+			// variable que guarda informacion sobre scene
 			Scene scene = new Scene(root);
 			stage.setScene(scene);
 			stage.setTitle("Pinguino Game - Configuración");
@@ -649,6 +760,7 @@ public class PantallaJuego {
 	}
 
 	@FXML
+	// metodo encargado de la funcion handlequitgame recibiendo parametros: ninguno
 	private void handleQuitGame() {
 		System.out.println("Exit...");
 		System.exit(0);
@@ -656,15 +768,19 @@ public class PantallaJuego {
 
 	// Acciones de los botones del juego
 	@FXML
+	// metodo encargado de la funcion handledado recibiendo parametros: ActionEvent event
 	private void handleDado(ActionEvent event) {
 		if (gestorPartida == null || gestorPartida.getPartida() == null) {
 			agregarEvento("Error: Partida no inicializada");
 		} else {
 			dado.setDisable(true);
+			// variable que guarda informacion sobre indiceactual
 			int indiceActual = gestorPartida.getPartida().getJugadorActual();
+			// variable que guarda informacion sobre jugadoractual
 			Jugador jugadorActual = gestorPartida.getPartida().getJugador().get(indiceActual);
 			if (jugadorActual.estaCongelado()) {
 				agregarEvento("¡" + jugadorActual.getNom() + " está congelado y pierde su turno!");
+				// variable que guarda informacion sobre pause
 				PauseTransition pause = new PauseTransition(Duration.millis(1500));
 				pause.setOnFinished(e -> {
 					jugadorActual.pasaTurnoCongelado();
@@ -679,6 +795,7 @@ public class PantallaJuego {
 				animarDado();
 				// Tirar dado
 				Dado d = new Dado();
+				// variable que guarda informacion sobre resultado
 				int resultado = d.tirar();
 				if ("admin#67".equals(jugadorActual.getNom())) {
 					resultado = 6;
@@ -695,6 +812,7 @@ public class PantallaJuego {
 				if (jugadorActual.getPosicion() >= TOTAL_CELLS) {
 					jugadorActual.setPosicion(TOTAL_CELLS - 1);
 				}
+				// variable que guarda informacion sobre posnueva
 				int posNueva = jugadorActual.getPosicion();
 				playerPositions.put(indiceActual, posNueva);
 				System.out.println("Jugador " + indiceActual + " movió de " + posAnterior + " a " + posNueva);
@@ -719,23 +837,34 @@ public class PantallaJuego {
 		}
 	}
 
+	// metodo encargado de la funcion animarmovimiento recibiendo parametros: int playerIndex, int posAnterior, int posNueva, Runnable onFinished
 	private void animarMovimiento(int playerIndex, int posAnterior, int posNueva, Runnable onFinished) {
+		// variable que guarda informacion sobre playercircle
 		Circle playerCircle = playerCircles.get(playerIndex);
 		if (playerCircle == null)
 			return;
 
+		// variable que guarda informacion sobre oldrow
 		int oldRow = posAnterior / COLUMNS;
+		// variable que guarda informacion sobre oldcol
 		int oldCol = posAnterior % COLUMNS;
 
+		// variable que guarda informacion sobre newrow
 		int newRow = posNueva / COLUMNS;
+		// variable que guarda informacion sobre newcol
 		int newCol = posNueva % COLUMNS;
 
+		// variable que guarda informacion sobre cellwidth
 		double cellWidth = tablero.getWidth() / COLUMNS;
+		// variable que guarda informacion sobre cellheight
 		double cellHeight = tablero.getHeight() / 10;
 
+		// variable que guarda informacion sobre dx
 		double dx = (newCol - oldCol) * cellWidth;
+		// variable que guarda informacion sobre dy
 		double dy = (newRow - oldRow) * cellHeight;
 
+		// variable que guarda informacion sobre slide
 		TranslateTransition slide = new TranslateTransition(Duration.millis(350), playerCircle);
 		slide.setByX(dx);
 		slide.setByY(dy);
@@ -751,8 +880,11 @@ public class PantallaJuego {
 		slide.play();
 	}
 
+	// metodo encargado de la funcion aplicarcasilla recibiendo parametros: Jugador jugador, int posicion
 	private void aplicarCasilla(Jugador jugador, int posicion) {
+		// variable que guarda informacion sobre tablero
 		Tablero tablero = gestorPartida.getPartida().getTablero();
+		// variable que guarda informacion sobre casillas
 		ArrayList<Casilla> casillas = tablero.getCasillas();
 
 		if (posicion < 0 || posicion >= casillas.size()) {
@@ -766,14 +898,19 @@ public class PantallaJuego {
 
 		// Mandar a este pingüino al frente para que no quede detrás del texto
 
+		// variable que guarda informacion sobre idx
 		int idx = gestorPartida.getPartida().getJugador().indexOf(jugador);
 		if (idx >= 0 && playerCircles.containsKey(idx)) {
 			playerCircles.get(idx).toFront();
 		}
 
+		// variable que guarda informacion sobre casilla
 		Casilla casilla = casillas.get(posicion);
+		// variable que guarda informacion sobre mensaje
 		String mensaje = "";
+		// variable que guarda informacion sobre posicionantes
 		int posicionAntes = jugador.getPosicion();
+		// variable que guarda informacion sobre posiciondespues
 		int posicionDespues = posicionAntes;
 
 		try {
@@ -786,6 +923,7 @@ public class PantallaJuego {
 				//   · cualquier otro agujero → agujero anterior más cercano
 				int posAntesDelAgujero = jugador.getPosicion();
 				casilla.realizarAccion(gestorPartida.getPartida(), jugador);
+				// variable que guarda informacion sobre destino
 				int destino = jugador.getPosicion();
 				posicionDespues = destino;
 
@@ -801,9 +939,12 @@ public class PantallaJuego {
 				int jugadorIndex = gestorPartida.getPartida().getJugador().indexOf(jugador);
 				if (jugadorIndex >= 0) {
 					playerPositions.put(jugadorIndex, destino);
+					// variable que guarda informacion sobre circle
 					Circle circle = playerCircles.get(jugadorIndex);
 					if (circle != null) {
+						// variable que guarda informacion sobre newrow
 						int newRow = destino / COLUMNS;
+						// variable que guarda informacion sobre newcol
 						int newCol = destino % COLUMNS;
 						GridPane.setRowIndex(circle, newRow);
 						GridPane.setColumnIndex(circle, newCol);
@@ -816,9 +957,12 @@ public class PantallaJuego {
 			} else if (casilla instanceof Trineo) {
 				invocarMetodo(trineoSound, "play");
 				System.out.println("Sonido de trineo intentado");
+				// variable que guarda informacion sobre posicionnueva
 				int posicionNueva = -1;
+				// variable que guarda informacion sobre trineoencontrado
 				boolean trineoEncontrado = false;
 				for (int i = 0; i < casillas.size() && !trineoEncontrado; i++) {
+					// variable que guarda informacion sobre c
 					Casilla c = casillas.get(i);
 					if (c instanceof Trineo && c.getPosicion() > posicion) {
 						posicionNueva = c.getPosicion();
@@ -836,9 +980,12 @@ public class PantallaJuego {
 					int jugadorIndex = gestorPartida.getPartida().getJugador().indexOf(jugador);
 					if (jugadorIndex >= 0) {
 						playerPositions.put(jugadorIndex, posicionNueva);
+						// variable que guarda informacion sobre circle
 						Circle circle = playerCircles.get(jugadorIndex);
 						if (circle != null) {
+							// variable que guarda informacion sobre newrow
 							int newRow = posicionNueva / COLUMNS;
+							// variable que guarda informacion sobre newcol
 							int newCol = posicionNueva % COLUMNS;
 							GridPane.setRowIndex(circle, newRow);
 							GridPane.setColumnIndex(circle, newCol);
@@ -862,6 +1009,7 @@ public class PantallaJuego {
 				// si no lo tiene lo manda al inicio.
 				int posAntesDelOso = jugador.getPosicion();
 				casilla.realizarAccion(gestorPartida.getPartida(), jugador);
+				// variable que guarda informacion sobre posicionnueva
 				int posicionNueva = jugador.getPosicion();
 
 				if (posicionNueva == posAntesDelOso) {
@@ -881,9 +1029,12 @@ public class PantallaJuego {
 					int jugadorIndex = gestorPartida.getPartida().getJugador().indexOf(jugador);
 					if (jugadorIndex >= 0) {
 						playerPositions.put(jugadorIndex, posicionNueva);
+						// variable que guarda informacion sobre circle
 						Circle circle = playerCircles.get(jugadorIndex);
 						if (circle != null) {
+							// variable que guarda informacion sobre newrow
 							int newRow = posicionNueva / COLUMNS;
+							// variable que guarda informacion sobre newcol
 							int newCol = posicionNueva % COLUMNS;
 							GridPane.setRowIndex(circle, newRow);
 							GridPane.setColumnIndex(circle, newCol);
@@ -897,6 +1048,7 @@ public class PantallaJuego {
 					aplicarCasilla(jugador, posicionNueva);
 				}
 			} else if (casilla instanceof SueloQuebradizo) {
+				// variable que guarda informacion sobre cantitems
 				int cantItems = 0;
 				if (jugador instanceof Pinguino) {
 					cantItems = ((Pinguino) jugador).getInv().getTotalItems();
@@ -904,6 +1056,7 @@ public class PantallaJuego {
 
 				if (cantItems > 5) {
 					invocarMetodo(hieloSound, "play");
+					// variable que guarda informacion sobre posicionnueva
 					int posicionNueva = 0;
 					jugador.setPosicion(posicionNueva);
 					posicionDespues = posicionNueva;
@@ -913,6 +1066,7 @@ public class PantallaJuego {
 					int jugadorIndex = gestorPartida.getPartida().getJugador().indexOf(jugador);
 					if (jugadorIndex >= 0) {
 						playerPositions.put(jugadorIndex, posicionNueva);
+						// variable que guarda informacion sobre circle
 						Circle circle = playerCircles.get(jugadorIndex);
 						if (circle != null) {
 							GridPane.setRowIndex(circle, 0);
@@ -933,13 +1087,16 @@ public class PantallaJuego {
 				}
 			} else if (casilla instanceof Evento) {
 				invocarMetodo(eventoSound, "play");
+				// variable que guarda informacion sobre e
 				Evento e = (Evento) casilla;
 				java.util.Random r = new java.util.Random();
+				// variable que guarda informacion sobre eventotexto
 				String eventoTexto = e.getEventos()[r.nextInt(e.getEventos().length)];
 				agregarEvento("¡Evento! " + jugador.getNom() + ": " + eventoTexto);
 
 				// Lógica para dar objetos al jugador si el evento lo dice
 				if (jugador instanceof Pinguino) {
+					// variable que guarda informacion sobre p
 					Pinguino p = (Pinguino) jugador;
 					if (eventoTexto.toLowerCase().contains("pez")) {
 						p.getInv().añadirItem(new jocpinguiFinal.Model.ItemConcreto("Pez", 1));
@@ -953,6 +1110,7 @@ public class PantallaJuego {
 					actualizarInventario(p);
 				}
 
+				// variable que guarda informacion sobre movimientoextra
 				int movimientoExtra = 0;
 				if (eventoTexto.contains("+2"))
 					movimientoExtra = 2;
@@ -962,16 +1120,19 @@ public class PantallaJuego {
 					jugador.setTurnosCongelado(1);
 
 				if (movimientoExtra != 0) {
+					// variable que guarda informacion sobre pnueva
 					int pNueva = posicionAntes + movimientoExtra;
 					if (pNueva >= TOTAL_CELLS)
 						pNueva = TOTAL_CELLS - 1;
 					if (pNueva < 0)
 						pNueva = 0;
 
+					// variable que guarda informacion sobre posicionfinal
 					final int posicionFinal = pNueva;
 					jugador.setPosicion(posicionFinal);
 					posicionDespues = posicionFinal;
 
+					// variable que guarda informacion sobre jugadorindex
 					int jugadorIndex = gestorPartida.getPartida().getJugador().indexOf(jugador);
 					if (jugadorIndex >= 0) {
 						playerPositions.put(jugadorIndex, posicionFinal);
@@ -1001,11 +1162,14 @@ public class PantallaJuego {
 		}
 	}
 
+	// metodo encargado de la funcion comprobarsichocaconfoca recibiendo parametros: Jugador pinguino, int posicion, int indiceActual
 	private void comprobarSiChocaConFoca(Jugador pinguino, int posicion, int indiceActual) {
 		if (pinguino instanceof Pinguino && !"admin#67".equals(pinguino.getNom())) {
+			// variable que guarda informacion sobre p
 			Pinguino p = (Pinguino) pinguino;
 			for (Jugador jug : gestorPartida.getPartida().getJugador()) {
 				if (jug instanceof Foca && jug.getPosicion() == posicion) {
+					// variable que guarda informacion sobre foca
 					Foca foca = (Foca) jug;
 
 					if (foca.estaCongelado()) {
@@ -1018,12 +1182,14 @@ public class PantallaJuego {
 					} else {
 						// No fue sobornada → ataca
 						invocarMetodo(sealSound, "play");
+						// variable que guarda informacion sobre mejorpos
 						int mejorPos = -1;
 						for (int i = 0; i < posicion; i++) {
 							if (gestorPartida.getPartida().getTablero().getCasillas().get(i) instanceof Agujero) {
 								mejorPos = i;
 							}
 						}
+						// variable que guarda informacion sobre destino
 						int destino = (mejorPos != -1) ? mejorPos : 0;
 						p.setPosicion(destino);
 						agregarEvento("¡La Foca golpea a " + p.getNom() + " y lo envía al agujero anterior (casilla "
@@ -1031,9 +1197,12 @@ public class PantallaJuego {
 
 						// Mover visualmente
 						playerPositions.put(indiceActual, destino);
+						// variable que guarda informacion sobre circle
 						Circle circle = playerCircles.get(indiceActual);
 						if (circle != null) {
+							// variable que guarda informacion sobre r
 							int r = destino / COLUMNS;
+							// variable que guarda informacion sobre c
 							int c = destino % COLUMNS;
 							GridPane.setRowIndex(circle, r);
 							GridPane.setColumnIndex(circle, c);
@@ -1049,42 +1218,55 @@ public class PantallaJuego {
 	}
 
 	@FXML
+	// metodo encargado de la funcion handlerapido recibiendo parametros: ninguno
 	private void handleRapido() {
 		usarItem("Rápido");
 	}
 
 	@FXML
+	// metodo encargado de la funcion handlelento recibiendo parametros: ninguno
 	private void handleLento() {
 		usarItem("Lento");
 	}
 
 	@FXML
+	// metodo encargado de la funcion handlepeces recibiendo parametros: ninguno
 	private void handlePeces() {
 		usarItem("Pez");
 	}
 
 	@FXML
+	// metodo encargado de la funcion handlenieve recibiendo parametros: ninguno
 	private void handleNieve() {
 		usarItem("Nieve");
 	}
 
+	// metodo encargado de la funcion usaritem recibiendo parametros: String tipoItem
 	private void usarItem(String tipoItem) {
 		if (gestorPartida == null || gestorPartida.getPartida() == null) {
 			agregarEvento("Error: Partida no inicializada");
 		} else {
+			// variable que guarda informacion sobre indiceactual
 			int indiceActual = gestorPartida.getPartida().getJugadorActual();
+			// variable que guarda informacion sobre jugadoractual
 			Jugador jugadorActual = gestorPartida.getPartida().getJugador().get(indiceActual);
 
 			if (!(jugadorActual instanceof Pinguino)) {
 				agregarEvento("Error: Jugador no es un pingüino");
 			} else {
+				// variable que guarda informacion sobre p
 				Pinguino p = (Pinguino) jugadorActual;
+				// variable que guarda informacion sobre inv
 				Inventario inv = p.getInv();
 
+				// variable que guarda informacion sobre itemencontrado
 				Item itemEncontrado = null;
+				// variable que guarda informacion sobre itembuscado
 				boolean itemBuscado = false;
+				// variable que guarda informacion sobre listaitemsp
 				ArrayList<Item> listaItemsP = inv.getItems();
 				for (int i = 0; i < listaItemsP.size() && !itemBuscado; i++) {
+					// variable que guarda informacion sobre item
 					Item item = listaItemsP.get(i);
 					if (item.getNombre().toLowerCase().contains(tipoItem.toLowerCase())) {
 						itemEncontrado = item;
@@ -1096,6 +1278,7 @@ public class PantallaJuego {
 					agregarEvento(tipoItem + " no disponible en el inventario");
 				} else {
 
+		// variable que guarda informacion sobre mensaje
 		String mensaje = "";
 
 		if (tipoItem.toLowerCase().contains("pez")) {
@@ -1123,11 +1306,13 @@ public class PantallaJuego {
 		} else if (tipoItem.toLowerCase().contains("nieve")) {
 			// Obtener lista de posibles objetivos (otros jugadores y foca)
 			ArrayList<Jugador> todos = gestorPartida.getPartida().getJugador();
+			// variable que guarda informacion sobre nombresobjetivos
 			ArrayList<String> nombresObjetivos = new ArrayList<>();
 			Map<String, Jugador> mapaObjetivos = new HashMap<>();
 
 			for (Jugador j : todos) {
 				if (!j.getNom().equals(p.getNom())) {
+					// variable que guarda informacion sobre label
 					String label = j.getNom() + (j instanceof Foca ? " (Foca)" : "");
 					nombresObjetivos.add(label);
 					mapaObjetivos.put(label, j);
@@ -1137,14 +1322,17 @@ public class PantallaJuego {
 			if (nombresObjetivos.isEmpty()) {
 				agregarEvento("No hay objetivos para lanzar la bola de nieve");
 			} else {
+				// variable que guarda informacion sobre dialog
 				ChoiceDialog<String> dialog = new ChoiceDialog<>(nombresObjetivos.get(0), nombresObjetivos);
 				dialog.initOwner(AppState.getInstance().getVentanaPrincipal());
 				dialog.setTitle("Lanzar Bola de Nieve");
 				dialog.setHeaderText("¿A quién quieres congelar?");
 				dialog.setContentText("Objetivo:");
 
+				// variable que guarda informacion sobre result
 				Optional<String> result = dialog.showAndWait();
 				if (result.isPresent()) {
+					// variable que guarda informacion sobre objetivo
 					Jugador objetivo = mapaObjetivos.get(result.get());
 					objetivo.congelar(1);
 
@@ -1174,14 +1362,18 @@ public class PantallaJuego {
 			animarDado();
 			// Tirar dado especial rápido: 5-10
 			java.util.Random r = new java.util.Random();
+			// variable que guarda informacion sobre total
 			int total = r.nextInt(6) + 5; // 5 a 10 (0-5 + 5)
+			// variable que guarda informacion sobre tiro1
 			int tiro1 = total; // Para el mensaje
+			// variable que guarda informacion sobre tiro2
 			int tiro2 = 0;
 
 			if ("admin#67".equals(p.getNom())) {
 				total = 10;
 			}
 
+			// variable que guarda informacion sobre posanterior
 			int posAnterior = p.getPosicion();
 			p.moverPosicion(total);
 			if (p.getPosicion() >= TOTAL_CELLS)
@@ -1189,6 +1381,7 @@ public class PantallaJuego {
 			if (p.getPosicion() < 0)
 				p.setPosicion(0);
 
+			// variable que guarda informacion sobre posnueva
 			int posNueva = p.getPosicion();
 			playerPositions.put(indiceActual, posNueva);
 
@@ -1220,14 +1413,18 @@ public class PantallaJuego {
 			animarDado();
 			// Tirar dado especial lento: 1-3
 			java.util.Random r = new java.util.Random();
+			// variable que guarda informacion sobre total
 			int total = r.nextInt(3) + 1; // 1 a 3 (0-2 + 1)
+			// variable que guarda informacion sobre tiro1
 			int tiro1 = total; // Para el mensaje
+			// variable que guarda informacion sobre tiro2
 			int tiro2 = 0;
 
 			if ("admin#67".equals(p.getNom())) {
 				total = 1;
 			}
 
+			// variable que guarda informacion sobre posanterior
 			int posAnterior = p.getPosicion();
 			p.moverPosicion(total);
 			if (p.getPosicion() >= TOTAL_CELLS)
@@ -1235,6 +1432,7 @@ public class PantallaJuego {
 			if (p.getPosicion() < 0)
 				p.setPosicion(0);
 
+			// variable que guarda informacion sobre posnueva
 			int posNueva = p.getPosicion();
 			playerPositions.put(indiceActual, posNueva);
 
@@ -1261,6 +1459,7 @@ public class PantallaJuego {
 		}
 	}
 
+	// metodo encargado de la funcion verificarfindejuego recibiendo parametros: Jugador j
 	private void verificarFinDeJuego(Jugador j) {
 		// Validar si el jugador acaba de ganar
 		if (j.getPosicion() >= TOTAL_CELLS - 1) {
@@ -1288,7 +1487,9 @@ public class PantallaJuego {
 			gestorPartida.siguienteTurno();
 			actualizarInfoJugadores();
 
+			// variable que guarda informacion sobre indiceactual
 			int indiceActual = gestorPartida.getPartida().getJugadorActual();
+			// variable que guarda informacion sobre nuevoactual
 			Jugador nuevoActual = gestorPartida.getPartida().getJugador().get(indiceActual);
 
 			if (nuevoActual.estaCongelado()) {
@@ -1304,6 +1505,7 @@ public class PantallaJuego {
 				dado.setDisable(true);
 				agregarEvento("Turno de la Foca");
 
+				// variable que guarda informacion sobre pause
 				PauseTransition pause = new PauseTransition(Duration.millis(1500));
 				pause.setOnFinished(e -> ejecutarTurnoFoca((Foca) nuevoActual, indiceActual));
 				pause.play();
@@ -1321,6 +1523,7 @@ public class PantallaJuego {
 			return;
 		}
 		try {
+			// variable que guarda informacion sobre usuariolimpio
 			String usuarioLimpio = usuario.trim();
 
 			// Forzamos autoCommit=true para que el UPDATE se confirme inmediatamente,
@@ -1330,6 +1533,7 @@ public class PantallaJuego {
 			java.sql.PreparedStatement ps = conexionBD.prepareStatement(
 				"UPDATE USUARIO SET VICTORIAS = NVL(VICTORIAS, 0) + 1 WHERE UPPER(NICKNAME) = UPPER(?)");
 			ps.setString(1, usuarioLimpio);
+			// variable que guarda informacion sobre filas
 			int filas = ps.executeUpdate();
 			ps.close();
 
@@ -1344,23 +1548,29 @@ public class PantallaJuego {
 		}
 	}
 
+	// metodo encargado de la funcion ejecutarturnofoca recibiendo parametros: Foca foca, int indiceActual
 	private void ejecutarTurnoFoca(Foca foca, int indiceActual) {
+		// variable que guarda informacion sobre d
 		Dado d = new Dado();
+		// variable que guarda informacion sobre resultado
 		int resultado = d.tirar();
 		dadoResultText.setText("Saca: " + resultado);
 		agregarEvento("La Foca ha sacado un " + resultado + "!");
 
+		// variable que guarda informacion sobre posanterior
 		int posAnterior = foca.getPosicion();
 		foca.setPosicion(posAnterior + resultado);
 		if (foca.getPosicion() >= TOTAL_CELLS)
 			foca.setPosicion(TOTAL_CELLS - 1);
 
+		// variable que guarda informacion sobre posnueva
 		int posNueva = foca.getPosicion();
 		playerPositions.put(indiceActual, posNueva);
 
 		animarMovimiento(indiceActual, posAnterior, posNueva, () -> {
 			try {
 				aplicarCasilla(foca, posNueva);
+				// variable que guarda informacion sobre casilla
 				Casilla casilla = gestorPartida.getPartida().getTablero().getCasillas().get(posNueva);
 				if (!(casilla instanceof Evento)) {
 					verificarColisionFoca(foca);
@@ -1370,23 +1580,29 @@ public class PantallaJuego {
 				e.printStackTrace();
 			}
 
+			// variable que guarda informacion sobre pause
 			PauseTransition pause = new PauseTransition(Duration.millis(2500));
 			pause.setOnFinished(e -> verificarFinDeJuego(foca));
 			pause.play();
 		});
 	}
 
+	// metodo encargado de la funcion verificarcolisionfoca recibiendo parametros: Foca foca
 	private void verificarColisionFoca(Foca foca) {
+		// variable que guarda informacion sobre colision
 		boolean colision = false;
 		for (Jugador jug : gestorPartida.getPartida().getJugador()) {
 			if (jug instanceof Pinguino && jug.getPosicion() == foca.getPosicion()) {
+				// variable que guarda informacion sobre p
 				Pinguino p = (Pinguino) jug;
 				foca.aplastarJugador(p);
 
 				if (!foca.isSoborno()) {
 					agregarEvento("¡La Foca ha aplastado a " + p.getNom() + "!");
+					// variable que guarda informacion sobre idx
 					int idx = gestorPartida.getPartida().getJugador().indexOf(p);
 					if (idx >= 0) {
+						// variable que guarda informacion sobre c
 						Circle c = playerCircles.get(idx);
 						GridPane.setRowIndex(c, 0);
 						GridPane.setColumnIndex(c, 0);
@@ -1407,12 +1623,15 @@ public class PantallaJuego {
 		}
 	}
 
+	// metodo encargado de la funcion mostraranimacionganador recibiendo parametros: Jugador ganador
 	private void mostrarAnimacionGanador(Jugador ganador) {
 		invocarMetodo(backgroundMusicPlayer, "stop");
 		invocarMetodo(victoriaSound, "play");
 
 		javafx.stage.Stage principal = AppState.getInstance().getVentanaPrincipal();
+		// variable que guarda informacion sobre w
 		double w = principal.getWidth();
+		// variable que guarda informacion sobre h
 		double h = principal.getHeight();
 
 		// ── Stage transparente que ocupa toda la ventana principal ──────────────
@@ -1429,6 +1648,7 @@ public class PantallaJuego {
 		javafx.scene.layout.Pane confeti = new javafx.scene.layout.Pane();
 		confeti.setMouseTransparent(true);
 		confeti.setPickOnBounds(false); // Refuerzo para que no bloquee clics
+		// variable que guarda informacion sobre paleta
 		String[] paleta = { "#FFD700", "#FF6B6B", "#4ECDC4", "#45B7D1", "#A78BFA", "#F9A8D4", "#86EFAC", "#FCD34D" };
 		java.util.Random rnd = new java.util.Random();
 		for (int i = 0; i < 150; i++) {
@@ -1490,6 +1710,7 @@ public class PantallaJuego {
 				"-fx-font-size: 30px; -fx-font-weight: 900; -fx-fill: white;" +
 						"-fx-font-family: 'Segoe UI Black', 'Arial Black', sans-serif;");
 
+		// variable que guarda informacion sobre btn
 		Button btn = new Button("Volver al Menú");
 		btn.setStyle(
 				"-fx-font-size: 16px; -fx-font-weight: bold;" +
@@ -1516,9 +1737,11 @@ public class PantallaJuego {
 		win.show();
 	}
 
+	// metodo encargado de la funcion iniciarlogicajuego recibiendo parametros: ninguno
 	private void iniciarLogicaJuego() {
 		// Mapear círculos de jugadores
 		ArrayList<Jugador> jugadores = gestorPartida.getPartida().getJugador();
+		// variable que guarda informacion sobre circles
 		Circle[] circles = { P1, P2, P3, P4, P5 };
 
 		for (int i = 0; i < jugadores.size() && i < 5; i++) {
@@ -1531,6 +1754,7 @@ public class PantallaJuego {
 						? j.getColor().toLowerCase().replace("ú", "u").replace("ó", "o")
 						: "azul";
 
+				// variable que guarda informacion sobre colorpath
 				String colorPath;
 				if (j instanceof Foca) {
 					colorPath = "/jocpinguiFinal/Vista/images/foca.png";
@@ -1543,6 +1767,7 @@ public class PantallaJuego {
 					if ("negro".equalsIgnoreCase(j.getNom())) {
 						colorBuscado = "negro"; // Easter egg
 					}
+					// variable que guarda informacion sobre basepath
 					String basePath = "/jocpinguiFinal/Vista/images/pinguino_" + colorBuscado;
 					colorPath = basePath + ".png";
 					if (getClass().getResourceAsStream(colorPath) == null) {
@@ -1552,6 +1777,7 @@ public class PantallaJuego {
 				try {
 					java.io.InputStream is = getClass().getResourceAsStream(colorPath);
 					if (is != null) {
+						// variable que guarda informacion sobre img
 						Image img = new Image(is, 80, 80, true, true);
 						circles[i].setFill(new ImagePattern(img));
 					} else {
@@ -1564,7 +1790,9 @@ public class PantallaJuego {
 				// Posicionar círculos según la posición actual del jugador
 				int posActual = j.getPosicion();
 				playerPositions.put(i, posActual);
+				// variable que guarda informacion sobre row
 				int row = posActual / COLUMNS;
+				// variable que guarda informacion sobre col
 				int col = posActual % COLUMNS;
 				GridPane.setRowIndex(circles[i], row);
 				GridPane.setColumnIndex(circles[i], col);

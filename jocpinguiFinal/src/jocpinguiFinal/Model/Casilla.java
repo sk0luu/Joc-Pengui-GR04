@@ -1,8 +1,13 @@
 package jocpinguiFinal.Model;
 
+/**
+ * clase base de la que heredan todos los tipos de casillas del tablero.
+ */
 public abstract class Casilla implements java.io.Serializable {
+	// variable que guarda informacion sobre serialversionuid
 	private static final long serialVersionUID = 1L;
 	
+	// variable que guarda informacion sobre posicion
 	protected int posicion; // posicion de la casilla en el tablero
 	//Un constructor que devuelve la posicion actual 
 	public Casilla(int posicion) {

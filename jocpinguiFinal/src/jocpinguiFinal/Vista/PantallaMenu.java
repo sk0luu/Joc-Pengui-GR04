@@ -20,6 +20,9 @@ import java.util.ArrayList;
 
 import jocpinguiFinal.Model.BBDD;
 
+/**
+ * vista del menu inicial donde se puede elegir nueva partida o cargar.
+ */
 public class PantallaMenu {
 
     @FXML private TextField userField;
@@ -30,37 +33,46 @@ public class PantallaMenu {
     @FXML private Button autoFillButton;
 
     @FXML
+    // metodo encargado de la funcion initialize recibiendo parametros: ninguno
     private void initialize() {
         System.out.println("PantallaMenu JavaFX inicializada");
     }
 
     @FXML
+    // metodo encargado de la funcion handleautofill recibiendo parametros: ninguno
     private void handleAutoFill() {
         userField.setText("DW2526_GR04_PINGU");
         passField.setText("AOAICGL");
     }
 
     @FXML
+    // metodo encargado de la funcion handlelogin recibiendo parametros: ActionEvent event
     private void handleLogin(ActionEvent event) {
+        // variable que guarda informacion sobre username
         String username = userField.getText();
+        // variable que guarda informacion sobre password
         String password = passField.getText();
 
         // Validar que no esté vacío
         if (username.trim().isEmpty()) {
             mostrarAlerta("Error", "El usuario no puede estar vacío");
         } else {
+            // variable que guarda informacion sobre conexion
             Connection conexion = verificarCredencialesOracleYConectar(username, password);
             if (conexion != null) {
                 try {
                     // Cambio a PantallaPartida
                     FXMLLoader loader = new FXMLLoader(getClass().getResource("/jocpinguiFinal/Vista/PantallaPartida.fxml"));
+                    // variable que guarda informacion sobre root
                     Parent root = loader.load();
                     
                     // Pasar la conexión y usuario a PantallaPartida
                     PantallaPartida controllerPartida = loader.getController();
                     controllerPartida.setConexion(conexion, username);
 
+                    // variable que guarda informacion sobre scene
                     Scene scene = new Scene(root);
+                    // variable que guarda informacion sobre stage
                     Stage stage = AppState.getInstance().getVentanaPrincipal();
                     stage.setScene(scene);
                     stage.setTitle("Pinguino Game - Configuración");
@@ -80,7 +92,9 @@ public class PantallaMenu {
         }
     }
 
+    // metodo encargado de la funcion verificarcredencialesoracleyconectar recibiendo parametros: String usuario, String contraseña
     private Connection verificarCredencialesOracleYConectar(String usuario, String contraseña) {
+        // variable que guarda informacion sobre con
         Connection con = null;
         try {
             // Usar credenciales proporcionadas para conectar a Oracle
@@ -104,6 +118,7 @@ public class PantallaMenu {
     }
 
     @FXML
+    // metodo encargado de la funcion handlenewgame recibiendo parametros: ninguno
     private void handleNewGame() {
         userField.clear();
         passField.clear();
@@ -111,28 +126,33 @@ public class PantallaMenu {
     }
 
     @FXML
+    // metodo encargado de la funcion handlequitgame recibiendo parametros: ninguno
     private void handleQuitGame() {
         System.out.println("Saliendo del juego...");
         System.exit(0);
     }
 
     @FXML
+    // metodo encargado de la funcion handleloadgame recibiendo parametros: ninguno
     private void handleLoadGame() {
         System.out.println("Lógica para cargar partida (BBDD o Fichero)");
     }
 
     @FXML
+    // metodo encargado de la funcion handlesavegame recibiendo parametros: ninguno
     private void handleSaveGame() {
         System.out.println("Lógica para guardar partida");
     }
 
     @FXML
+    // metodo encargado de la funcion handleregister recibiendo parametros: ninguno
     private void handleRegister() {
         mostrarAlerta("Registro", "Para registrar una cuenta, contacte al administrador de la base de datos");
     }
 
     // Método auxiliar para mostrar alertas
     private void mostrarAlerta(String titulo, String mensaje) {
+        // variable que guarda informacion sobre alerta
         Alert alerta = new Alert(AlertType.INFORMATION);
         alerta.initOwner(AppState.getInstance().getVentanaPrincipal());
         alerta.setTitle(titulo);

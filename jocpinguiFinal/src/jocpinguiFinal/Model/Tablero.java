@@ -1,7 +1,12 @@
 package jocpinguiFinal.Model;
 import java.util.ArrayList;
+/**
+ * estructura que contiene la lista de casillas y define el camino del juego.
+ */
 public class Tablero implements java.io.Serializable {
+	// variable que guarda informacion sobre serialversionuid
 	private static final long serialVersionUID = 1L;
+	// variable que guarda informacion sobre casillas
 	private ArrayList<Casilla> casillas;
 	// inicializa la lista de casillas del tablero
 	public Tablero() {
@@ -32,7 +37,9 @@ public class Tablero implements java.io.Serializable {
 	}
 	// crea las 50 casillas y distribuye las especiales de forma equilibrada
 	public void inicializarTablero() {
+		// variable que guarda informacion sobre total
 		int total = 50;
+		// variable que guarda informacion sobre ultima
 		int ultima = total - 1;
 
 		// 1. Llenar todo de casillas normales inicialmente
@@ -61,17 +68,22 @@ public class Tablero implements java.io.Serializable {
 		// 3. Distribuir en segmentos (6 segmentos de 8 casillas cada uno, del 1 al 48)
 		// Pondremos exactamente 3 especiales en cada segmento para que esté equilibrado.
 		java.util.Random rnd = new java.util.Random();
+		// variable que guarda informacion sobre especindex
 		int especIndex = 0;
 		
 		for (int s = 0; s < 6; s++) {
+			// variable que guarda informacion sobre inicioseg
 			int inicioSeg = 1 + (s * 8);
+			// variable que guarda informacion sobre indices
 			ArrayList<Integer> indices = new ArrayList<>();
 			for (int i = 0; i < 8; i++) indices.add(inicioSeg + i);
 			java.util.Collections.shuffle(indices);
 			
 			// Ponemos 3 especiales en este segmento
 			for (int i = 0; i < 3 && especIndex < especiales.size(); i++) {
+				// variable que guarda informacion sobre pos
 				int pos = indices.get(i);
+				// variable que guarda informacion sobre c
 				Casilla c = especiales.get(especIndex++);
 				c.setPosicion(pos);
 				casillas.set(pos, c);

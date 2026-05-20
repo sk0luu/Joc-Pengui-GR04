@@ -1,6 +1,10 @@
 package jocpinguiFinal.Model;
 
+/**
+ * entidad que puede actuar como npc persiguiendo a los pinguinos en el tablero.
+ */
 public class Foca extends Jugador {
+	// variable que guarda informacion sobre soborno
 	private boolean soborno;
 	//Este constructor sirve para poner la posicion el nombre y el color de la foca
 	public Foca(int posicion, String nombre, String color) {

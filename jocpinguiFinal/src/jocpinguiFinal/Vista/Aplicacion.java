@@ -6,17 +6,23 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
+/**
+ * gestor principal de la interfaz grafica, cambia entre los distintos paneles o pantallas.
+ */
 public class Aplicacion extends Application {
 
     @Override
+    // metodo encargado de la funcion start recibiendo parametros: Stage stage
     public void start(Stage stage) throws Exception {
         // Registrar la ventana principal en AppState
         AppState.getInstance().setVentanaPrincipal(stage);
 
         // Cargar la pantalla de carga
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/jocpinguiFinal/Vista/PantallaCarga.fxml"));
+        // variable que guarda informacion sobre root
         Parent root = loader.load();
 
+        // variable que guarda informacion sobre scene
         Scene scene = new Scene(root);
         stage.setTitle("Joc de'n Pingu");
         stage.setScene(scene);
@@ -34,7 +40,8 @@ public class Aplicacion extends Application {
         stage.show();
     }
 
+    // metodo principal que arranca la ejecucion de la clase
     public static void main(String[] args) {
         launch(args);
     }
-}
+}

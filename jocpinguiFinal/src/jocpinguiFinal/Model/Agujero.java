@@ -1,6 +1,9 @@
 package jocpinguiFinal.Model;
 import java.util.ArrayList;
 
+/**
+ * casilla de agujero que penaliza al jugador haciendolo retroceder o perder su avance.
+ */
 public class Agujero extends Casilla{
     // constructor para situar el agujero
     public Agujero(int posicion) {
@@ -8,12 +11,16 @@ public class Agujero extends Casilla{
     }
     // al caer en un agujero, el jugador vuelve al agujero anterior o al inicio
     @Override
+    // metodo encargado de la funcion realizaraccion recibiendo parametros: Partida partida, Jugador jugador
     public void realizarAccion(Partida partida, Jugador jugador) {
+		// variable que guarda informacion sobre destino
 		int destino = 0;
+		// variable que guarda informacion sobre posactualhoyo
 		int posActualHoyo = this.getPosicion();
 		
 		// Buscar el agujero anterior en el tablero
 		ArrayList<Casilla> casillas = partida.getTablero().getCasillas();
+		// variable que guarda informacion sobre mejorpos
 		int mejorPos = -1;
 		
 		for (Casilla c : casillas) {
